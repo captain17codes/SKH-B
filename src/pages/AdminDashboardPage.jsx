@@ -30,16 +30,16 @@ export default function AdminDashboardPage() {
           <Link className="flex items-center gap-3 bg-primary-container text-on-primary-container rounded-lg px-4 py-3 font-label-sm text-label-sm font-bold opacity-80 scale-95 transition-all" to="/admin">
             <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>dashboard</span> Dashboard
           </Link>
-          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/admin">
+          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/ticket-pool">
             <span className="material-symbols-outlined">confirmation_number</span> Ticket Pool
           </Link>
-          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/allocation">
+          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/staff-allocation">
             <span className="material-symbols-outlined">group</span> Staff Allocation
           </Link>
-          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/explanations">
+          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/insights">
             <span className="material-symbols-outlined">analytics</span> Citizen Insights
           </Link>
-          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/admin">
+          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/compliance">
             <span className="material-symbols-outlined">terminal</span> System Logs
           </Link>
         </div>
