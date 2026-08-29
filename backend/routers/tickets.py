@@ -1,374 +1,300 @@
+"""Ticket HTTP surface.
+
+This router is intentionally thin. Every decision -- category canonicalisation,
+ward resolution, the two SLA clocks, deduplication, cost estimation, criteria
+derivation -- lives in ``services.tickets`` so that the entire ingest path can be
+executed and tested without an HTTP server. What is left here is request parsing,
+status codes and the response shapes the existing React app already consumes.
+
+Two compatibility rules are load-bearing and must not be "cleaned up":
+
+* ``POST /api/tickets/submit`` returns ``id``, ``message`` and ``is_duplicate``
+  because ``src/components/TicketForm.jsx`` reads exactly those three fields;
+* ``GET /api/tickets/list`` returns the array under ``tickets`` (with ``items``
+  as an alias) because ``Dashboard.jsx`` reads ``ticketsRes.tickets``, and each
+  row carries ``cci_score`` rather than ``latest_cci``.
+
+Three bugs from the previous version are fixed by construction: ``is_duplicate``
+was called on a function returning a *tuple* (always truthy, so every photo
+report was merged), proximity was queried but never actually compared, and the
+per-category TFN table hard-coded the very "fixed rule dressed as AI" the brief
+rules out. The photo is also no longer mandatory -- refusing a report because a
+citizen has no camera is not something a municipal council can defend.
 """
-Ticket Ingestion API - Block 1 (Lead Dev)
-Handles: citizen submission, image deduplication, ticket creation
-"""
+from __future__ import annotations
+
 import os
-import uuid
-from datetime import datetime
-from typing import Optional, List
-from pathlib import Path
-
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
-from sqlalchemy.orm import Session
-from PIL import Image
-
+import sqlite3
 import sys
+from pathlib import Path
+from typing import Any, Optional
+
+from fastapi import (APIRouter, Depends, File, Form, HTTPException, Query,
+                     Request, UploadFile)
+from pydantic import BaseModel, Field
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from database import get_db, Ticket, TicketMedia, TicketCategory, TicketStatus, TicketCriteriaScore
-from utils.deduplication import generate_phash, is_duplicate
+from database import get_db, transaction  # noqa: E402
+from services import tickets as svc  # noqa: E402
+from services import wards as ward_svc  # noqa: E402
 
 router = APIRouter(prefix="/api/tickets", tags=["tickets"])
 
-# Ensure upload directory exists
-UPLOAD_DIR = Path("./uploads")
-UPLOAD_DIR.mkdir(exist_ok=True)
+
+def _actor(request: Request) -> str:
+    """Who is acting, as far as we can honestly tell.
+
+    Until the auth layer lands this is the caller's IP, not an identity. Naming
+    it ``anonymous_<ip>`` keeps the audit trail truthful instead of attributing
+    the action to a user that was never authenticated.
+    """
+    user = getattr(request.state, "user", None)
+    if isinstance(user, dict) and user.get("username"):
+        return str(user["username"])
+    client = request.client.host if request.client else "unknown"
+    return f"anonymous_{client}"
 
 
-class TicketResponse(BaseModel):
-    """Response model for ticket creation"""
-    id: str
-    citizen_phone: str
-    category: str
-    description: Optional[str]
-    lat: Optional[float]
-    lon: Optional[float]
-    ward_id: Optional[str]
+class CostInputPayload(BaseModel):
+    """Real money and real hours an officer measured, replacing estimated lines.
+
+    Field names match ``domain.costing``'s runtime inputs exactly so an operator
+    entry lands on the same line it replaces, and the resulting breakdown still
+    says which lines came from a reference rate and which from the field.
+    """
+    runtime_vehicle_cost: Optional[float] = Field(None, ge=0)
+    runtime_labour_cost: Optional[float] = Field(None, ge=0)
+    runtime_material_cost: Optional[float] = Field(None, ge=0)
+    other_cost: Optional[float] = Field(None, ge=0)
+    crew_hours: Optional[float] = Field(None, ge=0)
+    equipment_hours: Optional[dict[str, float]] = Field(
+        None, description="machine code -> hours, e.g. {'JCB_3DX': 2.5}")
+    note: Optional[str] = None
+
+
+class ConditionPayload(BaseModel):
+    """Escalating conditions, only ever set by a human who checked."""
+    blocks_major_road: Optional[bool] = None
+    access_isolated: Optional[bool] = None
+    critical_facility_isolated: Optional[bool] = None
+    note: Optional[str] = None
+
+
+class StatusPayload(BaseModel):
     status: str
-    community_multiplier: float
-    is_duplicate: bool
-    parent_ticket_id: Optional[str]
-    message: str
-
-    class Config:
-        from_attributes = True
+    note: Optional[str] = None
 
 
-class TicketListResponse(BaseModel):
-    """Response for listing tickets"""
-    tickets: List[dict]
-    total: int
+class WardPayload(BaseModel):
+    """Ward master data. Everything optional: partial truth beats invention."""
+    id: Optional[str] = None
+    ward_no: Optional[str] = None
+    name: Optional[str] = None
+    population: Optional[int] = Field(None, ge=0)
+    households: Optional[int] = Field(None, ge=0)
+    area_sq_km: Optional[float] = Field(None, gt=0)
+    centroid_lat: Optional[float] = Field(None, ge=-90, le=90)
+    centroid_lon: Optional[float] = Field(None, ge=-180, le=180)
+    equity_index: Optional[float] = Field(None, ge=0, le=1)
+    flood_exposure: Optional[float] = Field(None, ge=0, le=1)
+    data_confidence: Optional[str] = None
+    source_note: Optional[str] = None
 
 
-class CriteriaScoreInput(BaseModel):
-    """Input for fuzzy criteria scores"""
-    infra_lower: float = Field(0.5, ge=0, le=1)
-    infra_modal: float = Field(0.7, ge=0, le=1)
-    infra_upper: float = Field(0.9, ge=0, le=1)
-    safety_lower: float = Field(0.6, ge=0, le=1)
-    safety_modal: float = Field(0.8, ge=0, le=1)
-    safety_upper: float = Field(1.0, ge=0, le=1)
-    equity_lower: float = Field(0.2, ge=0, le=1)
-    equity_modal: float = Field(0.5, ge=0, le=1)
-    equity_upper: float = Field(0.8, ge=0, le=1)
-    cost_lower: float = Field(0.3, ge=0, le=1)
-    cost_modal: float = Field(0.5, ge=0, le=1)
-    cost_upper: float = Field(0.7, ge=0, le=1)
-
-
-@router.post("/submit", response_model=TicketResponse)
+@router.post("/submit")
 async def submit_ticket(
-    citizen_phone: str = Form(..., description="Citizen WhatsApp phone number"),
-    category: str = Form(..., description="Issue category"),
-    description: Optional[str] = Form(None, description="Issue description"),
-    lat: Optional[float] = Form(None, description="GPS latitude"),
-    lon: Optional[float] = Form(None, description="GPS longitude"),
-    ward_id: Optional[str] = Form(None, description="Ward identifier"),
-    file: UploadFile = File(..., description="Photo of the issue"),
-    db: Session = Depends(get_db)
+    request: Request,
+    citizen_phone: Optional[str] = Form(None),
+    category: str = Form(...),
+    description: Optional[str] = Form(None),
+    lat: Optional[float] = Form(None),
+    lon: Optional[float] = Form(None),
+    ward_id: Optional[str] = Form(None),
+    landmark: Optional[str] = Form(None),
+    sensitive_site: Optional[str] = Form(None),
+    affected_population: Optional[int] = Form(None),
+    duration_hours: Optional[float] = Form(None),
+    channel: Optional[str] = Form("web"),
+    file: Optional[UploadFile] = File(None),
+    conn: sqlite3.Connection = Depends(get_db),
 ):
-    """
-    Submit a new grievance ticket with photo.
+    """Register a citizen report and tell the citizen what happened to it.
 
-    Process:
-    1. Validate and save image
-    2. Generate perceptual hash for deduplication
-    3. Check for duplicates within geo-radius
-    4. If duplicate: attach to parent, increment community multiplier
-    5. If new: create ticket with OPEN status
-    6. Assign default fuzzy criteria scores based on category
+    The photo is optional. When present it is hashed and used for duplicate
+    detection; when absent the report falls back to text-plus-proximity
+    matching, which is weaker and is reported as such rather than silently
+    treated as equivalent.
     """
+    uploads: list[dict[str, Any]] = []
+    if file is not None and file.filename:
+        content = await file.read()
+        if content:
+            uploads.append({"filename": file.filename, "content": content})
+
+    payload = {
+        "citizen_phone": citizen_phone, "category": category,
+        "description": description, "lat": lat, "lon": lon,
+        "ward_id": ward_id, "landmark": landmark,
+        "sensitive_site": sensitive_site,
+        "affected_population": affected_population,
+        "duration_hours": duration_hours, "channel": channel or "web",
+    }
     try:
-        # Validate category
-        if category not in [c.value for c in TicketCategory]:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Invalid category. Valid options: {[c.value for c in TicketCategory]}"
-            )
-
-        # Read image bytes
-        image_bytes = await file.read()
-        if len(image_bytes) == 0:
-            raise HTTPException(status_code=400, detail="Empty file uploaded")
-
-        # Generate perceptual hash
-        try:
-            phash = generate_phash(image_bytes)
-        except Exception as e:
-            raise HTTPException(status_code=400, detail=f"Image processing error: {str(e)}")
-
-        # Check for duplicates - get all existing hashes from DB
-        existing_hashes = []
-        if lat is not None and lon is not None:
-            # Get near tickets (simplified: within same ward or all open tickets)
-            from sqlalchemy import text
-            result = db.execute(text("""
-                SELECT t.id, m.phash FROM tickets t
-                JOIN ticket_media m ON m.ticket_id = t.id
-                WHERE t.status IN ('open', 'scored', 'deduped')
-                AND t.lat IS NOT NULL AND t.lon IS NOT NULL
-            """))
-            for row in result:
-                existing_hashes.append((row[0], row[1]))
-
-        # Check for duplicate using Hamming distance
-        parent_ticket_id = None
-        is_dup = False
-        for ticket_id, stored_hash in existing_hashes:
-            if stored_hash and is_duplicate(phash, [stored_hash], threshold=10):
-                parent_ticket_id = ticket_id
-                is_dup = True
-                break
-
-        if is_dup and parent_ticket_id:
-            # Update parent ticket's community multiplier
-            parent = db.query(Ticket).filter(Ticket.id == parent_ticket_id).first()
-            if parent:
-                parent.community_multiplier = min(parent.community_multiplier + 0.15, 3.0)
-                parent.updated_at = datetime.utcnow()
-
-            # Create new ticket as duplicate
-            ticket_id = str(uuid.uuid4())
-            ticket = Ticket(
-                id=ticket_id,
-                citizen_phone=citizen_phone,
-                category=category,
-                description=description,
-                lat=lat,
-                lon=lon,
-                ward_id=ward_id,
-                status=TicketStatus.DEDUPED.value,
-                community_multiplier=1.0,
-                is_duplicate=1,
-                parent_ticket_id=parent_ticket_id
-            )
-            db.add(ticket)
-
-            # Save media with hash
-            file_path = UPLOAD_DIR / f"{ticket_id}_{file.filename}"
-            with open(file_path, "wb") as f:
-                await file.seek(0)
-                f.write(await file.read())
-
-            media = TicketMedia(
-                id=str(uuid.uuid4()),
-                ticket_id=ticket_id,
-                file_path=str(file_path),
-                phash=str(phash)
-            )
-            db.add(media)
-            db.commit()
-
-            return TicketResponse(
-                id=ticket_id,
-                citizen_phone=citizen_phone,
-                category=category,
-                description=description,
-                lat=lat,
-                lon=lon,
-                ward_id=ward_id,
-                status=TicketStatus.DEDUPED.value,
-                community_multiplier=1.0,
-                is_duplicate=True,
-                parent_ticket_id=parent_ticket_id,
-                message="Issue logged as duplicate. Similar report already exists; community severity increased."
-            )
-
-        # Create new ticket
-        ticket_id = str(uuid.uuid4())
-        ticket = Ticket(
-            id=ticket_id,
-            citizen_phone=citizen_phone,
-            category=category,
-            description=description,
-            lat=lat,
-            lon=lon,
-            ward_id=ward_id,
-            status=TicketStatus.OPEN.value,
-            community_multiplier=1.0,
-            is_duplicate=0,
-            parent_ticket_id=None
-        )
-        db.add(ticket)
-
-        # Save media with hash
-        file_path = UPLOAD_DIR / f"{ticket_id}_{file.filename}"
-        with open(file_path, "wb") as f:
-            await file.seek(0)
-            f.write(await file.read())
-
-        media = TicketMedia(
-            id=str(uuid.uuid4()),
-            ticket_id=ticket_id,
-            file_path=str(file_path),
-            phash=str(phash)
-        )
-        db.add(media)
-
-        # Assign default criteria scores based on category
-        # These are hardcoded defaults; real system uses fuzzy AHP from experts
-        category_scores = _get_default_scores_for_category(category)
-
-        for criterion_code, (lower, modal, upper) in category_scores.items():
-            score = TicketCriteriaScore(
-                id=str(uuid.uuid4()),
-                ticket_id=ticket_id,
-                criterion_code=criterion_code,
-                tfn_lower=lower,
-                tfn_modal=modal,
-                tfn_upper=upper
-            )
-            db.add(score)
-
-        db.commit()
-
-        return TicketResponse(
-            id=ticket_id,
-            citizen_phone=citizen_phone,
-            category=category,
-            description=description,
-            lat=lat,
-            lon=lon,
-            ward_id=ward_id,
-            status=TicketStatus.OPEN.value,
-            community_multiplier=1.0,
-            is_duplicate=False,
-            parent_ticket_id=None,
-            message="Issue logged successfully."
-        )
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
+        with transaction(conn):
+            result = svc.create_ticket(conn, payload, uploads, _actor(request))
+    except sqlite3.Error as exc:
+        raise HTTPException(status_code=500,
+                            detail=f"could not store the report: {exc}") from exc
+    return result
 
 
-def _get_default_scores_for_category(category: str) -> dict:
-    """
-    Get default fuzzy criteria scores based on category.
-    Lower/Modal/Upper = TFN triple for each criterion.
-    """
-    # Default medium scores
-    default = {
-        'C1_infra': [0.5, 0.7, 0.9],
-        'C2_safety': [0.5, 0.7, 0.9],
-        'C3_equity': [0.3, 0.5, 0.7],
-        'C4_cost': [0.4, 0.6, 0.8]
-    }
-
-    # Category-specific adjustments
-    category_defaults = {
-        'pothole': {
-            'C1_infra': [0.6, 0.8, 1.0],  # Infrastructure critical
-            'C2_safety': [0.7, 0.85, 1.0],  # Safety risk
-            'C3_equity': [0.3, 0.5, 0.7],
-            'C4_cost': [0.2, 0.4, 0.6]   # Low cost
-        },
-        'waterlogging': {
-            'C1_infra': [0.7, 0.9, 1.0],  # Critical flooding
-            'C2_safety': [0.8, 0.95, 1.0],  # High safety risk
-            'C3_equity': [0.4, 0.6, 0.8],
-            'C4_cost': [0.5, 0.7, 0.9]   # Variable cost
-        },
-        'sanitation': {
-            'C1_infra': [0.4, 0.6, 0.8],
-            'C2_safety': [0.5, 0.7, 0.9],  # Health risk
-            'C3_equity': [0.5, 0.7, 0.9],  # Equity concern
-            'C4_cost': [0.3, 0.5, 0.7]
-        },
-        'water_quality': {
-            'C1_infra': [0.8, 0.9, 1.0],  # Critical infrastructure
-            'C2_safety': [0.9, 0.95, 1.0],  # Public health emergency
-            'C3_equity': [0.7, 0.85, 1.0],  # Universal impact
-            'C4_cost': [0.5, 0.7, 0.9]
-        },
-        'infrastructure': {
-            'C1_infra': [0.8, 0.95, 1.0],  # Critical
-            'C2_safety': [0.6, 0.8, 1.0],
-            'C3_equity': [0.4, 0.6, 0.8],
-            'C4_cost': [0.6, 0.8, 1.0]   # High cost
-        },
-    }
-
-    return category_defaults.get(category, default)
-
-
-@router.get("/list", response_model=TicketListResponse)
+@router.get("/list")
 def list_tickets(
     status: Optional[str] = None,
     ward_id: Optional[str] = None,
-    limit: int = 50,
-    db: Session = Depends(get_db)
+    category: Optional[str] = None,
+    sla: Optional[str] = Query(None, description="ON_TRACK | DUE_SOON | BREACHED"),
+    include_duplicates: bool = False,
+    limit: int = Query(50, ge=1, le=500),
+    offset: int = Query(0, ge=0),
+    conn: sqlite3.Connection = Depends(get_db),
 ):
-    """List tickets with optional filters"""
-    query = db.query(Ticket)
+    """Work queue, highest live priority first, duplicates hidden by default."""
+    result = svc.list_tickets(conn, status=status, ward_id=ward_id,
+                              category=category, sla=sla,
+                              include_duplicates=include_duplicates,
+                              limit=limit, offset=offset)
+    # 'tickets' is the key the shipped dashboard reads; 'items' is the new name.
+    return {"tickets": result["items"], "items": result["items"],
+            "count": result["count"], "total": result["total"],
+            "limit": limit, "offset": offset}
 
-    if status:
-        query = query.filter(Ticket.status == status)
-    if ward_id:
-        query = query.filter(Ticket.ward_id == ward_id)
 
-    tickets = query.order_by(Ticket.created_at.desc()).limit(limit).all()
-    total = query.count()
+@router.get("/queue")
+def prioritisation_queue(ward_id: Optional[str] = None,
+                         conn: sqlite3.Connection = Depends(get_db)):
+    """Exactly the rows the next triage run will consider, and nothing else."""
+    rows = svc.queue_for_prioritisation(conn, ward_id)
+    return {"count": len(rows), "tickets": rows,
+            "note": "open, scored or deferred non-duplicate tickets"}
 
-    return TicketListResponse(
-        tickets=[{
-            "id": t.id,
-            "citizen_phone": t.citizen_phone,
-            "category": t.category,
-            "status": t.status,
-            "cci_score": t.cci_score,
-            "community_multiplier": t.community_multiplier,
-            "is_duplicate": bool(t.is_duplicate),
-            "created_at": t.created_at.isoformat() if t.created_at else None,
-            "lat": t.lat,
-            "lon": t.lon
-        } for t in tickets],
-        total=total
-    )
+
+@router.get("/wards")
+def list_wards(include_inactive: bool = False,
+               conn: sqlite3.Connection = Depends(get_db)):
+    """Ward list plus an honest statement of what is missing from it."""
+    return {"wards": ward_svc.list_wards(conn, include_inactive),
+            "coverage": ward_svc.coverage(conn)}
+
+
+@router.put("/wards/{ward_id}")
+def upsert_ward(ward_id: str, payload: WardPayload, request: Request,
+                conn: sqlite3.Connection = Depends(get_db)):
+    """Enter or correct ward data. Recorded as operator-entered, not verified.
+
+    This is the path by which the equity criterion stops being a wide "we do not
+    know" interval, so the provenance of each number matters more than the
+    number itself.
+    """
+    body = payload.model_dump(exclude_none=True)
+    body["id"] = ward_id
+    with transaction(conn):
+        ward = ward_svc.upsert_ward(conn, body, _actor(request))
+        rescored = [svc.rescore_ticket(conn, row["id"])
+                    for row in svc.queue_for_prioritisation(conn, ward["id"])]
+    return {"ward": ward, "rescored": len(rescored),
+            "note": "equity for this ward's open tickets was re-derived"}
 
 
 @router.get("/{ticket_id}")
-def get_ticket(ticket_id: str, db: Session = Depends(get_db)):
-    """Get ticket details with criteria scores"""
-    ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
-    if not ticket:
+def get_ticket(ticket_id: str, conn: sqlite3.Connection = Depends(get_db)):
+    """Everything known about one report, including why it scored as it did."""
+    detail = svc.get_ticket(conn, ticket_id)
+    if not detail:
         raise HTTPException(status_code=404, detail="Ticket not found")
+    return detail
 
-    # Get criteria scores
-    scores = db.query(TicketCriteriaScore).filter(
-        TicketCriteriaScore.ticket_id == ticket_id
-    ).all()
 
-    return {
-        "id": ticket.id,
-        "citizen_phone": ticket.citizen_phone,
-        "category": ticket.category,
-        "description": ticket.description,
-        "lat": ticket.lat,
-        "lon": ticket.lon,
-        "ward_id": ticket.ward_id,
-        "status": ticket.status,
-        "cci_score": ticket.cci_score,
-        "community_multiplier": ticket.community_multiplier,
-        "is_duplicate": bool(ticket.is_duplicate),
-        "parent_ticket_id": ticket.parent_ticket_id,
-        "created_at": ticket.created_at.isoformat() if ticket.created_at else None,
-        "criteria_scores": [{
-            "criterion": s.criterion_code,
-            "tfn": [s.tfn_lower, s.tfn_modal, s.tfn_upper]
-        } for s in scores]
-    }
+@router.post("/{ticket_id}/cost")
+def enter_cost(ticket_id: str, payload: CostInputPayload, request: Request,
+               conn: sqlite3.Connection = Depends(get_db)):
+    """Replace estimated cost lines with measured ones and re-derive C4.
+
+    Unknown lines stay NULL rather than becoming 0: a ticket whose cost is
+    unknown must not out-compete one that is genuinely cheap.
+    """
+    body = payload.model_dump(exclude_none=True)
+    if not body:
+        raise HTTPException(status_code=400, detail="no cost values supplied")
+    with transaction(conn):
+        result = svc.update_cost_inputs(conn, ticket_id, body, _actor(request))
+    if not result.get("updated"):
+        raise HTTPException(status_code=404,
+                            detail=result.get("reason", "ticket not found"))
+    return result
+
+
+@router.post("/{ticket_id}/conditions")
+def confirm_conditions(ticket_id: str, payload: ConditionPayload,
+                       request: Request,
+                       conn: sqlite3.Connection = Depends(get_db)):
+    """Confirm on-ground conditions that can raise the priority floor.
+
+    Kept behind an explicit human confirmation because 'critical' is the level
+    at which other citizens' work gets displaced, and a self-declared checkbox
+    on a public form is not evidence.
+    """
+    body = payload.model_dump(exclude_none=True)
+    if not body:
+        raise HTTPException(status_code=400, detail="no conditions supplied")
+    with transaction(conn):
+        result = svc.confirm_conditions(conn, ticket_id, body, _actor(request))
+    if not result.get("updated"):
+        raise HTTPException(status_code=404,
+                            detail=result.get("reason", "ticket not found"))
+    return result
+
+
+@router.post("/{ticket_id}/status")
+def set_status(ticket_id: str, payload: StatusPayload, request: Request,
+               conn: sqlite3.Connection = Depends(get_db)):
+    """Move a ticket along the lifecycle, refusing impossible transitions."""
+    with transaction(conn):
+        result = svc.update_status(conn, ticket_id, payload.status,
+                                   _actor(request), payload.note)
+    if not result.get("updated"):
+        reason = result.get("reason", "ticket not found")
+        code = 404 if "not found" in reason else 409
+        raise HTTPException(status_code=code, detail=reason)
+    return result
+
+
+@router.post("/{ticket_id}/unmerge")
+def unmerge(ticket_id: str, request: Request,
+            conn: sqlite3.Connection = Depends(get_db)):
+    """Undo a merge an officer judges wrong, restoring the ticket's own place.
+
+    An automated merge that cannot be reversed is an automated deletion of a
+    citizen's complaint, so this endpoint is part of the dedup design, not an
+    afterthought.
+    """
+    from services import dedup
+
+    with transaction(conn):
+        result = dedup.unmerge(conn, ticket_id, _actor(request))
+    if not result.get("applied"):
+        raise HTTPException(status_code=409,
+                            detail=result.get("reason", "not a merged ticket"))
+    return result
+
+
+@router.post("/{ticket_id}/rescore")
+def rescore(ticket_id: str, conn: sqlite3.Connection = Depends(get_db)):
+    """Re-derive the four criteria after underlying facts changed."""
+    with transaction(conn):
+        result = svc.rescore_ticket(conn, ticket_id)
+    if not result.get("updated"):
+        raise HTTPException(status_code=404,
+                            detail=result.get("reason", "ticket not found"))
+    return result
