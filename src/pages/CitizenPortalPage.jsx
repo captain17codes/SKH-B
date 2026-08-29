@@ -3,12 +3,14 @@
  * Entry point for citizens to report civic issues
  */
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import TicketForm from '../components/TicketForm';
 
 export default function CitizenPortalPage() {
+  const navigate = useNavigate();
+
   const handleTicketSuccess = (result) => {
-    console.log('Ticket submitted:', result);
-    // Could redirect or show additional success UI
+    navigate(`/insights?ticketId=${result.id}&ref_no=${result.ref_no || ''}&dup=${result.is_duplicate || false}`);
   };
 
   return (

@@ -26,12 +26,14 @@ try:
     from database import dumps, execute, loads, query_all, query_one, utcnow_iso
     from domain import ahp
     from domain.criteria import CRITERIA, CRITERIA_TYPES
+    from services import audit
 except ImportError:  # pragma: no cover
     import sys
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from database import dumps, execute, loads, query_all, query_one, utcnow_iso
     from domain import ahp
     from domain.criteria import CRITERIA, CRITERIA_TYPES
+    from services import audit
 
 
 def _row_to_dict(row: Any) -> dict:
@@ -103,9 +105,24 @@ def activate_version(conn, version: int, actor: str | None = None) -> dict:
                        "rank citizens' work. Revisit the flagged comparison and "
                        "resubmit."),
         }
+    previous = query_one(conn, "SELECT version FROM criteria_weights "
+                               "WHERE is_active = 1")
+    previous_version = int(previous["version"]) if previous else None
     execute(conn, "UPDATE criteria_weights SET is_active = 0 WHERE is_active = 1")
     execute(conn, "UPDATE criteria_weights SET is_active = 1 WHERE version = ?",
             (version,))
+    # A weight change re-ranks every future complaint, so it is the single most
+    # consequential act an officer can perform here. Audited with append(), not
+    # try_append(): if this cannot be recorded it must not silently take effect.
+    audit.append(conn, audit.ACTION_WEIGHTS_ACTIVATED,
+                 entity_type=audit.ENTITY_WEIGHTS, entity_id=str(version),
+                 actor=actor, payload={
+                     "version": version,
+                     "previous_active_version": previous_version,
+                     "consistency_ratio": row["consistency_ratio"],
+                     "cr_threshold": row["cr_threshold"],
+                     "weights": loads(row["crisp_weights"], {}),
+                 })
     return {"activated": True, "version": version, "actor": actor,
             "consistency_ratio": row["consistency_ratio"]}
 

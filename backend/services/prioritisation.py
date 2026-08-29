@@ -62,6 +62,7 @@ try:
                           query_one, utcnow, utcnow_iso)
     from domain.costing import COST_COMPLETE
     from domain.criteria import CRITERIA, CRITERIA_TYPES
+    from services import audit
     from services import dedup
     from services import tickets as ticket_service
     from services import weights as weight_service
@@ -73,6 +74,7 @@ except ImportError:  # pragma: no cover
                           query_one, utcnow, utcnow_iso)
     from domain.costing import COST_COMPLETE
     from domain.criteria import CRITERIA, CRITERIA_TYPES
+    from services import audit
     from services import dedup
     from services import tickets as ticket_service
     from services import weights as weight_service
@@ -502,6 +504,33 @@ def run_triage(conn, *, dispatch_date: str | None = None,
             conn, run_id=run_id, dispatch_date=dispatch_date, ward_id=ward_id,
             capacity=capacity, weight_version=weight_version, ranked=ranked,
             plan=plan, skipped=skipped, actor=actor, weight_map=weight_map)
+        # The run is the decision. Audited with append(), not try_append(): a
+        # manifest that cannot be recorded in the chain must not be issued, or
+        # the council would be dispatching crews against an unauditable plan.
+        # A dry run writes nothing and is deliberately not audited -- asking
+        # "what if we had another 50,000" is not a decision about anyone's work.
+        audit.append(conn, audit.ACTION_TRIAGE_RUN,
+                     entity_type=audit.ENTITY_MANIFEST, entity_id=manifest_id,
+                     actor=actor, payload={
+                         "run_id": run_id,
+                         "dispatch_date": dispatch_date,
+                         "ward_id": ward_id,
+                         "weight_version": weight_version,
+                         "solver": plan.get("solver"),
+                         "solver_status": plan.get("status"),
+                         "budget_cap": capacity.get("budget_inr"),
+                         "workforce_cap_hours": capacity.get("workforce_hours"),
+                         "capacity_source": capacity.get("source"),
+                         "capacity_verified_by": capacity.get("verified_by"),
+                         "candidates": len(ranked),
+                         "scheduled_ticket_ids": [
+                             d["id"] for d in plan["decisions"]
+                             if d.get("decision") == "allocated"],
+                         "deferred_ticket_ids": [
+                             d["id"] for d in plan["decisions"]
+                             if d.get("decision") != "allocated"],
+                         "skipped_ticket_ids": [s.get("id") for s in skipped],
+                     })
 
     decision_by_id = {d["id"]: d for d in plan["decisions"]}
     rows = [_decision_view(item, decision_by_id.get(item["id"], {}))

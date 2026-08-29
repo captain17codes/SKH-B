@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import DiagnosticChecks from '../components/DiagnosticChecks';
 
 export default function CompliancePage() {
   return (
@@ -74,6 +75,7 @@ export default function CompliancePage() {
 <div className="flex-1 flex overflow-hidden">
 {/* Left Side: Filters and Log Feed */}
 <div className="flex-1 flex flex-col p-8 overflow-hidden">
+<DiagnosticChecks />
 {/* Filters Bar */}
 <div className="flex items-center gap-4 mb-6 shrink-0 bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/20 shadow-sm">
 <div className="relative flex-1 max-w-xs">

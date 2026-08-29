@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import SystemSummaryBlock from '../components/SystemSummaryBlock';
 
 export default function AdminDashboardPage() {
   const [selectedTicket, setSelectedTicket] = useState('TKT-1042');
@@ -69,6 +70,10 @@ export default function AdminDashboardPage() {
               <span className="text-label-sm font-label-sm text-secondary bg-surface-container-high px-3 py-1 rounded-full">Last updated: 08:30 AM</span>
             </div>
           </header>
+
+          <div className="mb-8">
+            <SystemSummaryBlock />
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
             {/* Ticket List */}

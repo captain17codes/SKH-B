@@ -492,6 +492,130 @@ export const healthAPI = {
   },
 };
 
+/**
+ * Audit chain -- what `/compliance` reads.
+ *
+ * `verify()` returns 200 even when the chain is broken, so a rejected promise
+ * here means the request failed, never that tampering was found. Read
+ * `result.ok`, and when it is false render `first_broken_seq`, `break_type`
+ * (`content` = a row was edited, `link` = one was inserted or removed) and
+ * `reason`, which is written to be shown verbatim.
+ *
+ * There is no write method because the API has no write endpoint: audit rows are
+ * only ever written as a side effect of the act being audited.
+ */
+export const auditAPI = {
+  /** Recompute the whole chain. `ok`, `entries`, `tip_seq`, `tip_hash`, and on a
+   *  break `first_broken_seq` / `break_type` / `reason` / `verified_prefix`. */
+  verify: async () => {
+    return fetchAPI('/api/audit/verify');
+  },
+
+  /** Counts per action plus the chain's time span -- the compliance header. */
+  stats: async () => {
+    return fetchAPI('/api/audit/stats');
+  },
+
+  /** Newest first. An empty list is normal on a fresh install, not an error. */
+  recent: async ({ limit = 50, action = null } = {}) => {
+    return fetchAPI(`/api/audit/recent${qs({ limit, action })}`);
+  },
+
+  /** Everything recorded against one thing, oldest first as a narrative.
+   *  Returns `count: 0` rather than 404 when there is no history yet. */
+  entity: async (entityType, entityId, limit = 200) => {
+    return fetchAPI(
+      `/api/audit/entity/${encodeURIComponent(entityType)}/${encodeURIComponent(entityId)}${qs({ limit })}`,
+    );
+  },
+
+  /** Every entry mentioning one ticket, for an RTS reply or an appeal. Accepts a
+   *  ref_no as well as an id. 404s only when no such ticket exists. */
+  export: async (ticketId, limit = 500) => {
+    return fetchAPI(`/api/audit/export${qs({ ticket_id: ticketId, limit })}`);
+  },
+};
+
+/**
+ * Reference vocabulary: the values the UI must not invent for itself.
+ *
+ * Build category dropdowns from `categories()` rather than hardcoding slugs -- an
+ * unrecognised category is accepted by the API but scores as `unclassified`, which
+ * is the kind of bug that shows up only in the ranking. `gaps()` is the opposite:
+ * it is meant to be rendered, as the list of things the platform does not know.
+ */
+export const referenceAPI = {
+  /** Policy values and feature flags. Never contains secrets. */
+  config: async () => {
+    return fetchAPI('/api/reference/config');
+  },
+
+  /** What the platform does not know, each paired with the fallback it takes.
+   *  Render this; do not treat a non-empty list as an error. */
+  gaps: async () => {
+    return fetchAPI('/api/reference/gaps');
+  },
+
+  /** The four ranking criteria. `type` is `benefit` for three and `cost` for
+   *  C4_cost -- render that direction, or the bars will say the opposite. */
+  criteria: async () => {
+    return fetchAPI('/api/reference/criteria');
+  },
+
+  /** Both clocks and their status vocabularies: operational minutes and
+   *  statutory RTS days, never merged. */
+  sla: async () => {
+    return fetchAPI('/api/reference/sla');
+  },
+
+  /** Every incident category the engine recognises, with department, response
+   *  target (null when none is published), roles and required cost inputs. */
+  categories: async (includeLegacy = true) => {
+    return fetchAPI(`/api/reference/categories${qs({ include_legacy: includeLegacy })}`);
+  },
+
+  /** The six escalation channels. Keyed by channel, not by category. */
+  channels: async () => {
+    return fetchAPI('/api/reference/channels');
+  },
+
+  /** Official public helplines only -- safe on a citizen-facing page. */
+  contacts: async () => {
+    return fetchAPI('/api/reference/contacts');
+  },
+};
+
+/**
+ * Staff allocation: today's scheduled work per department.
+ *
+ * `headcount` is `null` until an officer records one, and `null` means "not
+ * entered", never zero -- print the words, not a 0. No shortfall or utilisation
+ * figure is returned because there is no verified denominator to compute one
+ * from; `headcount_caveat` is the sentence to show instead.
+ *
+ * `plan()` returns 200 with `manifest_found: false` before triage has been run,
+ * so that state is an empty panel, not an error.
+ */
+export const staffAPI = {
+  plan: async ({ dispatchDate = null, manifestId = null } = {}) => {
+    return fetchAPI(`/api/staff/plan${qs({ dispatch_date: dispatchDate, manifest_id: manifestId })}`);
+  },
+
+  /** Every headcount recorded so far, plus which departments still have none. */
+  headcounts: async () => {
+    return fetchAPI('/api/staff/headcount');
+  },
+
+  /** Record an officer-entered headcount. Zero is valid and is not null.
+   *  Rejects an unknown department with a 400 rather than storing a typo. */
+  setHeadcount: async (departmentId, headcount, note = null) => {
+    return fetchAPI('/api/staff/headcount', {
+      method: 'PUT',
+      body: { department_id: departmentId, headcount, note },
+    });
+  },
+};
+
 export default {
   tickets: ticketsAPI,
   triage: triageAPI,
@@ -499,6 +623,9 @@ export default {
   media: mediaAPI,
   weights: weightsAPI,
   health: healthAPI,
+  audit: auditAPI,
+  reference: referenceAPI,
+  staff: staffAPI,
   mediaURL,
   tolerate404,
   ApiError,

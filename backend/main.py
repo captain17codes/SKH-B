@@ -50,6 +50,9 @@ ROUTER_MODULES: list[tuple[str, str]] = [
     ("routers.triage", "triage"),
     ("routers.explain", "explain"),
     ("routers.media", "media"),
+    ("routers.audit", "audit"),
+    ("routers.reference", "reference"),
+    ("routers.staff", "staff"),
     ("routers.webhooks", "webhooks"),
 ]
 
@@ -127,6 +130,9 @@ def root():
             "triage": "/api/triage",
             "explain": "/api/explain",
             "media": "/api/media",
+            "audit": "/api/audit",
+            "reference": "/api/reference",
+            "staff": "/api/staff",
             "webhooks": "/webhooks",
         },
         "routers_loaded": ROUTERS_LOADED,

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import SystemSummaryBlock from '../components/SystemSummaryBlock';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -67,30 +68,8 @@ export default function HomePage() {
         </section>
 
         {/* Stats Section */}
-        <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 mb-24 bg-surface-container-low/50 rounded-[2rem] border border-outline-variant/20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 divide-y md:divide-y-0 md:divide-x divide-outline-variant/30">
-            <div className="flex flex-col items-center text-center p-6 gap-4">
-              <div className="w-16 h-16 rounded-full bg-tertiary-fixed flex items-center justify-center text-tertiary">
-                <span className="material-symbols-outlined icon-filled text-3xl">check_circle</span>
-              </div>
-              <h3 className="font-headline-lg text-headline-lg text-primary">3,200+</h3>
-              <p className="font-body-md text-body-md text-on-surface-variant">Resolved Complaints</p>
-            </div>
-            <div className="flex flex-col items-center text-center p-6 gap-4">
-              <div className="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary-container">
-                <span className="material-symbols-outlined icon-filled text-3xl">construction</span>
-              </div>
-              <h3 className="font-headline-lg text-headline-lg text-primary">48</h3>
-              <p className="font-body-md text-body-md text-on-surface-variant">Active Projects</p>
-            </div>
-            <div className="flex flex-col items-center text-center p-6 gap-4">
-              <div className="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
-                <span className="material-symbols-outlined icon-filled text-3xl">map</span>
-              </div>
-              <h3 className="font-headline-lg text-headline-lg text-primary">6</h3>
-              <p className="font-body-md text-body-md text-on-surface-variant">Wards Covered</p>
-            </div>
-          </div>
+        <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mb-24">
+          <SystemSummaryBlock />
         </section>
 
         {/* Create Account Section */}

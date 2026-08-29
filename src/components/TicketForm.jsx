@@ -118,8 +118,10 @@ export default function TicketForm({ onSuccess }) {
 
       setSuccess({
         ticketId: result.id,
+        refNo: result.ref_no || result.id.substring(0, 8),
         message: result.message,
-        isDuplicate: result.is_duplicate
+        isDuplicate: result.is_duplicate,
+        fullResult: result
       });
 
       // Reset form
@@ -154,16 +156,24 @@ export default function TicketForm({ onSuccess }) {
       )}
 
       {success && (
-        <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
+        <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded">
           <p className="text-green-700 font-medium">{success.message}</p>
-          <p className="text-green-600 text-sm mt-1">
-            Ticket ID: <code className="bg-green-100 px-2 py-1 rounded">{success.ticketId.substring(0, 8)}</code>
+          <p className="text-green-600 text-sm mt-1 mb-3">
+            Reference No: <code className="bg-green-100 px-2 py-1 rounded font-mono">{success.refNo}</code>
           </p>
           {success.isDuplicate && (
-            <p className="text-amber-600 text-sm mt-2">
-              Your issue was merged with a similar existing report.
+            <p className="text-amber-600 text-sm mt-2 mb-3">
+              Your issue was merged with a similar existing report for faster resolution.
             </p>
           )}
+          <button 
+            type="button"
+            onClick={() => onSuccess && onSuccess(success.fullResult)}
+            className="mt-2 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded font-medium transition-colors inline-flex items-center gap-2"
+          >
+            <span className="material-symbols-outlined text-sm">psychology</span>
+            View AI Explanation
+          </button>
         </div>
       )}
 

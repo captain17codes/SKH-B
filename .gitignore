@@ -193,3 +193,6 @@ venv/
 /ticket.json
 /citizen_en.json
 /citizen_mr.json
+
+# One-off manual probe scripts (not tests -- see backend/tools/*_smoke.py)
+/test_submit.mjs

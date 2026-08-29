@@ -35,7 +35,7 @@ try:
     from domain.costing import estimate_cost
     from domain.criteria import CRITERIA, derive_criteria
     from domain.reference import get_reference
-    from services import dedup, wards
+    from services import audit, dedup, wards
     from services.imaging import ImageUnreadable, hash_pair_from_bytes
 except ImportError:  # pragma: no cover
     import sys
@@ -46,7 +46,7 @@ except ImportError:  # pragma: no cover
     from domain.costing import estimate_cost
     from domain.criteria import CRITERIA, derive_criteria
     from domain.reference import get_reference
-    from services import dedup, wards
+    from services import audit, dedup, wards
     from services.imaging import ImageUnreadable, hash_pair_from_bytes
 
 OPEN_STATUSES = ("open", "scored", "scheduled", "deferred", "dispatched")
@@ -374,6 +374,24 @@ def _finish_ingest(conn, ticket_id: str, ref_no: str, raw_category: str,
         message = (f"Thank you. Your report is registered as {ref_no} and will be "
                    f"ranked against today's other work.")
 
+    # Ingestion is audited with try_append, never append: a citizen's complaint
+    # must not be lost because the audit table refused a write. The ticket row is
+    # already committed by the caller's transaction either way.
+    audit.try_append(conn, audit.ACTION_TICKET_CREATED,
+                     entity_type=audit.ENTITY_TICKET, entity_id=ticket_id,
+                     actor=actor, payload={
+                         "ref_no": ref_no,
+                         "reported_category": raw_category,
+                         "category": category,
+                         "ward_id": row["ward_id"],
+                         "channel": row["channel"],
+                         "dedup_decision": verdict["decision"],
+                         "duplicate_of_id": row["duplicate_of_id"],
+                         "is_duplicate": is_duplicate,
+                         "cost_status": row["cost_status"],
+                         "media_count": len(media.get("phash_list") or []),
+                     })
+
     return {
         "id": ticket_id,
         "ticket_id": ticket_id,
@@ -587,6 +605,18 @@ def update_cost_inputs(conn, ticket_id: str, inputs: dict,
     dedup.record_event(conn, row["id"], "cost_inputs_entered",
                        from_value=before, to_value=after["cost_status"],
                        actor=actor, note=dumps(accepted))
+    # A cost edit moves a ticket between COST_INCOMPLETE and COST_COMPLETE, which
+    # changes whether the knapsack can schedule it at all. Who typed the number
+    # and what it was before is exactly what an auditor asks.
+    audit.try_append(conn, audit.ACTION_COST_EDITED,
+                     entity_type=audit.ENTITY_TICKET, entity_id=row["id"],
+                     actor=actor, payload={
+                         "ref_no": row["ref_no"],
+                         "accepted_fields": accepted,
+                         "cost_status_before": before,
+                         "cost_status_after": after["cost_status"],
+                         "estimated_cost_inr": after["estimated_cost_inr"],
+                     })
     return {"updated": True, "ticket_id": row["id"], "accepted": accepted,
             "cost_status_before": before,
             "cost_status": after["cost_status"],

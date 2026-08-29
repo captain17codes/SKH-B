@@ -55,6 +55,7 @@ try:
     from database import dumps, insert, loads, new_id, query_all, query_one, \
         utcnow_iso
     from domain.criteria import CRITERIA
+    from services import audit
     from services import tickets as ticket_service
 except ImportError:  # pragma: no cover
     import sys
@@ -63,6 +64,7 @@ except ImportError:  # pragma: no cover
     from database import dumps, insert, loads, new_id, query_all, query_one, \
         utcnow_iso
     from domain.criteria import CRITERIA
+    from services import audit
     from services import tickets as ticket_service
 
 METHOD_EXACT = "topsis_exact_decomposition"
@@ -759,6 +761,23 @@ def _store(conn, body: dict) -> str | None:
         "officer_rationale": body.get("officer_rationale"),
         "created_at": utcnow_iso(),
     })
+    # The citizen-facing sentence is the artefact an RTS appeal actually tests,
+    # so what was said and when is audited. try_append: an explanation that
+    # cannot be audited is still better delivered than withheld, and the row
+    # above is already idempotent per (ticket, run).
+    audit.try_append(conn, audit.ACTION_EXPLANATION_STORED,
+                     entity_type=audit.ENTITY_EXPLANATION, entity_id=row_id,
+                     payload={
+                         "ticket_id": body["ticket_id"],
+                         "ref_no": body.get("ref_no"),
+                         "run_id": body.get("run_id"),
+                         "method": METHOD_EXACT,
+                         "decision": body.get("decision"),
+                         "top_driver": body["attribution"].get("top_driver"),
+                         "citizen_message_en": body.get("citizen_message_en"),
+                         "citizen_message_mr": body.get("citizen_message_mr"),
+                         "translation_status": TRANSLATION_STATUS,
+                     })
     return row_id
 
 
