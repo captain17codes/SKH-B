@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function AdminDashboardPage() {
   const [selectedTicket, setSelectedTicket] = useState('TKT-1042');
@@ -26,32 +27,32 @@ export default function AdminDashboardPage() {
           </div>
         </div>
         <div className="flex flex-col gap-2 flex-grow">
-          <a className="flex items-center gap-3 bg-primary-container text-on-primary-container rounded-lg px-4 py-3 font-label-sm text-label-sm font-bold opacity-80 scale-95 transition-all" href="#">
+          <Link className="flex items-center gap-3 bg-primary-container text-on-primary-container rounded-lg px-4 py-3 font-label-sm text-label-sm font-bold opacity-80 scale-95 transition-all" to="/admin">
             <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>dashboard</span> Dashboard
-          </a>
-          <a className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" href="#">
+          </Link>
+          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/admin">
             <span className="material-symbols-outlined">confirmation_number</span> Ticket Pool
-          </a>
-          <a className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" href="#">
+          </Link>
+          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/allocation">
             <span className="material-symbols-outlined">group</span> Staff Allocation
-          </a>
-          <a className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" href="#">
+          </Link>
+          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/explanations">
             <span className="material-symbols-outlined">analytics</span> Citizen Insights
-          </a>
-          <a className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" href="#">
+          </Link>
+          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/admin">
             <span className="material-symbols-outlined">terminal</span> System Logs
-          </a>
+          </Link>
         </div>
         <button className="mt-4 w-full bg-primary text-on-primary rounded-full py-3 px-4 font-label-sm text-label-sm font-bold hover:bg-tertiary-container transition-colors flex items-center justify-center gap-2 shadow-sm">
           <span className="material-symbols-outlined text-sm">add</span> New Entry
         </button>
         <div className="mt-8 flex flex-col gap-2 pt-4 border-t border-outline-variant/20">
-          <a className="flex items-center gap-3 text-secondary px-4 py-2 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" href="#">
+          <Link className="flex items-center gap-3 text-secondary px-4 py-2 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/explanations">
             <span className="material-symbols-outlined">help</span> Help
-          </a>
-          <a className="flex items-center gap-3 text-secondary px-4 py-2 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" href="#">
+          </Link>
+          <Link className="flex items-center gap-3 text-secondary px-4 py-2 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/">
             <span className="material-symbols-outlined">logout</span> Logout
-          </a>
+          </Link>
         </div>
       </nav>
 

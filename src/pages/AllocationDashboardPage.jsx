@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function AllocationDashboardPage() {
   return (
@@ -16,14 +17,14 @@ export default function AllocationDashboardPage() {
           <span className="material-symbols-outlined text-[20px]">add</span> New Request
         </button>
         <div className="flex flex-col gap-2 flex-grow">
-          <a className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#"><span className="material-symbols-outlined">assignment</span><span className="text-label-sm font-label-sm">Ticket Pool</span></a>
-          <a className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#"><span className="material-symbols-outlined">leaderboard</span><span className="text-label-sm font-label-sm">Prioritization</span></a>
-          <a className="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-container text-on-primary-container font-bold shadow-sm" href="#"><span className="material-symbols-outlined icon-filled">event_note</span><span className="text-label-sm font-label-sm">Daily Allocation</span></a>
-          <a className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#"><span className="material-symbols-outlined">psychology</span><span className="text-label-sm font-label-sm">System Explanations</span></a>
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/admin"><span className="material-symbols-outlined">assignment</span><span className="text-label-sm font-label-sm">Ticket Pool</span></Link>
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/explanations"><span className="material-symbols-outlined">leaderboard</span><span className="text-label-sm font-label-sm">Prioritization</span></Link>
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-container text-on-primary-container font-bold shadow-sm" to="/allocation"><span className="material-symbols-outlined icon-filled">event_note</span><span className="text-label-sm font-label-sm">Daily Allocation</span></Link>
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/explanations"><span className="material-symbols-outlined">psychology</span><span className="text-label-sm font-label-sm">System Explanations</span></Link>
         </div>
         <div className="flex flex-col gap-2 mt-auto border-t border-outline-variant/20 pt-4">
-          <a className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#"><span className="material-symbols-outlined">analytics</span><span className="text-label-sm font-label-sm">System Status</span></a>
-          <a className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#"><span className="material-symbols-outlined">logout</span><span className="text-label-sm font-label-sm">Logout</span></a>
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/admin"><span className="material-symbols-outlined">analytics</span><span className="text-label-sm font-label-sm">System Status</span></Link>
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/"><span className="material-symbols-outlined">logout</span><span className="text-label-sm font-label-sm">Logout</span></Link>
         </div>
       </nav>
 

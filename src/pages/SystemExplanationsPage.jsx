@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function SystemExplanationsPage() {
   return (
@@ -34,13 +35,13 @@ export default function SystemExplanationsPage() {
           <span className="material-symbols-outlined">add</span> New Ticket
         </button>
         <nav className="flex flex-col gap-2 flex-grow">
-          <a className="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" href="#"><span className="material-symbols-outlined">assignment</span><span className="font-label-sm text-label-sm font-semibold">Ticket Pool</span></a>
-          <a className="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" href="#"><span className="material-symbols-outlined">priority_high</span><span className="font-label-sm text-label-sm font-semibold">Prioritization</span></a>
-          <a className="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" href="#"><span className="material-symbols-outlined">schedule</span><span className="font-label-sm text-label-sm font-semibold">Daily Allocation</span></a>
-          <a className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary bg-primary-container/20 font-bold border-l-4 border-tertiary-fixed opacity-90 transition-all" href="#">
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" to="/admin"><span className="material-symbols-outlined">assignment</span><span className="font-label-sm text-label-sm font-semibold">Ticket Pool</span></Link>
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" to="/explanations"><span className="material-symbols-outlined">priority_high</span><span className="font-label-sm text-label-sm font-semibold">Prioritization</span></Link>
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" to="/allocation"><span className="material-symbols-outlined">schedule</span><span className="font-label-sm text-label-sm font-semibold">Daily Allocation</span></Link>
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary bg-primary-container/20 font-bold border-l-4 border-tertiary-fixed opacity-90 transition-all" to="/explanations">
             <span className="material-symbols-outlined text-tertiary-fixed" style={{fontVariationSettings: "'FILL' 1"}}>info</span>
             <span className="font-label-sm text-label-sm">System Explanations</span>
-          </a>
+          </Link>
         </nav>
         <div className="mt-auto py-4 px-2"><div className="text-primary-fixed-dim text-xs opacity-60 font-label-sm text-label-sm">Powered by KMC Platform</div></div>
       </aside>
