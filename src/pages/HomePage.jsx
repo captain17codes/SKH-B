@@ -16,8 +16,8 @@ export default function HomePage() {
           <a className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Features</a>
         </div>
         <div className="hidden md:flex items-center gap-4">
-          <button className="font-label-sm text-label-sm text-primary border border-primary px-6 py-2.5 rounded-full hover:bg-surface-container-low transition-colors duration-200">Sign In</button>
-          <button className="font-label-sm text-label-sm bg-primary text-on-primary px-6 py-2.5 rounded-full hover:bg-primary-container transition-colors duration-200">Sign Up</button>
+          <Link to="/admin" className="font-label-sm text-label-sm text-primary border border-primary px-6 py-2.5 rounded-full hover:bg-surface-container-low transition-colors duration-200">Sign In</Link>
+          <Link to="/submit" className="font-label-sm text-label-sm bg-primary text-on-primary px-6 py-2.5 rounded-full hover:bg-primary-container transition-colors duration-200">Sign Up</Link>
         </div>
       </nav>
 
@@ -94,9 +94,9 @@ export default function HomePage() {
               </div>
               <h3 className="font-headline-md text-headline-md text-primary mb-4">Resident Sign Up</h3>
               <p className="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">Report issues, pay utility bills, and access local municipal services.</p>
-              <button className="w-full border border-primary text-primary font-label-sm text-label-sm px-6 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300">
+              <Link to="/submit" className="block w-full border border-primary text-primary font-label-sm text-label-sm px-6 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300 text-center">
                 Register as Resident
-              </button>
+              </Link>
             </div>
             <div className="bg-surface rounded-2xl p-8 border border-outline-variant/30 hover:shadow-[0_10px_20px_rgba(22,52,34,0.05)] transition-shadow duration-300 flex flex-col items-center text-center h-full">
               <div className="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center text-primary mb-6">
@@ -104,9 +104,9 @@ export default function HomePage() {
               </div>
               <h3 className="font-headline-md text-headline-md text-primary mb-4">Administrator Sign Up</h3>
               <p className="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">For municipal officials to track projects and resolve citizen reports.</p>
-              <button className="w-full border border-primary text-primary font-label-sm text-label-sm px-6 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300">
+              <Link to="/admin" className="block w-full border border-primary text-primary font-label-sm text-label-sm px-6 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300 text-center">
                 Request Admin Access
-              </button>
+              </Link>
             </div>
           </div>
         </section>
