@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+gunicorn
+python-multipart
+supabase
+python-dotenv
+imagehash
+pillow
+pydantic
+numpy
+scipy
+scikit-learn
+shap
+pytest
