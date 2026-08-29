@@ -1,7 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
+  const navigate = useNavigate();
+  const [modalState, setModalState] = useState({ isOpen: false, type: 'signin', role: 'resident' });
+
+  const openModal = (type, role = 'resident') => setModalState({ isOpen: true, type, role });
+  const closeModal = () => setModalState({ ...modalState, isOpen: false });
+
+  const handleAuthSubmit = (e) => {
+    e.preventDefault();
+    if (modalState.role === 'admin') navigate('/admin');
+    else navigate('/submit');
+  };
+
   return (
     <div className="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col">
       {/* TopNavBar */}
@@ -16,8 +28,8 @@ export default function HomePage() {
           <Link className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" to="/">Features</Link>
         </div>
         <div className="hidden md:flex items-center gap-4">
-          <Link to="/admin" className="font-label-sm text-label-sm text-primary border border-primary px-6 py-2.5 rounded-full hover:bg-surface-container-low transition-colors duration-200">Sign In</Link>
-          <Link to="/submit" className="font-label-sm text-label-sm bg-primary text-on-primary px-6 py-2.5 rounded-full hover:bg-primary-container transition-colors duration-200">Sign Up</Link>
+          <button onClick={() => openModal('signin')} className="font-label-sm text-label-sm text-primary border border-primary px-6 py-2.5 rounded-full hover:bg-surface-container-low transition-colors duration-200 cursor-pointer">Sign In</button>
+          <button onClick={() => openModal('signup')} className="font-label-sm text-label-sm bg-primary text-on-primary px-6 py-2.5 rounded-full hover:bg-primary-container transition-colors duration-200 cursor-pointer">Sign Up</button>
         </div>
       </nav>
 
@@ -136,6 +148,43 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+      {/* Auth Modal */}
+      {modalState.isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-surface rounded-2xl p-8 max-w-md w-full relative shadow-lg border border-outline-variant/30">
+            <button onClick={closeModal} className="absolute top-4 right-4 text-on-surface-variant hover:text-primary cursor-pointer">
+              <span className="material-symbols-outlined">close</span>
+            </button>
+            <h2 className="font-headline-md text-primary mb-6 text-center">
+              {modalState.type === 'signin' ? 'Sign In' : 'Create Account'}
+            </h2>
+            <form onSubmit={handleAuthSubmit} className="flex flex-col gap-4">
+              <div>
+                <label className="font-label-sm text-on-surface-variant mb-1 block">Role</label>
+                <select 
+                  className="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary"
+                  value={modalState.role} 
+                  onChange={(e) => setModalState({...modalState, role: e.target.value})}
+                >
+                  <option value="resident">Resident / Citizen</option>
+                  <option value="admin">Administrator / Staff</option>
+                </select>
+              </div>
+              <div>
+                <label className="font-label-sm text-on-surface-variant mb-1 block">Email</label>
+                <input required type="email" placeholder="Enter your email" className="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary" />
+              </div>
+              <div>
+                <label className="font-label-sm text-on-surface-variant mb-1 block">Password</label>
+                <input required type="password" placeholder="Enter your password" className="w-full bg-surface-container-low border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:outline-none focus:border-primary" />
+              </div>
+              <button type="submit" className="w-full bg-primary text-on-primary font-bold py-3 rounded-full mt-4 hover:bg-primary-container transition-colors cursor-pointer">
+                {modalState.type === 'signin' ? 'Sign In' : 'Register'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
