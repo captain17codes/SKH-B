@@ -1,0 +1,20 @@
+# Test-only dependencies. Not needed to run the API.
+#
+#     pip install -r requirements.txt -r requirements-dev.txt
+#     pytest
+#
+# numpy is here rather than in requirements.txt on purpose: the engine itself is
+# numpy-free (pure stdlib arithmetic, so a fresh council machine installs in
+# seconds with no BLAS to go wrong), but track1_engine/tests/test_engine.py uses
+# np.isclose and np.array in its assertions. Tests may depend on things the
+# product does not.
+#
+# track1_engine/tests/test_engine.py also imports explain.py, which wants
+# scikit-learn and shap -- those live in requirements-optional.txt. Without them
+# test_shap_explainability fails at import while the two engine tests still pass:
+#
+#     pytest track1_engine/tests/test_engine.py -k "topsis or knapsack"
+
+pytest==8.3.5
+httpx==0.28.1
+numpy==2.2.5

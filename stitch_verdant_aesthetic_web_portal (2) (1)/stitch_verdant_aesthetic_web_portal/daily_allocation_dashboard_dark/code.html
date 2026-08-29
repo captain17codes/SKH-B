@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kopargaon Civic - Daily Allocation Engine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&amp;family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-tertiary-container": "#daa5ab",
+                "on-primary": "#183624",
+                "primary-container": "#2d4b37",
+                "surface-container-high": "#292a28",
+                "outline": "#8c928b",
+                "on-secondary-container": "#b0bbb2",
+                "status-error": "#ff8a80",
+                "on-secondary-fixed-variant": "#3f4942",
+                "inverse-surface": "#e3e3df",
+                "primary": "#adcfb4",
+                "on-background": "#e3e3df",
+                "surface-container-low": "#1a1c1a",
+                "status-success": "#76d68f",
+                "background": "#121412",
+                "on-secondary-fixed": "#141e18",
+                "on-tertiary-fixed-variant": "#633c41",
+                "tertiary-fixed": "#ffd9dc",
+                "surface": "#121412",
+                "tertiary-container": "#613a3f",
+                "secondary": "#bec9c0",
+                "on-surface-variant": "#c2c8c0",
+                "status-warning": "#ffd54f",
+                "tertiary-fixed-dim": "#efb9be",
+                "primary-fixed-dim": "#adcfb4",
+                "surface-elevated": "#2d3831",
+                "secondary-fixed-dim": "#bec9c0",
+                "surface-variant": "#343533",
+                "on-tertiary-fixed": "#311217",
+                "on-primary-fixed": "#022110",
+                "on-surface": "#e3e3df",
+                "secondary-container": "#414c45",
+                "on-secondary": "#28332c",
+                "text-headline": "#ffffff",
+                "on-tertiary": "#49262b",
+                "error": "#ffb4ab",
+                "surface-main": "#1a241e",
+                "surface-container": "#242e28",
+                "on-primary-fixed-variant": "#2f4d39",
+                "secondary-fixed": "#dae5dc",
+                "on-primary-container": "#99baa1",
+                "surface-bright": "#383a37",
+                "text-body": "#e0e0e0",
+                "on-error-container": "#ffdad6",
+                "inverse-primary": "#466550",
+                "outline-variant": "#424843",
+                "surface-container-lowest": "#0d0f0d",
+                "surface-tint": "#adcfb4",
+                "tertiary": "#efb9be",
+                "error-container": "#93000a",
+                "surface-container-highest": "#343533",
+                "on-error": "#690005",
+                "inverse-on-surface": "#2f312f",
+                "primary-fixed": "#c8ebd0",
+                "surface-dim": "#121412"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "unit": "8px",
+                "margin-mobile": "16px",
+                "margin-desktop": "64px",
+                "gutter": "24px",
+                "max-width": "1280px",
+                "container-max": "1280px"
+        },
+        "fontFamily": {
+                "body-lg": [
+                        "Manrope"
+                ],
+                "body-md": [
+                        "Manrope"
+                ],
+                "label-sm": [
+                        "Hanken Grotesk"
+                ],
+                "display": [
+                        "Manrope"
+                ],
+                "headline-md": [
+                        "Manrope"
+                ],
+                "headline-lg-mobile": [
+                        "Manrope"
+                ],
+                "headline-lg": [
+                        "Manrope"
+                ],
+                "headline-display": [
+                        "Manrope"
+                ]
+        },
+        "fontSize": {
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "label-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "1.2",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "display": [
+                        "48px",
+                        {
+                                "lineHeight": "1.1",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "1.3",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-display": [
+                        "48px",
+                        {
+                                "lineHeight": "1.1",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-filled {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-text-body font-body-md min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="hidden lg:flex flex-col w-64 h-screen fixed left-0 top-0 py-8 px-4 bg-surface-main shadow-md z-40 border-r border-outline-variant/30">
+<div class="flex items-center gap-3 mb-8 px-2">
+<span class="material-symbols-outlined text-primary text-3xl icon-filled" data-icon="account_balance">account_balance</span>
+<div>
+<h2 class="text-headline-md font-headline-md font-bold text-primary">Admin Panel</h2>
+<p class="text-label-sm font-label-sm text-text-body">Kopargaon Digital</p>
+</div>
+</div>
+<button class="bg-primary text-on-primary w-full py-3 rounded-lg font-bold mb-8 hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span> New Request
+        </button>
+<div class="flex flex-col gap-2 flex-grow">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="text-label-sm font-label-sm">Ticket Pool</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="text-label-sm font-label-sm">Prioritization</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-container text-primary font-bold shadow-sm" href="#">
+<span class="material-symbols-outlined icon-filled" data-icon="event_note">event_note</span>
+<span class="text-label-sm font-label-sm">Daily Allocation</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+<span class="text-label-sm font-label-sm">System Explanations</span>
+</a>
+</div>
+<div class="flex flex-col gap-2 mt-auto border-t border-outline-variant/30 pt-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="text-label-sm font-label-sm">System Status</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-text-body hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-label-sm font-label-sm">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 lg:ml-64 flex flex-col min-h-screen relative">
+<!-- TopNavBar Mobile Only-->
+<header class="lg:hidden bg-surface-main shadow-sm sticky top-0 z-50 px-4 py-4 flex justify-between items-center border-b border-outline-variant/30">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl icon-filled" data-icon="account_balance">account_balance</span>
+<span class="text-headline-lg-mobile font-headline-lg-mobile text-primary">Kopargaon Civic</span>
+</div>
+<button class="text-text-headline">
+<span class="material-symbols-outlined text-2xl" data-icon="menu">menu</span>
+</button>
+</header>
+<!-- Main Dashboard -->
+<main class="flex-1 p-4 md:p-8 max-w-container-max mx-auto w-full">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+<div>
+<h1 class="text-headline-lg font-headline-lg text-text-headline mb-2">Daily Dispatch Manifest</h1>
+<p class="text-body-md font-body-md text-text-body">Optimal task allocation based on Knapsack Dynamic Programming algorithm for today.</p>
+</div>
+<div class="relative w-full md:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-body" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-high rounded-lg border border-outline-variant/50 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-sm text-text-headline placeholder-text-body/70" placeholder="Search manifest..." type="text"/>
+</div>
+</div>
+<!-- Summary Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<div class="bg-surface-container p-6 rounded-xl border border-outline-variant/30 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl text-primary" data-icon="star_rate">star_rate</span>
+</div>
+<p class="text-label-sm font-label-sm text-text-body mb-1 uppercase tracking-wider">Total Priority Score</p>
+<p class="text-headline-display font-headline-display text-primary">1,420</p>
+<p class="text-sm text-text-body mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-status-success" data-icon="trending_up">trending_up</span>
+<span class="text-status-success font-semibold">+12%</span> vs yesterday
+                    </p>
+</div>
+<div class="bg-surface-container p-6 rounded-xl border border-outline-variant/30 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl text-primary" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<p class="text-label-sm font-label-sm text-text-body mb-1 uppercase tracking-wider">Budget Utilization</p>
+<div class="flex items-end gap-2 mb-2">
+<p class="text-headline-display font-headline-display text-primary">85<span class="text-headline-md">%</span></p>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 85%"></div>
+</div>
+<p class="text-sm text-text-body mt-2">₹1.2M / ₹1.5M Allocated</p>
+</div>
+<div class="bg-surface-container p-6 rounded-xl border border-outline-variant/30 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-6xl text-primary" data-icon="group">group</span>
+</div>
+<p class="text-label-sm font-label-sm text-text-body mb-1 uppercase tracking-wider">Workforce Hours</p>
+<div class="flex items-end gap-2 mb-2">
+<p class="text-headline-display font-headline-display text-primary">92<span class="text-headline-md">%</span></p>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-2">
+<div class="bg-status-error h-2 rounded-full" style="width: 92%"></div>
+</div>
+<p class="text-sm text-text-body mt-2">320 hrs / 348 hrs Capacity (Near Max)</p>
+</div>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
+<!-- Main Table Area -->
+<div class="xl:col-span-2">
+<div class="bg-surface-container rounded-xl border border-outline-variant/30 shadow-sm overflow-hidden">
+<div class="p-6 border-b border-outline-variant/30 flex justify-between items-center bg-surface-container-high">
+<h3 class="text-headline-md font-headline-md text-text-headline">Allocated Tickets</h3>
+<button class="text-primary text-sm font-semibold flex items-center gap-1 hover:underline">
+                                Export CSV <span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container border-b border-outline-variant/30">
+<th class="p-4 text-label-sm font-label-sm text-text-body uppercase tracking-wider font-semibold">Issue ID / Desc</th>
+<th class="p-4 text-label-sm font-label-sm text-text-body uppercase tracking-wider font-semibold">Ward</th>
+<th class="p-4 text-label-sm font-label-sm text-text-body uppercase tracking-wider font-semibold text-center">TOPSIS Score</th>
+<th class="p-4 text-label-sm font-label-sm text-text-body uppercase tracking-wider font-semibold text-right">Est. Hours</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-error-container/40 flex items-center justify-center text-status-error">
+<span class="material-symbols-outlined text-[20px]" data-icon="warning">warning</span>
+</div>
+<div>
+<p class="font-semibold text-text-headline">#TCK-892</p>
+<p class="text-sm text-text-body truncate max-w-[200px]">Severe potholes on Godavari Bridge approach</p>
+</div>
+</div>
+</td>
+<td class="p-4 text-text-headline">Ward 2 (Central)</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-status-success/20 text-status-success border border-status-success/30">
+                                                0.92
+                                            </span>
+</td>
+<td class="p-4 text-right text-text-headline font-mono">18 hrs</td>
+</tr>
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[20px]" data-icon="water_drop">water_drop</span>
+</div>
+<div>
+<p class="font-semibold text-text-headline">#TCK-904</p>
+<p class="text-sm text-text-body truncate max-w-[200px]">Blocked major drainage near Market Yard</p>
+</div>
+</div>
+</td>
+<td class="p-4 text-text-headline">Ward 4 (Commercial)</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-status-success/20 text-status-success border border-status-success/30">
+                                                0.88
+                                            </span>
+</td>
+<td class="p-4 text-right text-text-headline font-mono">12 hrs</td>
+</tr>
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container/40 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="park">park</span>
+</div>
+<div>
+<p class="font-semibold text-text-headline">#TCK-877</p>
+<p class="text-sm text-text-body truncate max-w-[200px]">Fallen tree clearance on Shirdi Road</p>
+</div>
+</div>
+</td>
+<td class="p-4 text-text-headline">Ward 1 (North)</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-status-warning/20 text-status-warning border border-status-warning/30">
+                                                0.75
+                                            </span>
+</td>
+<td class="p-4 text-right text-text-headline font-mono">8 hrs</td>
+</tr>
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[20px]" data-icon="lightbulb">lightbulb</span>
+</div>
+<div>
+<p class="font-semibold text-text-headline">#TCK-912</p>
+<p class="text-sm text-text-body truncate max-w-[200px]">Streetlight outage in residential block A</p>
+</div>
+</div>
+</td>
+<td class="p-4 text-text-headline">Ward 6 (East)</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-status-warning/20 text-status-warning border border-status-warning/30">
+                                                0.68
+                                            </span>
+</td>
+<td class="p-4 text-right text-text-headline font-mono">4 hrs</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-outline-variant/30 bg-surface-container text-center">
+<button class="text-sm font-semibold text-primary hover:underline">View All 42 Allocated Tickets</button>
+</div>
+</div>
+</div>
+<!-- Side Panel -->
+<div class="xl:col-span-1 flex flex-col gap-6">
+<!-- Dispatch Status -->
+<div class="bg-surface-container rounded-xl border border-outline-variant/30 shadow-sm p-6">
+<h3 class="text-headline-md font-headline-md text-text-headline mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="local_shipping">local_shipping</span>
+                            Dispatch Status
+                        </h3>
+<div class="space-y-6">
+<!-- Team 1 -->
+<div class="relative pl-6 border-l-2 border-status-success">
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-status-success border-2 border-surface-container"></div>
+<div class="flex justify-between items-start mb-1">
+<p class="font-semibold text-text-headline">Heavy Eng. Team Alpha</p>
+<span class="text-xs bg-status-success/20 text-status-success border border-status-success/30 px-2 py-1 rounded-md font-bold">On Site</span>
+</div>
+<p class="text-sm text-text-body mb-2">Working on #TCK-892 (Godavari Bridge)</p>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5">
+<div class="bg-status-success h-1.5 rounded-full" style="width: 45%"></div>
+</div>
+<p class="text-xs text-right mt-1 text-text-body">45% Complete</p>
+</div>
+<!-- Team 2 -->
+<div class="relative pl-6 border-l-2 border-status-warning">
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-status-warning border-2 border-surface-container"></div>
+<div class="flex justify-between items-start mb-1">
+<p class="font-semibold text-text-headline">Sanitation Crew 3</p>
+<span class="text-xs bg-status-warning/20 text-status-warning border border-status-warning/30 px-2 py-1 rounded-md font-bold">In Transit</span>
+</div>
+<p class="text-sm text-text-body">En route to #TCK-904 (Ward 4)</p>
+<p class="text-xs mt-1 text-text-body flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span> ETA: 12 mins
+                                </p>
+</div>
+<!-- Team 3 -->
+<div class="relative pl-6 border-l-2 border-outline-variant">
+<div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-outline-variant border-2 border-surface-container"></div>
+<div class="flex justify-between items-start mb-1">
+<p class="font-semibold text-text-headline">Electrical Unit B</p>
+<span class="text-xs bg-surface-container-high text-text-body px-2 py-1 rounded-md font-bold">Preparing</span>
+</div>
+<p class="text-sm text-text-body">Gathering supplies for #TCK-912</p>
+</div>
+</div>
+</div>
+<!-- Map Placeholder -->
+<div class="bg-surface-container rounded-xl border border-outline-variant/30 shadow-sm overflow-hidden h-64 relative group">
+<!-- Using dummy image for map as instructed not to use standard placeholders if generic -->
+<div class="bg-cover bg-center w-full h-full absolute inset-0 opacity-60 mix-blend-screen filter grayscale-[50%] group-hover:grayscale-0 transition-all duration-500" data-alt="A highly detailed satellite or stylized map view of Kopargaon city, showing wards, streets, and the Godavari river, with digital pins indicating civic issue locations. The style is a clean, modern UI map integration with a muted color palette to match the design system." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCsptM1SQl-dQE_ckdumNyMF0Zeo7VqCFqpocb8IuJvsm3ziaXOsIiigT2-n6HKPvTyPh_q0g1x668BqTsmk9OPXbKJB-pkEaAWdkmFLWqQEcw9M-fsc2Hj-xpL1brOWhOxSAhmEdqmdOVbH4HBLhf5R5YxGyuMKZmKg9yolYmGwqWb4wDX8HKj05Fq2IuxXOmmGu3JF_53vvLe3J664ebITM-5kSeRDWXAXfSM9fT0S6drNKH-zuc')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface/90 to-transparent flex items-end p-4">
+<div>
+<p class="text-text-headline font-bold text-lg drop-shadow-md">Live Operations Map</p>
+<p class="text-text-body text-sm drop-shadow-md">Kopargaon City Limits</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

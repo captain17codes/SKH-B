@@ -461,9 +461,14 @@ class ReferenceData:
                 },
                 {
                     "field": "marathi_message_templates",
-                    "status": "absent (only English citizen texts exist)",
-                    "fallback": "citizen_message_mr stays NULL until a reviewed "
-                                "translation is supplied",
+                    "status": "drafted, not reviewed (services/explain.py carries "
+                              "a Marathi sentence for every allocator reason "
+                              "code; no council officer has signed off on the "
+                              "wording)",
+                    "fallback": "citizen_message_mr is served, but every Marathi "
+                                "payload is stamped translation_status="
+                                "machine_drafted_pending_council_review so a "
+                                "transport can gate on it",
                 },
                 {
                     "field": "historical_complaint_resolution_dataset",

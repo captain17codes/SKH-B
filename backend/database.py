@@ -16,6 +16,7 @@ import uuid
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from typing import Any, Iterable, Sequence
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 try:
     from config import settings
@@ -35,6 +36,42 @@ def new_id() -> str:
 
 def utcnow() -> datetime:
     return datetime.now(timezone.utc)
+
+
+def civic_tz() -> timezone | ZoneInfo:
+    """The council's timezone, or UTC if the host has no zone database.
+
+    Falling back is deliberate: a missing tzdata should degrade the labelling of
+    a date, not stop the service from booting.
+    """
+    try:
+        return ZoneInfo(settings.CIVIC_TIMEZONE)
+    except (ZoneInfoNotFoundError, ValueError):
+        return timezone.utc
+
+
+def civic_now(when: str | datetime | None = None) -> datetime:
+    """An instant expressed in the council's own timezone."""
+    if isinstance(when, datetime):
+        moment = when if when.tzinfo else when.replace(tzinfo=timezone.utc)
+    elif isinstance(when, str):
+        moment = parse_iso(when) or utcnow()
+    else:
+        moment = utcnow()
+    return moment.astimezone(civic_tz())
+
+
+def civic_date(when: str | datetime | None = None) -> str:
+    """The calendar date as Kopargaon sees it, ``YYYY-MM-DD``.
+
+    Timestamps are stored in UTC because an instant has no opinion about where
+    it happened. A *date*, though, is a civic fact: "today's dispatch" means the
+    day the officer is standing in. Between midnight and 05:30 IST the UTC date
+    is still yesterday, so deriving dates from UTC would file a 3 a.m. run --
+    and the reference number printed on the citizen's receipt -- under the wrong
+    day.
+    """
+    return civic_now(when).date().isoformat()
 
 
 def utcnow_iso() -> str:

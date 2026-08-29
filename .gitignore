@@ -186,3 +186,10 @@ __pycache__/
 *.py[cod]
 venv/
 *.db-journal
+
+# Scratch API-response dumps from endpoint probing (tools/*_smoke.py, curl)
+/run.json
+/shap.json
+/ticket.json
+/citizen_en.json
+/citizen_mr.json

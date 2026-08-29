@@ -1,344 +1,481 @@
+"""Triage HTTP surface: the endpoint where the brief is actually answered.
+
+``POST /api/triage/run`` is the one request in this codebase that takes a pile of
+competing complaints, a finite number of rupees and crew-hours, and returns a
+decision it can defend ticket by ticket -- including for the tickets it turned
+down. Everything else here reads that decision back.
+
+Two rules shaped this module:
+
+* **Nothing is computed here.** The ranking, the urgency fold, the knapsack and
+  the audit trail all live in ``services.prioritisation``. A router that does
+  arithmetic is a router whose arithmetic cannot be unit-tested without a running
+  server, and the previous version of this file carried a hard-coded
+  ``category -> (cost, hours)`` table that is exactly the "fixed rule dressed as
+  AI" the hackathon brief warns against. It is gone; costs come from the cost
+  engine or are declared unknown.
+* **The response shapes the React app already reads are preserved exactly.**
+  ``budget_cap``, ``workforce_cap_hours``, ``solver_status``, ``summary``,
+  ``cost_estimate``, ``hours_estimate``, ``cci_score`` and friends all still mean
+  what ``ManifestView.jsx`` and ``Dashboard.jsx`` expect. New fields
+  (``reason_code``, ``attribution``, ``top_driver``, ``rank`` ...) are additive,
+  so the frontend teammate can adopt them at their own pace and nothing breaks
+  in the meantime.
 """
-Triage API - Block 1 (Lead Dev)
-Handles: Fuzzy TOPSIS scoring, Knapsack allocation, dispatch manifest generation
-"""
-import sys
+from __future__ import annotations
+
 import os
+import re
+import sqlite3
+import sys
+from typing import Any, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from pydantic import BaseModel, Field
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from typing import List, Dict, Optional
-from datetime import datetime, date
-from uuid import uuid4
-
-from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel
-from sqlalchemy.orm import Session
-from sqlalchemy import text
-
-from database import (
-    get_db, Ticket, TicketCriteriaScore, DispatchManifest, DispatchManifestItem,
-    TicketStatus, DEFAULT_CRITERIA_CONFIG, CRITERIA_TYPES
-)
-
-# Import ML engine
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from track1_engine.prioritization import run_prioritization
-from track1_engine.allocation import knapsack_allocate
+from database import get_db, transaction  # noqa: E402
+from services import prioritisation as svc  # noqa: E402
 
 router = APIRouter(prefix="/api/triage", tags=["triage"])
 
+_ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+def _actor(request: Request) -> str:
+    """Who to record against this run.
+
+    Auth is not enforced yet, so this cannot be trusted as an identity -- but a
+    manifest with ``created_by: anonymous_127.0.0.1`` is still more honest than a
+    manifest with no attribution at all, and the field does not change shape once
+    JWT lands.
+    """
+    user = getattr(request.state, "user", None)
+    if isinstance(user, dict) and user.get("username"):
+        return str(user["username"])
+    client = request.client.host if request.client else "unknown"
+    return f"anonymous_{client}"
+
+
+def _require_date(value: str) -> str:
+    if not _ISO_DATE.match(value or ""):
+        raise HTTPException(status_code=400,
+                            detail="date must be YYYY-MM-DD")
+    return value
+
 
 class TriageRunRequest(BaseModel):
-    daily_budget: float
-    daily_workforce: float
+    """What the panel is asking for.
+
+    ``daily_budget`` and ``daily_workforce`` are optional on purpose. The shipped
+    frontend always sends them, so its contract is untouched, but a council that
+    has entered today's real figures through ``PUT /capacity`` should not have to
+    re-type them into every run -- omitting them uses the stored, attributable
+    row and the manifest records which of the two it was.
+    """
+    daily_budget: Optional[float] = Field(None, ge=0)
+    daily_workforce: Optional[float] = Field(None, ge=0)
     ward_id: Optional[str] = None
+    dispatch_date: Optional[str] = Field(
+        None, description="YYYY-MM-DD; defaults to today")
+    dry_run: bool = Field(False, description="compute the plan, write nothing")
+    solver: Optional[str] = Field(
+        None, description="'dp' or 'cpsat'; defaults to the configured solver")
 
 
-class TriageRunResponse(BaseModel):
-    message: str
-    prioritized_count: int
-    scheduled_count: int
-    deferred_count: int
-    manifest_id: str
-    total_cci_score: float
+class CapacityResource(BaseModel):
+    resource_type: str
+    display_name: Optional[str] = None
+    available_now: Optional[float] = None
+    hourly_rate_inr: Optional[float] = None
+    rate_source: Optional[str] = None
+    note: Optional[str] = None
 
+class CapacityPayload(BaseModel):
+    """Today's real constraints, as entered by a named officer.
 
-class PriorityTicket(BaseModel):
-    """Ticket with priority score"""
-    id: str
-    category: str
-    cci_score: float
-    cost_estimate: float
-    hours_estimate: float
-    selected: bool
-
-    class Config:
-        from_attributes = True
-
-
-@router.post("/run", response_model=TriageRunResponse)
-def run_triage(request: TriageRunRequest, db: Session = Depends(get_db)):
+    ``verified_by`` is not decoration: a capacity figure nobody signed for is
+    labelled as such in every manifest built on top of it, so the run can say
+    "this plan assumed a default the council never confirmed" instead of quietly
+    presenting a guess as a fact.
     """
-    Run Fuzzy TOPSIS prioritization and Knapsack allocation on open tickets.
+    capacity_date: Optional[str] = None
+    ward_id: Optional[str] = None
+    budget_inr: Optional[float] = Field(None, ge=0)
+    workforce_hours: Optional[float] = Field(None, ge=0)
+    verified_by: Optional[str] = None
+    note: Optional[str] = None
+    resources: Optional[list[CapacityResource]] = None
 
-    Process:
-    1. Fetch all open/scored tickets
-    2. Build fuzzy decision matrix from criteria scores
-    3. Run Fuzzy TOPSIS to calculate CCi scores
-    4. Apply community multiplier to scores
-    5. Run Knapsack optimizer with budget and workforce constraints
-    6. Create dispatch manifest and update ticket statuses
+
+def _solver_status(solver: Any, optimal: Any, outcome: Any) -> str:
+    """A one-word status that does not overclaim.
+
+    The old router returned ``OPTIMAL`` whenever anything at all was selected,
+    which is a claim about the search, not about the answer. A beam-limited DP
+    genuinely may have missed a better set, and a day whose safety floor alone
+    blows the budget is not "optimal" under any reading -- it is a warning.
     """
+    if outcome == "mandatory_over_capacity":
+        return "MANDATORY_OVER_CAPACITY"
+    if solver in (None, ""):
+        return "NOT_RUN"
+    return "OPTIMAL" if optimal else "FEASIBLE_BEAM_LIMITED"
+
+
+def _num(value: Any) -> Any:
+    """Round for display without turning a missing number into zero.
+
+    ``cost_estimate: 0`` and ``cost_estimate: null`` mean opposite things here --
+    free versus not yet estimated -- so the two must never collapse.
+    """
+    return None if value is None else round(float(value), 2)
+
+
+def _item_view(entry: dict) -> dict:
+    """One manifest line in the shape the dashboard already reads, plus the why.
+
+    Every key the shipped ``ManifestView.jsx`` touches keeps its name and meaning.
+    The additions are the defensible part: which criterion drove the score, the
+    exact per-criterion decomposition, and a machine code plus a sentence saying
+    why this ticket was or was not scheduled today.
+    """
+    decision = entry.get("decision") or "deferred"
+    return {
+        # --- the existing frontend contract, unchanged
+        "ticket_id": entry.get("ticket_id"),
+        "selected": decision == "allocated",
+        "cost_estimate": _num(entry.get("cost_inr")),
+        "hours_estimate": _num(entry.get("hours")),
+        "category": entry.get("category"),
+        "cci_score": entry.get("cci_score"),
+        "citizen_phone": entry.get("citizen_phone"),
+        "lat": entry.get("lat"),
+        "lon": entry.get("lon"),
+        "ward_id": entry.get("ward_id"),
+        # --- additive: the justification
+        "ref_no": entry.get("ref_no"),
+        "description": entry.get("description"),
+        "status": entry.get("status"),
+        "rank": entry.get("rank_position"),
+        "topsis_rank": entry.get("topsis_rank"),
+        "decision": decision,
+        "reason_code": entry.get("reason_code"),
+        "reason_text": entry.get("reason_text"),
+        "cci_base": entry.get("cci_base"),
+        "community_multiplier": entry.get("community_multiplier"),
+        "report_count": entry.get("report_count"),
+        "priority_floor": entry.get("priority_floor"),
+        "cost_status": entry.get("cost_status"),
+        "department_id": entry.get("department_id"),
+        "required_roles": entry.get("required_roles"),
+        "top_driver": entry.get("top_driver"),
+        "attribution": entry.get("attribution", []),
+        "adjustment": entry.get("adjustment", {}),
+        "sla": entry.get("sla", {}),
+        "d_positive": entry.get("d_positive"),
+        "d_negative": entry.get("d_negative"),
+    }
+
+def _run_item_view(row: dict) -> dict:
+    """The same line shape, built from a live run instead of a stored manifest.
+
+    ``services.prioritisation`` names these fields after the ticket columns they
+    came from (``estimated_cost_inr``), while a stored manifest names them after
+    the manifest columns (``cost_inr``). Both are correct in their own layer; the
+    API must present one vocabulary, so the translation happens here rather than
+    leaking two shapes to the frontend.
+    """
+    return _item_view({
+        "ticket_id": row.get("ticket_id"),
+        "decision": row.get("decision"),
+        "cost_inr": row.get("estimated_cost_inr"),
+        "hours": row.get("estimated_hours"),
+        "category": row.get("category"),
+        "cci_score": row.get("cci_score"),
+        "citizen_phone": row.get("citizen_phone"),
+        "lat": row.get("lat"), "lon": row.get("lon"),
+        "ward_id": row.get("ward_id"), "ref_no": row.get("ref_no"),
+        "description": row.get("description"), "status": row.get("status"),
+        "rank_position": row.get("rank"), "topsis_rank": row.get("topsis_rank"),
+        "reason_code": row.get("reason_code"),
+        "reason_text": row.get("reason_text"),
+        "cci_base": row.get("cci_base"),
+        "community_multiplier": row.get("community_multiplier"),
+        "report_count": row.get("report_count"),
+        "priority_floor": row.get("priority_floor"),
+        "cost_status": row.get("cost_status"),
+        "top_driver": row.get("top_driver"),
+        "attribution": row.get("attribution", []),
+        "sla": row.get("sla", {}),
+    })
+
+
+def _manifest_view(manifest: dict) -> dict:
+    """A stored manifest as the dashboard reads it, with the caveats attached.
+
+    ``budget_cap`` / ``workforce_cap_hours`` / ``solver_status`` / ``summary`` are
+    the names the shipped component destructures, so they stay. Underneath them
+    the manifest also carries what it was allowed to assume: which weight version
+    ranked the queue, where the capacity number came from, whether anyone signed
+    for it, and how many tickets were held back purely because nobody has costed
+    them yet. A plan is only defensible if its assumptions travel with it.
+    """
+    notes = manifest.get("notes")
+    notes = notes if isinstance(notes, dict) else {}
+    scheduled = [_item_view(r) for r in manifest.get("scheduled", [])]
+    deferred = [_item_view(r) for r in manifest.get("deferred", [])]
+    return {
+        # --- the existing frontend contract, unchanged
+        "manifest_id": manifest.get("id"),
+        "dispatch_date": manifest.get("dispatch_date"),
+        "budget_cap": _num(manifest.get("budget_available")),
+        "workforce_cap_hours": _num(manifest.get("workforce_available")),
+        "solver_status": _solver_status(manifest.get("solver"),
+                                        notes.get("solver_optimal", True),
+                                        manifest.get("budget_outcome")),
+        "summary": {
+            "total_tickets": manifest.get("total_candidates") or 0,
+            "scheduled": manifest.get("allocated_count") or 0,
+            "deferred": manifest.get("deferred_count") or 0,
+        },
+        "scheduled": scheduled,
+        "deferred": deferred,
+        # --- additive: what this plan assumed and what it spent
+        "run_id": manifest.get("run_id"),
+        "ward_id": manifest.get("ward_id"),
+        "weight_version": manifest.get("weight_version"),
+        "weights": notes.get("weights") or {},
+        "budget_used": _num(manifest.get("budget_used")),
+        "workforce_used": _num(manifest.get("workforce_used")),
+        "budget_outcome": manifest.get("budget_outcome"),
+        "solver": manifest.get("solver"),
+        "solver_optimal": notes.get("solver_optimal"),
+        "states_explored": notes.get("states_explored"),
+        "objective_value": manifest.get("objective_value"),
+        "cost_incomplete_count": manifest.get("cost_incomplete_count") or 0,
+        "capacity_source": notes.get("capacity_source"),
+        "capacity_verified": notes.get("capacity_verified"),
+        "capacity_verified_by": notes.get("capacity_verified_by"),
+        "allocator_notes": notes.get("allocator_notes") or [],
+        "normalisation_notes": notes.get("normalisation_notes") or [],
+        "skipped": notes.get("skipped") or [],
+        "created_by": manifest.get("created_by"),
+        "created_at": manifest.get("created_at"),
+    }
+
+@router.post("/run")
+def run(payload: TriageRunRequest, request: Request,
+        conn: sqlite3.Connection = Depends(get_db)):
+    """Decide today's work under today's constraints, and record why.
+
+    The whole run happens inside one transaction: either the manifest, the score
+    history and every ticket status move land together, or none of them do. A
+    half-written manifest -- tickets marked scheduled with no line explaining the
+    decision -- is worse than a failed request, because it looks authoritative.
+
+    ``dry_run: true`` returns the identical body with ``persisted: false`` and a
+    null ``manifest_id``. That is the answer to "what would another 50,000 rupees
+    buy us today?", which is the question that turns this from a scheduler into a
+    budgeting argument the council can take to a meeting.
+    """
+    if payload.dispatch_date:
+        _require_date(payload.dispatch_date)
     try:
-        # Fetch open tickets
-        query = db.query(Ticket).filter(Ticket.status.in_(["open", "scored", "deduped"]))
-        if request.ward_id:
-            query = query.filter(Ticket.ward_id == request.ward_id)
+        if payload.dry_run:
+            result = svc.run_triage(
+                conn, dispatch_date=payload.dispatch_date,
+                ward_id=payload.ward_id, budget=payload.daily_budget,
+                workforce=payload.daily_workforce, actor=_actor(request),
+                solver=payload.solver, dry_run=True)
+        else:
+            with transaction(conn):
+                result = svc.run_triage(
+                    conn, dispatch_date=payload.dispatch_date,
+                    ward_id=payload.ward_id, budget=payload.daily_budget,
+                    workforce=payload.daily_workforce, actor=_actor(request),
+                    solver=payload.solver, dry_run=False)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-        tickets = query.all()
-
-        if not tickets:
-            return TriageRunResponse(
-                message="No open tickets to triage.",
-                prioritized_count=0,
-                scheduled_count=0,
-                deferred_count=0,
-                manifest_id="",
-                total_cci_score=0.0
-            )
-
-        # Build tickets_data for TOPSIS
-        tickets_data = []
-        ticket_objects = []
-
-        for ticket in tickets:
-            # Get criteria scores
-            scores = db.query(TicketCriteriaScore).filter(
-                TicketCriteriaScore.ticket_id == ticket.id
-            ).all()
-
-            if not scores:
-                # Ticket has no criteria scores, skip
-                continue
-
-            # Build decision matrix for this ticket
-            score_map = {s.criterion_code: [s.tfn_lower, s.tfn_modal, s.tfn_upper] for s in scores}
-
-            # Ensure all 4 criteria are present
-            tfn_scores = []
-            for criterion in ['C1_infra', 'C2_safety', 'C3_equity', 'C4_cost']:
-                if criterion in score_map:
-                    tfn_scores.append(score_map[criterion])
-                else:
-                    tfn_scores.append([0.5, 0.5, 0.5])  # Default
-
-            # Estimate cost and hours based on category
-            cost, hours = _estimate_resources(ticket.category)
-
-            tickets_data.append({
-                'id': ticket.id,
-                'scores': tfn_scores,
-                'budget_cost': cost,
-                'workforce_hours': hours
-            })
-            ticket_objects.append(ticket)
-
-        if not tickets_data:
-            return TriageRunResponse(
-                message="No tickets with criteria scores found.",
-                prioritized_count=0,
-                scheduled_count=0,
-                deferred_count=0,
-                manifest_id="",
-                total_cci_score=0.0
-            )
-
-        # Run Fuzzy TOPSIS
-        criteria_config = {
-            'types': ['benefit', 'benefit', 'benefit', 'cost'],
-            'weights': DEFAULT_CRITERIA_CONFIG['weights']
-        }
-
-        prioritized = run_prioritization(tickets_data, criteria_config)
-
-        # Apply community multiplier and update ticket CCi scores
-        for item in prioritized:
-            ticket_id = item['id']
-            base_cci = item['topsis_score']
-
-            # Find ticket and apply multiplier
-            ticket = next((t for t in ticket_objects if t.id == ticket_id), None)
-            if ticket:
-                adjusted_cci = min(base_cci * ticket.community_multiplier, 1.0)
-                ticket.cci_score = adjusted_cci
-                ticket.status = TicketStatus.SCORED.value
-                db.add(ticket)
-
-            item['cci_score'] = adjusted_cci
-
-        # Sort by adjusted CCI (Topsis already sorted, but re-apply multiplier)
-        prioritized.sort(key=lambda x: x['cci_score'], reverse=True)
-
-        # Run Knapsack allocation
-        allocated_ids, max_score = knapsack_allocate(
-            prioritized,
-            request.daily_budget,
-            request.daily_workforce
-        )
-
-        # Create dispatch manifest
-        manifest_id = str(uuid4())
-        manifest = DispatchManifest(
-            id=manifest_id,
-            dispatch_date=date.today(),
-            budget_cap=request.daily_budget,
-            workforce_cap_hours=request.daily_workforce,
-            solver_status="OPTIMAL" if allocated_ids else "INFEASIBLE"
-        )
-        db.add(manifest)
-
-        # Create manifest items and update ticket statuses
-        scheduled_count = 0
-        deferred_count = 0
-
-        for item in prioritized:
-            ticket_id = item['id']
-            selected = ticket_id in allocated_ids
-
-            # Find cost/hours
-            ticket_data = next((t for t in tickets_data if t['id'] == ticket_id), None)
-            cost = ticket_data['budget_cost'] if ticket_data else 0
-            hours = ticket_data['workforce_hours'] if ticket_data else 0
-
-            manifest_item = DispatchManifestItem(
-                id=str(uuid4()),
-                manifest_id=manifest_id,
-                ticket_id=ticket_id,
-                selected=1 if selected else 0,
-                cost_estimate=cost,
-                hours_estimate=hours
-            )
-            db.add(manifest_item)
-
-            # Update ticket status
-            ticket = next((t for t in ticket_objects if t.id == ticket_id), None)
-            if ticket:
-                if selected:
-                    ticket.status = TicketStatus.SCHEDULED.value
-                    scheduled_count += 1
-                else:
-                    ticket.status = TicketStatus.DEFERRED.value
-                    deferred_count += 1
-                db.add(ticket)
-
-        db.commit()
-
-        return TriageRunResponse(
-            message="Triage run successfully.",
-            prioritized_count=len(prioritized),
-            scheduled_count=scheduled_count,
-            deferred_count=deferred_count,
-            manifest_id=manifest_id,
-            total_cci_score=max_score
-        )
-
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail=f"Triage error: {str(e)}")
-
+    allocated = [_run_item_view(r) for r in result["allocated"]]
+    deferred = [_run_item_view(r) for r in result["deferred"]]
+    plan = result.get("plan") or {}
+    capacity = result.get("capacity") or {}
+    # ``total_cci_score`` is the top-ranked ticket's score, which is what the
+    # previous implementation reported and what the dashboard tile shows. A sum
+    # would be meaningless: adding closeness coefficients across tickets produces
+    # a number that grows with queue length and says nothing about urgency.
+    scores = [r["cci_score"] or 0.0 for r in allocated + deferred]
+    top_score = max(scores) if scores else 0.0
+    return {
+        # --- the existing frontend contract, unchanged
+        "message": result["message"],
+        "prioritized_count": result["candidates"],
+        "scheduled_count": plan.get("allocated_count", len(allocated)),
+        "deferred_count": plan.get("deferred_count", len(deferred)),
+        "manifest_id": result["manifest_id"],
+        "total_cci_score": round(float(top_score), 6),
+        # --- additive: the plan itself and everything it assumed
+        "run_id": result["run_id"],
+        "persisted": result["persisted"],
+        "dry_run": payload.dry_run,
+        "dispatch_date": result["dispatch_date"],
+        "ward_id": result["ward_id"],
+        "capacity": capacity,
+        "budget_cap": _num(capacity.get("budget_inr")),
+        "workforce_cap_hours": _num(capacity.get("workforce_hours")),
+        "weight_version": result["weight_version"],
+        "weights": result.get("weights") or {},
+        "solver_status": _solver_status(plan.get("solver"),
+                                       plan.get("optimal", True),
+                                       plan.get("budget_outcome")),
+        "plan": plan,
+        "scheduled": allocated,
+        "deferred": deferred,
+        "unscorable": result["skipped"],
+    }
 
 @router.get("/manifest/{manifest_date}")
-def get_manifest(manifest_date: str, db: Session = Depends(get_db)):
-    """Get dispatch manifest for a specific date"""
-    try:
-        query_date = datetime.strptime(manifest_date, "%Y-%m-%d").date()
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD")
+def manifest_for_date(manifest_date: str, ward_id: Optional[str] = None,
+                      conn: sqlite3.Connection = Depends(get_db)):
+    """The plan that was issued on a given day, exactly as it was issued.
 
-    manifest = db.query(DispatchManifest).filter(
-        DispatchManifest.dispatch_date == query_date
-    ).first()
-
-    if not manifest:
-        raise HTTPException(status_code=404, detail="No manifest found for this date")
-
-    items = db.query(DispatchManifestItem).filter(
-        DispatchManifestItem.manifest_id == manifest.id
-    ).all()
-
-    # Get ticket details for selected items
-    selected_items = []
-    deferred_items = []
-
-    for item in items:
-        ticket = db.query(Ticket).filter(Ticket.id == item.ticket_id).first()
-        if ticket:
-            item_data = {
-                "ticket_id": item.ticket_id,
-                "selected": bool(item.selected),
-                "cost_estimate": item.cost_estimate,
-                "hours_estimate": item.hours_estimate,
-                "category": ticket.category,
-                "cci_score": ticket.cci_score,
-                "citizen_phone": ticket.citizen_phone,
-                "lat": ticket.lat,
-                "lon": ticket.lon,
-                "ward_id": ticket.ward_id
-            }
-            if item.selected:
-                selected_items.append(item_data)
-            else:
-                deferred_items.append(item_data)
-
-    return {
-        "manifest_id": manifest.id,
-        "dispatch_date": manifest.dispatch_date.isoformat(),
-        "budget_cap": manifest.budget_cap,
-        "workforce_cap_hours": manifest.workforce_cap_hours,
-        "solver_status": manifest.solver_status,
-        "summary": {
-            "total_tickets": len(items),
-            "scheduled": len(selected_items),
-            "deferred": len(deferred_items)
-        },
-        "scheduled": selected_items,
-        "deferred": deferred_items
-    }
+    This reads the *stored* decisions rather than re-running the engine. If the
+    weights changed this morning, yesterday's manifest must still show what was
+    actually decided and under which weight version -- otherwise the audit trail
+    rewrites itself every time the council revises its priorities, which is the
+    one thing an audit trail may never do.
+    """
+    _require_date(manifest_date)
+    manifest = svc.get_manifest(conn, dispatch_date=manifest_date,
+                                ward_id=ward_id)
+    if manifest is None:
+        raise HTTPException(status_code=404,
+                            detail=f"no dispatch manifest for {manifest_date}")
+    return _manifest_view(manifest)
 
 
 @router.get("/today")
-def get_today_manifest(db: Session = Depends(get_db)):
-    """Get today's dispatch manifest"""
-    today = date.today()
-    return get_manifest(today.isoformat(), db)
+def manifest_today(ward_id: Optional[str] = None,
+                   conn: sqlite3.Connection = Depends(get_db)):
+    """Today's plan. 404 until triage has been run, which the dashboard expects."""
+    return manifest_for_date(svc.today_iso(), ward_id=ward_id, conn=conn)
 
+
+@router.get("/manifest-by-id/{manifest_id}")
+def manifest_by_id(manifest_id: str,
+                   conn: sqlite3.Connection = Depends(get_db)):
+    """A specific run, when several were issued on the same date.
+
+    Re-running after a cost estimate arrives or the capacity is corrected is
+    normal and produces a second manifest for the same day; ``/manifest/{date}``
+    returns the newest, and this returns any of them by id so the two can be
+    compared.
+    """
+    manifest = svc.get_manifest(conn, manifest_id=manifest_id)
+    if manifest is None:
+        raise HTTPException(status_code=404,
+                            detail=f"manifest {manifest_id} not found")
+    return _manifest_view(manifest)
+
+
+@router.get("/manifests")
+def manifests(limit: int = Query(30, ge=1, le=200),
+              ward_id: Optional[str] = None,
+              conn: sqlite3.Connection = Depends(get_db)):
+    """Recent runs, newest first -- enough to chart demand against capacity."""
+    rows = svc.list_manifests(conn, limit=limit, ward_id=ward_id)
+    return {"count": len(rows), "manifests": rows}
 
 @router.get("/priorities")
-def get_priority_list(
-    status: Optional[str] = None,
-    limit: int = Query(50, ge=1, le=200),
-    db: Session = Depends(get_db)
-):
-    """Get tickets sorted by priority (CCi score)"""
-    query = db.query(Ticket).filter(Ticket.cci_score.isnot(None))
+def priorities(status: Optional[str] = None,
+               ward_id: Optional[str] = None,
+               limit: int = Query(50, ge=1, le=200),
+               conn: sqlite3.Connection = Depends(get_db)):
+    """The live queue in dispatch order, using each ticket's latest stored score.
 
+    Unscored tickets sort last rather than being dropped. A ticket nobody has
+    managed to score yet is still a citizen waiting, and a queue that quietly
+    omits it is precisely the failure this project exists to prevent -- so it
+    appears at the bottom with a null score and ``scored: false`` instead of
+    vanishing or being ranked as a zero it never earned.
+    """
+    rows = svc.current_priorities(conn, ward_id=ward_id, limit=limit)
     if status:
-        query = query.filter(Ticket.status == status)
-
-    tickets = query.order_by(Ticket.cci_score.desc()).limit(limit).all()
-
+        wanted = {s.strip() for s in status.split(",") if s.strip()}
+        rows = [r for r in rows if r.get("status") in wanted]
+    tickets = [{
+        # --- the existing frontend contract, unchanged
+        "id": row.get("id"),
+        "citizen_phone": row.get("citizen_phone"),
+        "category": row.get("category"),
+        "cci_score": row.get("latest_cci"),
+        "status": row.get("status"),
+        "community_multiplier": row.get("community_multiplier"),
+        "ward_id": row.get("ward_id"),
+        "lat": row.get("lat"),
+        "lon": row.get("lon"),
+        # --- additive
+        "ref_no": row.get("ref_no"),
+        "description": row.get("description"),
+        "scored": row.get("latest_cci") is not None,
+        "rank": row.get("latest_rank"),
+        "weight_version": row.get("latest_weight_version"),
+        "report_count": row.get("report_count"),
+        "priority_floor": row.get("priority_floor"),
+        "cost_status": row.get("cost_status"),
+        "estimated_cost_inr": _num(row.get("estimated_cost_inr")),
+        "estimated_hours": _num(row.get("estimated_hours")),
+        "is_statutory_rts": bool(row.get("is_statutory_rts")),
+        "rts_deadline_at": row.get("rts_deadline_at"),
+        "operational_deadline_at": row.get("operational_deadline_at"),
+        "reported_at": row.get("reported_at"),
+    } for row in rows]
     return {
-        "tickets": [
-            {
-                "id": t.id,
-                "citizen_phone": t.citizen_phone,
-                "category": t.category,
-                "cci_score": t.cci_score,
-                "status": t.status,
-                "community_multiplier": t.community_multiplier,
-                "ward_id": t.ward_id,
-                "lat": t.lat,
-                "lon": t.lon
-            }
-            for t in tickets
-        ],
-        "total": len(tickets)
+        "tickets": tickets,
+        "total": len(tickets),
+        "unscored": sum(1 for t in tickets if not t["scored"]),
     }
 
+@router.get("/capacity")
+def capacity(capacity_date: Optional[str] = None,
+             ward_id: Optional[str] = None,
+             conn: sqlite3.Connection = Depends(get_db)):
+    """What the council has to spend, and whether anyone stands behind the figure.
 
-def _estimate_resources(category: str) -> tuple:
+    Resolution order is ward row, then council row, then the configured default,
+    and the answer says which one it used. ``configured_default_not_entered_by
+    _council`` is not an error -- it is the honest label for a plan built on an
+    assumption, and it travels into every manifest produced from it.
     """
-    Estimate budget cost and workforce hours based on category.
-    These are rough estimates in INR and hours.
+    if capacity_date:
+        _require_date(capacity_date)
+    return svc.resolve_capacity(conn, capacity_date or svc.today_iso(), ward_id)
+
+
+@router.put("/capacity")
+def put_capacity(payload: CapacityPayload, request: Request,
+                 conn: sqlite3.Connection = Depends(get_db)):
+    """Record today's real budget and crew-hours. Upsert on (date, ward).
+
+    Sending ``verified_by`` is what promotes a typed number into an attributable
+    one. Both are stored; only the second lets a manifest claim its constraints
+    were confirmed by a named officer.
     """
-    estimates = {
-        'pothole': (5000, 8),          # ₹5,000, 8 hours
-        'waterlogging': (15000, 16),    # ₹15,000, 16 hours
-        'sanitation': (8000, 10),       # ₹8,000, 10 hours
-        'water_quality': (25000, 24),   # ₹25,000, 24 hours
-        'streetlight': (3000, 4),       # ₹3,000, 4 hours
-        'garbage': (4000, 6),           # ₹4,000, 6 hours
-        'infrastructure': (50000, 40),    # ₹50,000, 40 hours
-        'other': (5000, 6)              # ₹5,000, 6 hours
-    }
-    return estimates.get(category.lower(), estimates['other'])
+    if payload.capacity_date:
+        _require_date(payload.capacity_date)
+    if payload.budget_inr is None and payload.workforce_hours is None:
+        raise HTTPException(
+            status_code=400,
+            detail="provide budget_inr and/or workforce_hours")
+    with transaction(conn):
+        result = svc.set_capacity(
+            conn, capacity_date=payload.capacity_date, ward_id=payload.ward_id,
+            budget_inr=payload.budget_inr,
+            workforce_hours=payload.workforce_hours,
+            verified_by=payload.verified_by, note=payload.note,
+            resources=[r.model_dump() for r in payload.resources or []],
+            actor=_actor(request))
+    return result
+

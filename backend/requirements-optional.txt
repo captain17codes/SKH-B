@@ -1,0 +1,24 @@
+# Optional extras. The backend runs, prioritises, allocates and explains
+# without any of these; each one adds fidelity to a feature that already has a
+# working fallback.
+#
+#     pip install -r requirements-optional.txt
+#
+# scikit-learn + shap
+#     Enables the SHAP surrogate on GET /api/explain/{ticket_id}. Without them
+#     the endpoint still returns the *exact* per-criterion TOPSIS attribution,
+#     which is the mathematically precise decomposition -- SHAP is the familiar
+#     presentation layer on top of it, not the source of truth.
+#
+# ortools
+#     Enables the CP-SAT knapsack solver. Without it the allocator uses its own
+#     dominated-state-pruned dynamic program, which is exact for the problem
+#     sizes Kopargaon produces (tens of tickets per day, not thousands).
+#
+# Both are large wheels. Skip them if the install network is slow; set
+# ENABLE_SHAP=false and KNAPSACK_SOLVER=dp to silence the capability probes.
+
+scikit-learn==1.6.1
+shap==0.47.1
+numpy==2.2.5
+ortools==9.12.4544

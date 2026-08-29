@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-background dark:bg-inverse-surface" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>System Logs - RTS Compliance &amp; Audit Trail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600&amp;family=Manrope:wght@400;600;700&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#314b32",
+                      "outline-variant": "#c2c8c0",
+                      "tertiary-fixed": "#ccebc8",
+                      "surface-container-highest": "#e2e3df",
+                      "secondary-fixed-dim": "#c9c6be",
+                      "on-error": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-container-high": "#e8e8e5",
+                      "error": "#ba1a1a",
+                      "tertiary": "#1b341d",
+                      "on-error-container": "#93000a",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-fixed-variant": "#474741",
+                      "on-primary-fixed-variant": "#2f4d39",
+                      "surface-bright": "#faf9f6",
+                      "primary": "#163422",
+                      "error-container": "#ffdad6",
+                      "on-surface-variant": "#424843",
+                      "on-background": "#1a1c1a",
+                      "outline": "#727972",
+                      "primary-container": "#2d4b37",
+                      "on-secondary": "#ffffff",
+                      "on-primary-fixed": "#022110",
+                      "on-tertiary-fixed-variant": "#334d34",
+                      "secondary": "#5f5f58",
+                      "secondary-container": "#e2e0d7",
+                      "surface-dim": "#dadad7",
+                      "on-secondary-fixed": "#1c1c17",
+                      "primary-fixed-dim": "#adcfb4",
+                      "background": "#faf9f6",
+                      "inverse-on-surface": "#f1f1ed",
+                      "surface-container-low": "#f4f4f0",
+                      "surface": "#faf9f6",
+                      "on-tertiary-container": "#9dba9a",
+                      "inverse-surface": "#2f312f",
+                      "primary-fixed": "#c8ebd0",
+                      "surface-variant": "#e2e3df",
+                      "on-surface": "#1a1c1a",
+                      "secondary-fixed": "#e5e2da",
+                      "surface-tint": "#466550",
+                      "surface-container": "#eeeeea",
+                      "on-tertiary-fixed": "#07200b",
+                      "inverse-primary": "#adcfb4",
+                      "tertiary-fixed-dim": "#b0ceae",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-container": "#99baa1",
+                      "on-secondary-container": "#64635c"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1280px",
+                      "margin-mobile": "16px",
+                      "unit": "8px",
+                      "gutter": "24px",
+                      "margin-desktop": "64px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Manrope"
+                      ],
+                      "label-sm": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg-mobile": [
+                              "Manrope"
+                      ],
+                      "headline-lg": [
+                              "Manrope"
+                      ],
+                      "body-lg": [
+                              "Manrope"
+                      ],
+                      "headline-display": [
+                              "Manrope"
+                      ],
+                      "headline-md": [
+                              "Manrope"
+                      ],
+                      "mono": [
+                              "Roboto Mono", "monospace"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-display": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "mono-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Custom scrollbar for the log table to fit the technical vibe */
+        .log-scroll::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .log-scroll::-webkit-scrollbar-track {
+            background: theme('colors.surface-container'); 
+        }
+        .log-scroll::-webkit-scrollbar-thumb {
+            background: theme('colors.outline'); 
+            border-radius: theme('borderRadius.DEFAULT');
+        }
+        .log-scroll::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.primary'); 
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden bg-background text-on-background font-body-md antialiased">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-low dark:bg-surface-container-lowest text-primary dark:text-primary-fixed font-label-sm text-label-sm h-screen w-64 fixed left-0 top-0 border-r border-outline-variant/10 flat no shadows flex flex-col h-full py-unit px-4 gap-2 z-40">
+<!-- Header -->
+<div class="flex items-center gap-3 px-2 py-4 mb-4">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-primary-container flex items-center justify-center shrink-0">
+<img alt="Kopargaon Municipal Council Logo" class="w-full h-full object-cover" data-alt="A clean, minimalist vector logo of a tree seamlessly blending with a gear, representing the Sylvan Urbanity and civic administrative focus of Kopargaon Municipal Council. The logo uses deep forest green and warm beige tones on a light background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAh4XSe1_lshvNMopUcvYrgfXIH7SwLSfvStqM7-6DtckSUlbkJsIqO10O_4Kf1GM4f7U8CeB2JV_a39NHwS2DJN11K9KZ4J_ucogkbVfcSMDipycAazPktSxDWm9oo-nPnporm6n4RWeKHB7Wmk6e_FreNlsVAxWufjdcc5VQcb0heGhquTd3lS7NUUwbbX_HkPmGnwjr99YdkUlbcpmnpsmDjV3GDSGobx_wHxGgID21fovU2J-M"/>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md text-primary dark:text-primary-fixed truncate">Kopargaon Civic</h1>
+<p class="text-on-surface-variant font-label-sm text-label-sm opacity-80">Administrative Suite</p>
+</div>
+</div>
+<!-- CTA -->
+<button class="w-full bg-error text-on-error py-2 px-4 rounded-lg font-bold mb-6 hover:bg-error/90 transition-colors flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined text-on-error group-hover:scale-110 transition-transform">emergency</span>
+            Report Emergency
+        </button>
+<!-- Navigation Tabs -->
+<div class="flex-1 overflow-y-auto space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">confirmation_number</span>
+<span>Ticket Pool</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">group_add</span>
+<span>Staff Allocation</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">analytics</span>
+<span>Citizen Insights</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-primary-container text-on-primary-container rounded-lg font-bold transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined icon-fill">terminal</span>
+<span>System Logs</span>
+</a>
+</div>
+<!-- Footer Tabs -->
+<div class="mt-auto pt-4 border-t border-outline-variant/20 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">help</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-all duration-300 group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="ml-64 flex-1 flex flex-col h-full bg-surface-bright relative">
+<!-- TopAppBar Contextual (Not the shell nav, but a page header) -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl border-b border-outline-variant/10 px-margin-desktop h-20 flex items-center justify-between shrink-0 sticky top-0 z-30">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">RTS Compliance &amp; Audit Trail</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Real-time system actions, algorithmic decisions, and SLA compliance logs.</p>
+</div>
+<button class="bg-primary text-on-primary font-body-md text-body-md font-bold py-2 px-6 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+                Export RTS Defense Report (PDF)
+            </button>
+</header>
+<!-- Content Canvas -->
+<div class="flex-1 flex overflow-hidden">
+<!-- Left Side: Filters and Log Feed -->
+<div class="flex-1 flex flex-col p-8 overflow-hidden">
+<!-- Filters Bar -->
+<div class="flex items-center gap-4 mb-6 shrink-0 bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/20 shadow-sm">
+<div class="relative flex-1 max-w-xs">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">calendar_today</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-bright border border-secondary-container rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed/50 font-body-md text-body-md text-on-surface transition-all" placeholder="Last 24 Hours (Oct 24)" type="text"/>
+</div>
+<div class="relative flex-1 max-w-xs">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">filter_list</span>
+<select class="w-full pl-10 pr-8 py-2 bg-surface-bright border border-secondary-container rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed/50 font-body-md text-body-md text-on-surface appearance-none transition-all">
+<option>All Event Types</option>
+<option>SLA Warning</option>
+<option>Knapsack Deferral</option>
+<option>Priority Escalation</option>
+<option>Resource Reallocation</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-bright border border-secondary-container rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed/50 font-body-md text-body-md text-on-surface transition-all" placeholder="Search Hash or TKT ID..." type="text"/>
+</div>
+<button class="p-2 bg-surface-container hover:bg-surface-variant text-on-surface rounded-lg transition-colors border border-outline-variant/20">
+<span class="material-symbols-outlined">refresh</span>
+</button>
+</div>
+<!-- Log Table Container -->
+<div class="flex-1 bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden flex flex-col">
+<!-- Table Header -->
+<div class="grid grid-cols-[140px_120px_200px_minmax(250px,1fr)_120px] gap-4 p-4 border-b border-outline-variant/20 bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant sticky top-0 uppercase tracking-wider">
+<div>Timestamp</div>
+<div>Event Hash</div>
+<div>Action Taken</div>
+<div>Algorithmic Justification</div>
+<div>RTS Status</div>
+</div>
+<!-- Table Body (Scrollable) -->
+<div class="overflow-y-auto log-scroll flex-1 font-mono text-mono-sm text-on-surface">
+<!-- Log Row 1 -->
+<div class="grid grid-cols-[140px_120px_200px_minmax(250px,1fr)_120px] gap-4 p-4 border-b border-outline-variant/10 hover:bg-surface-variant/30 cursor-pointer transition-colors active-log-row bg-primary-fixed/10" onclick="toggleDrawer()">
+<div class="text-outline">2024-10-24 14:32:01</div>
+<div class="text-tertiary">#A7F9B2</div>
+<div class="font-medium">Knapsack Deferral</div>
+<div class="truncate text-on-surface-variant">Deferred TKT-1088 due to Daily Budget Cap exceeded by 4% in Zone C.</div>
+<div>
+<span class="inline-flex items-center px-2 py-1 rounded bg-error-container text-on-error-container font-label-sm text-[10px]">
+                                    SLA AT RISK
+                                </span>
+</div>
+</div>
+<!-- Log Row 2 -->
+<div class="grid grid-cols-[140px_120px_200px_minmax(250px,1fr)_120px] gap-4 p-4 border-b border-outline-variant/10 hover:bg-surface-variant/30 cursor-pointer transition-colors">
+<div class="text-outline">2024-10-24 14:28:45</div>
+<div class="text-tertiary">#C4E2D1</div>
+<div class="font-medium">Priority Escalation</div>
+<div class="truncate text-on-surface-variant">Elevated TKT-1092 severity based on sentiment analysis spike (+2.4σ).</div>
+<div>
+<span class="inline-flex items-center px-2 py-1 rounded bg-tertiary-container text-on-primary font-label-sm text-[10px]">
+                                    COMPLIANT
+                                </span>
+</div>
+</div>
+<!-- Log Row 3 -->
+<div class="grid grid-cols-[140px_120px_200px_minmax(250px,1fr)_120px] gap-4 p-4 border-b border-outline-variant/10 hover:bg-surface-variant/30 cursor-pointer transition-colors">
+<div class="text-outline">2024-10-24 14:15:22</div>
+<div class="text-tertiary">#F1A8B2</div>
+<div class="font-medium">Resource Reallocation</div>
+<div class="truncate text-on-surface-variant">Shifted Crew Alpha to TKT-1085 (Water Main) bypassing standard queue.</div>
+<div>
+<span class="inline-flex items-center px-2 py-1 rounded bg-tertiary-container text-on-primary font-label-sm text-[10px]">
+                                    COMPLIANT
+                                </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side: Detail Drawer (Simulated as always visible for demo, or toggled) -->
+<div class="w-[400px] border-l border-outline-variant/20 bg-surface-container-lowest flex flex-col shadow-[-10px_0_20px_rgba(22,52,34,0.02)] transition-transform duration-300 transform translate-x-0" id="detailDrawer">
+<!-- Drawer Header -->
+<div class="p-6 border-b border-outline-variant/20 flex justify-between items-center bg-surface-bright">
+<div>
+<h3 class="font-headline-md text-headline-md text-primary">Log Details</h3>
+<p class="font-mono text-mono-sm text-outline mt-1">Hash: #A7F9B2</p>
+</div>
+<button class="text-outline hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-variant" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Drawer Content -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6 log-scroll">
+<!-- Context Card -->
+<div class="bg-surface-container p-4 rounded-lg border border-outline-variant/10">
+<div class="font-label-sm text-label-sm text-on-surface-variant mb-2">Event Context</div>
+<div class="grid grid-cols-2 gap-4 font-mono text-mono-sm">
+<div>
+<div class="text-outline">Target ID</div>
+<div class="text-on-surface font-medium">TKT-1088</div>
+</div>
+<div>
+<div class="text-outline">Action</div>
+<div class="text-on-surface font-medium">Deferral</div>
+</div>
+<div>
+<div class="text-outline">Model Ver</div>
+<div class="text-on-surface font-medium">v4.2.1-KNAP</div>
+</div>
+<div>
+<div class="text-outline">Execution Ms</div>
+<div class="text-on-surface font-medium">142ms</div>
+</div>
+</div>
+</div>
+<!-- SHAP Values / JSON Block -->
+<div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mb-2 flex items-center justify-between">
+<span>Raw Decision Payload (SHAP)</span>
+<button class="text-primary hover:underline text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">content_copy</span> Copy
+                            </button>
+</div>
+<div class="bg-inverse-surface text-inverse-on-surface p-4 rounded-lg font-mono text-mono-sm overflow-x-auto border border-outline-variant/20 shadow-inner">
+<pre class="whitespace-pre text-[11px] leading-tight text-[#a0cfa0]">{
+  "event_id": "evt_99827364",
+  "action": "knapsack_defer",
+  "ticket_id": "TKT-1088",
+  "decision_vector": {
+    "base_priority": 0.65,
+    "budget_impact": 0.82,
+    "sla_urgency": 0.41,
+    "resource_availability": 0.12
+  },
+  "shap_values": {
+    "budget_constraint_zC": <span class="text-[#f4a261]">0.45</span>,
+    "historical_overrun_prob": <span class="text-[#f4a261]">0.22</span>,
+    "citizen_sentiment_score": <span class="text-[#e9c46a]">-0.15</span>,
+    "weather_delay_factor": <span class="text-[#e9c46a]">-0.05</span>
+  },
+  "knapsack_params": {
+    "max_weight": 5000,
+    "current_weight": 4850,
+    "item_weight": 350,
+    "item_value": 85
+  },
+  "conclusion": "Item weight exceeds remaining capacity. Deferred to next epoch."
+}
+</pre>
+</div>
+</div>
+<!-- Explainer -->
+<div class="bg-primary-container/10 p-4 rounded-lg border border-primary-container/20">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5">info</span>
+<p class="font-body-md text-[14px] text-on-surface-variant leading-relaxed">
+                                The algorithm deferred this ticket primarily due to the <span class="font-mono text-primary bg-primary-fixed/30 px-1 rounded">budget_constraint_zC</span> variable. Proceeding would have violated the strict daily allocation cap for Zone C.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        function toggleDrawer() {
+            const drawer = document.getElementById('detailDrawer');
+            // Simple toggle logic for demo
+            if (drawer.classList.contains('translate-x-full')) {
+                drawer.classList.remove('translate-x-full', 'hidden');
+                drawer.classList.add('translate-x-0');
+            } else {
+                drawer.classList.remove('translate-x-0');
+                drawer.classList.add('translate-x-full', 'hidden');
+            }
+        }
+        // Initially show it for the design prompt requirements
+    </script>
+</body></html>

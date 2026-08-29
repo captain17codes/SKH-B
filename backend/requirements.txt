@@ -1,14 +1,35 @@
-fastapi
-uvicorn
-gunicorn
-python-multipart
-supabase
-python-dotenv
-imagehash
-pillow
-pydantic
-numpy
-scipy
-scikit-learn
-shap
-pytest
+# Kopargaon CRPP -- backend runtime dependencies.
+#
+# Pinned on purpose. A hackathon demo that resolves a different FastAPI or
+# pydantic on the judging laptop than on the dev machine is a failure mode with
+# no upside, so every version here is exact.
+#
+# Install (Windows PowerShell, from the backend directory):
+#     python -m venv venv
+#     venv\Scripts\activate
+#     pip install -r requirements.txt
+#
+# Deliberately ABSENT, and why:
+#   supabase   -- the data layer is stdlib sqlite3; nothing calls Supabase now.
+#   sqlalchemy -- same reason; the rebuilt schema is raw SQL in database.py.
+#   imagehash  -- the perceptual hash is hand-written in services/imaging.py and
+#                 is bit-compatible with imagehash.phash(hash_size=8).
+#   scipy      -- only ever pulled in for imagehash's DCT; we do our own DCT-II.
+#   numpy      -- no module imports it. Keeping it out means the whole backend
+#                 installs from wheels in seconds on a fresh Windows machine.
+#
+# Optional extras live in requirements-optional.txt: SHAP explanations and the
+# OR-Tools knapsack solver both degrade gracefully when absent, so they are not
+# required to run or demo the platform.
+
+fastapi==0.115.12
+uvicorn[standard]==0.34.0
+pydantic==2.11.4
+python-multipart==0.0.20
+python-dotenv==1.1.0
+Pillow==11.2.1
+PyJWT==2.10.1
+
+# --- test-time only, harmless in a demo install ---
+pytest==8.3.5
+httpx==0.28.1

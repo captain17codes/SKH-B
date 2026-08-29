@@ -67,6 +67,12 @@ class Settings:
         self.DEBUG = _b("DEBUG", False)
         self.BACKEND_DIR = BACKEND_DIR
         self.REPO_ROOT = REPO_ROOT
+        # The council's own timezone. Every *timestamp* is stored in UTC, but a
+        # dispatch date is a civic fact, not an instant: "today's work" means the
+        # day the officer is standing in. Computing it from UTC files a run made
+        # at 3 a.m. in Kopargaon under yesterday's date, which is wrong on the
+        # manifest, wrong in the citizen SMS, and wrong in the audit trail.
+        self.CIVIC_TIMEZONE = _s("CIVIC_TIMEZONE", "Asia/Kolkata")
 
         # --- Storage -----------------------------------------------------
         # sqlite3 file path. Kept as a plain path (not a SQLAlchemy URL) because
@@ -159,6 +165,9 @@ class Settings:
             "enforce_auth": self.ENFORCE_AUTH,
             "notifications_enabled": self.ENABLE_NOTIFICATIONS,
             "shap_enabled": self.ENABLE_SHAP,
+            # So the UI labels a dispatch date in the council's own calendar
+            # rather than the browser's, which may be anywhere.
+            "civic_timezone": self.CIVIC_TIMEZONE,
             "dedupe": {
                 "hamming_threshold": self.DEDUPE_HAMMING_THRESHOLD,
                 "radius_meters": self.DEDUPE_RADIUS_METERS,

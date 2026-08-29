@@ -1,5 +1,5 @@
 # **Strategic Framework for Intelligent Civic Resource Allocation and Triage in Kopargaon Municipal Council**
-
+(<../Civic Resource Prioritization Platform.md>)
 ## **Introduction to the Civic Triage Imperative**
 
 The paradigm of municipal digital transformation has historically fixated on the digitization of records and the establishment of citizen reporting portals. While the transition from paper-based ledgers to digital dashboards represents a necessary evolution, it remains insufficient for authentic smart governance. In semi-urban geographies such as the Kopargaon Municipal Council—a Class 'B' local body in the Ahilyanagar district covering an area of 10.56 square kilometers with a population of approximately 65,273—the primary bottleneck is not a lack of data collection, but rather an acute deficit in resource allocation logic1.  

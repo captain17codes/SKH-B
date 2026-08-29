@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KMC Portal - System Explanations</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Hanken+Grotesk:wght@600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed-dim": "#c9c6be",
+                      "surface-variant": "#e2e3df",
+                      "outline": "#727972",
+                      "surface-container": "#eeeeea",
+                      "on-secondary-fixed-variant": "#474741",
+                      "primary": "#163422",
+                      "on-surface-variant": "#424843",
+                      "primary-fixed": "#c8ebd0",
+                      "secondary-fixed": "#e5e2da",
+                      "error-container": "#ffdad6",
+                      "surface-bright": "#faf9f6",
+                      "tertiary-fixed": "#ccebc8",
+                      "primary-fixed-dim": "#adcfb4",
+                      "on-error-container": "#93000a",
+                      "secondary-container": "#e2e0d7",
+                      "on-background": "#1a1c1a",
+                      "surface-dim": "#dadad7",
+                      "on-tertiary-container": "#9dba9a",
+                      "on-secondary": "#ffffff",
+                      "surface-container-low": "#f4f4f0",
+                      "on-primary-fixed-variant": "#2f4d39",
+                      "on-primary-fixed": "#022110",
+                      "on-secondary-fixed": "#1c1c17",
+                      "on-tertiary-fixed-variant": "#334d34",
+                      "tertiary-fixed-dim": "#b0ceae",
+                      "on-primary-container": "#99baa1",
+                      "background": "#faf9f6",
+                      "on-error": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-container-highest": "#e2e3df",
+                      "on-surface": "#1a1c1a",
+                      "on-secondary-container": "#64635c",
+                      "inverse-surface": "#2f312f",
+                      "on-tertiary": "#ffffff",
+                      "tertiary": "#1b341d",
+                      "tertiary-container": "#314b32",
+                      "surface-container-high": "#e8e8e5",
+                      "on-tertiary-fixed": "#07200b",
+                      "surface-tint": "#466550",
+                      "surface": "#faf9f6",
+                      "secondary": "#5f5f58",
+                      "inverse-on-surface": "#f1f1ed",
+                      "inverse-primary": "#adcfb4",
+                      "error": "#ba1a1a",
+                      "outline-variant": "#c2c8c0",
+                      "primary-container": "#2d4b37"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "unit": "8px",
+                      "container-max": "1280px",
+                      "gutter": "24px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "64px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Manrope"
+                      ],
+                      "body-md": [
+                              "Manrope"
+                      ],
+                      "body-lg": [
+                              "Manrope"
+                      ],
+                      "headline-lg-mobile": [
+                              "Manrope"
+                      ],
+                      "label-sm": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-display": [
+                              "Manrope"
+                      ],
+                      "headline-lg": [
+                              "Manrope"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-display": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "600"
+                              }
+                      }
+              }
+          },
+        }
+      </script>
+<style>
+          body {
+              background-color: #faf9f6; /* surface-bright fallback */
+          }
+          /* Custom scrollbar for webkit */
+          ::-webkit-scrollbar {
+              width: 8px;
+              height: 8px;
+          }
+          ::-webkit-scrollbar-track {
+              background: #eeeeea; 
+          }
+          ::-webkit-scrollbar-thumb {
+              background: #c9c6be; 
+              border-radius: 4px;
+          }
+          ::-webkit-scrollbar-thumb:hover {
+              background: #727972; 
+          }
+      </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased overflow-x-hidden selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top Navigation Bar (Hidden on Mobile, Visible on Desktop) -->
+<nav class="hidden md:flex w-full fixed top-0 z-40 bg-surface-container-lowest/80 backdrop-blur-xl border-b border-outline-variant justify-between items-center px-margin-desktop py-4 ml-64" style="width: calc(100% - 256px);">
+<div class="flex items-center">
+<span class="font-headline-md text-headline-md font-extrabold text-primary">Kopargaon Civic Resource</span>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed transition-all w-64" placeholder="Search resources..." type="text"/>
+</div>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-10 w-10 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="A professional headshot of an administrator for a smart city dashboard. The person has a friendly but focused expression, wearing business casual attire. The background is a soft, blurred beige to match the UI palette. Lighting is natural and flattering." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGsJ7eOT3dUIwzCSnL7UF-XCQigxvmw4pq2rXkZZ_nfNl9rn426tbNLrZKFgQ5LedN1qlwkBdQI8w4YkdCCfpw9JKSZB3jodNXLKhTzcR3L2Jytjy1qevo9A_7S1h1kIEW9tBbRb1pqTahTvuhyW7j8dhoWb0kKifqNdeDgrCH2J5N8HOZRAHeSnjt0mloCilYN0fFPeIDWFfcUdZrJ2Ydv3KOWTCKa7a5LihwsukQyFZXLEuccOw"/>
+</div>
+</div>
+</nav>
+<!-- Side Navigation Bar (Desktop) -->
+<aside class="hidden md:flex h-screen w-64 fixed left-0 top-0 bg-primary z-50 flex-col py-unit px-gutter">
+<div class="flex items-center gap-4 py-6 px-2">
+<div class="h-12 w-12 rounded-full overflow-hidden bg-surface-container-lowest p-1 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[32px]" data-icon="assured_workload">assured_workload</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-primary text-[20px] leading-tight">KMC Portal</h1>
+<p class="font-body-md text-body-md text-primary-fixed-dim text-[14px]">Civic Resource Suite</p>
+</div>
+</div>
+<button class="mt-4 mb-8 bg-surface-container-lowest text-primary font-label-sm text-label-sm py-3 px-6 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed transition-colors shadow-sm w-full font-bold">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+            New Ticket
+        </button>
+<nav class="flex flex-col gap-2 flex-grow">
+<!-- Ticket Pool -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-sm text-label-sm font-semibold">Ticket Pool</span>
+</a>
+<!-- Prioritization -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="priority_high">priority_high</span>
+<span class="font-label-sm text-label-sm font-semibold">Prioritization</span>
+</a>
+<!-- Daily Allocation -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+<span class="font-label-sm text-label-sm font-semibold">Daily Allocation</span>
+</a>
+<!-- System Explanations (Active) -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary bg-primary-container/20 font-bold border-l-4 border-tertiary-fixed opacity-90 transition-all" href="#">
+<span class="material-symbols-outlined text-tertiary-fixed" data-icon="info" data-weight="fill" style="font-variation-settings: 'FILL' 1;">info</span>
+<span class="font-label-sm text-label-sm">System Explanations</span>
+</a>
+</nav>
+<div class="mt-auto py-4 px-2">
+<div class="text-primary-fixed-dim text-xs opacity-60 font-label-sm text-label-sm">
+                Powered by KMC Platform
+            </div>
+</div>
+</aside>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-outline-variant z-50 px-margin-mobile py-2 flex justify-between items-center shadow-[0_-4px_20px_rgba(22,52,34,0.05)]">
+<a class="flex flex-col items-center p-2 text-on-surface-variant hover:text-primary" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant hover:text-primary" href="#">
+<span class="material-symbols-outlined" data-icon="priority_high">priority_high</span>
+</a>
+<a class="flex flex-col items-center p-2 text-on-surface-variant hover:text-primary" href="#">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</a>
+<a class="flex flex-col items-center p-2 text-primary border-t-2 border-primary -mt-[2px] pt-2" href="#">
+<span class="material-symbols-outlined" data-icon="info" data-weight="fill" style="font-variation-settings: 'FILL' 1;">info</span>
+</a>
+</nav>
+<!-- Main Content Area -->
+<main class="md:ml-64 pt-20 md:pt-28 pb-24 md:pb-12 px-margin-mobile md:px-margin-desktop max-w-[1536px] mx-auto min-h-screen">
+<header class="mb-12">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="psychology">psychology</span>
+<h1 class="font-headline-display text-headline-display md:text-[48px] text-[32px] text-primary">Algorithmic Transparency</h1>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl">
+                Insight into the decision-making processes of the Kopargaon Civic Resource platform. Understanding how Fuzzy TOPSIS, AHP, and Knapsack optimization prioritize city maintenance.
+            </p>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- 1. Algorithmic Foundation (Span 8) -->
+<section class="lg:col-span-8 bg-surface-container-lowest rounded-xl border border-outline/10 p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden group">
+<div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(#163422 1px, transparent 1px); background-size: 20px 20px;"></div>
+<div class="flex justify-between items-start relative z-10">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="account_tree">account_tree</span>
+                            Optimization Engine
+                        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Fuzzy TOPSIS &amp; Knapsack Integration</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10 flex-grow">
+<div class="bg-surface-bright border border-outline-variant rounded-lg p-5">
+<div class="flex items-center gap-3 mb-3 text-primary">
+<div class="h-8 w-8 rounded-full bg-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_alt">filter_alt</span>
+</div>
+<h3 class="font-headline-md text-[18px] font-bold">Fuzzy TOPSIS</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-[14px]">
+                            Evaluates incoming tickets against multiple, often conflicting criteria (severity, impact, cost). It handles the inherent ambiguity in human reporting by using fuzzy logic to determine the "ideal" solution path.
+                        </p>
+</div>
+<div class="bg-surface-bright border border-outline-variant rounded-lg p-5">
+<div class="flex items-center gap-3 mb-3 text-primary">
+<div class="h-8 w-8 rounded-full bg-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]" data-icon="workspaces">workspaces</span>
+</div>
+<h3 class="font-headline-md text-[18px] font-bold">Knapsack Constraint</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-[14px]">
+                            Once tickets are ranked, the Knapsack algorithm allocates daily resources (budget, labor, equipment) optimally, ensuring the highest priority tasks are addressed without exceeding available municipal capacity.
+                        </p>
+</div>
+</div>
+</section>
+<!-- 2. Real-time Triage Logic (Span 4) -->
+<section class="lg:col-span-4 bg-primary text-on-primary rounded-xl p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
+<div class="absolute -top-20 -right-20 w-64 h-64 bg-primary-container rounded-full blur-3xl opacity-50"></div>
+<div class="relative z-10">
+<h2 class="font-headline-lg text-[24px] font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed" data-icon="balance">balance</span>
+                        Current AHP Weights
+                    </h2>
+<p class="font-body-md text-body-md text-primary-fixed-dim mt-1 text-[14px]">Real-time criteria calibration</p>
+</div>
+<div class="flex flex-col gap-5 relative z-10 mt-2">
+<!-- Weight Item -->
+<div>
+<div class="flex justify-between text-label-sm font-label-sm mb-2">
+<span class="text-on-primary">Public Safety</span>
+<span class="text-tertiary-fixed font-bold">42%</span>
+</div>
+<div class="w-full bg-primary-container h-2 rounded-full overflow-hidden">
+<div class="bg-tertiary-fixed h-full rounded-full" style="width: 42%"></div>
+</div>
+</div>
+<!-- Weight Item -->
+<div>
+<div class="flex justify-between text-label-sm font-label-sm mb-2">
+<span class="text-on-primary">Infrastructural Criticality</span>
+<span class="text-primary-fixed-dim font-bold">28%</span>
+</div>
+<div class="w-full bg-primary-container h-2 rounded-full overflow-hidden">
+<div class="bg-primary-fixed-dim h-full rounded-full" style="width: 28%"></div>
+</div>
+</div>
+<!-- Weight Item -->
+<div>
+<div class="flex justify-between text-label-sm font-label-sm mb-2">
+<span class="text-on-primary">Socio-Spatial Equity</span>
+<span class="text-secondary-fixed-dim font-bold">18%</span>
+</div>
+<div class="w-full bg-primary-container h-2 rounded-full overflow-hidden">
+<div class="bg-secondary-fixed-dim h-full rounded-full" style="width: 18%"></div>
+</div>
+</div>
+<!-- Weight Item -->
+<div>
+<div class="flex justify-between text-label-sm font-label-sm mb-2">
+<span class="text-on-primary">Resource Requirement</span>
+<span class="text-surface-variant font-bold">12%</span>
+</div>
+<div class="w-full bg-primary-container h-2 rounded-full overflow-hidden">
+<div class="bg-surface-variant h-full rounded-full" style="width: 12%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. Explainable AI (SHAP) Justification (Span 12) -->
+<section class="lg:col-span-12 bg-surface-container-lowest rounded-xl border border-outline/10 p-6 md:p-8 flex flex-col gap-6">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-outline-variant pb-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container" data-icon="model_training">model_training</span>
+                            AI Decision Justification (SHAP)
+                        </h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Analyzing feature contributions for specific allocations.</p>
+</div>
+<div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-lg border border-outline-variant">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Selected Ticket:</span>
+<span class="font-headline-md text-[16px] font-bold text-primary">#TCK-1042 (Pothole, Main St)</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-2">
+<!-- SHAP Chart Area -->
+<div class="lg:col-span-2 flex flex-col gap-4">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Feature Impact on Priority Score</h3>
+<div class="relative h-64 border-l border-b border-outline-variant flex flex-col justify-between py-4 pl-4">
+<!-- Chart Grid Lines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none pl-4 py-4 z-0">
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+<div class="w-full border-t border-outline-variant/30 h-0"></div>
+</div>
+<!-- Baseline -->
+<div class="absolute top-0 bottom-0 left-1/2 border-l-2 border-dashed border-outline-variant/50 z-0"></div>
+<!-- Bar 1: Traffic Volume (+) -->
+<div class="relative z-10 flex items-center w-full group">
+<div class="w-1/2 flex justify-end pr-4 text-right">
+<span class="font-body-md text-[13px] text-on-surface">Arterial Route (High Traffic)</span>
+</div>
+<div class="w-1/2 flex items-center">
+<div class="bg-primary-container h-6 rounded-r-sm transition-all duration-300 group-hover:bg-primary" style="width: 65%;"></div>
+<span class="ml-2 font-label-sm text-label-sm text-primary font-bold">+0.32</span>
+</div>
+</div>
+<!-- Bar 2: Time in Queue (+) -->
+<div class="relative z-10 flex items-center w-full group">
+<div class="w-1/2 flex justify-end pr-4 text-right">
+<span class="font-body-md text-[13px] text-on-surface">Time in Queue (48hrs)</span>
+</div>
+<div class="w-1/2 flex items-center">
+<div class="bg-primary-container/80 h-6 rounded-r-sm transition-all duration-300 group-hover:bg-primary" style="width: 45%;"></div>
+<span class="ml-2 font-label-sm text-label-sm text-primary font-bold">+0.21</span>
+</div>
+</div>
+<!-- Bar 3: Weather Forecast (-) -->
+<div class="relative z-10 flex items-center w-full group">
+<div class="w-1/2 flex justify-end pr-4 text-right items-center">
+<span class="mr-2 font-label-sm text-label-sm text-error font-bold">-0.15</span>
+<div class="bg-secondary h-6 rounded-l-sm transition-all duration-300 group-hover:bg-on-surface-variant" style="width: 35%;"></div>
+</div>
+<div class="w-1/2 pl-4">
+<span class="font-body-md text-[13px] text-on-surface">Clear Weather (No immediate degradation risk)</span>
+</div>
+</div>
+<!-- Bar 4: Proximity to School (+) -->
+<div class="relative z-10 flex items-center w-full group">
+<div class="w-1/2 flex justify-end pr-4 text-right">
+<span class="font-body-md text-[13px] text-on-surface">School Zone Proximity</span>
+</div>
+<div class="w-1/2 flex items-center">
+<div class="bg-primary-container/60 h-6 rounded-r-sm transition-all duration-300 group-hover:bg-primary" style="width: 25%;"></div>
+<span class="ml-2 font-label-sm text-label-sm text-primary font-bold">+0.12</span>
+</div>
+</div>
+</div>
+<div class="flex justify-between px-4 mt-1">
+<span class="font-label-sm text-[11px] text-on-surface-variant">Negative Impact</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant">Baseline Score</span>
+<span class="font-label-sm text-[11px] text-on-surface-variant">Positive Impact</span>
+</div>
+</div>
+<!-- NLP Justification -->
+<div class="bg-surface-bright rounded-lg p-6 border border-outline-variant h-full flex flex-col">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="chat_bubble">chat_bubble</span>
+<h3 class="font-label-sm text-label-sm font-bold text-primary">Natural Language Synthesis</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant italic mb-4">
+                            "Ticket #TCK-1042 was elevated to <strong>Priority Rank 2</strong> today primarily due to its location on a major arterial route (High Traffic Volume), which heavily impacts public safety and transit efficiency. The fact that it has been in the queue for 48 hours further increased its priority score. Although current clear weather conditions reduced the urgency slightly (as immediate degradation is unlikely), its proximity to a school zone provided a final positive bump, securing its spot for today's resource allocation."
+                        </p>
+<div class="mt-auto">
+<div class="inline-flex items-center gap-2 bg-tertiary-fixed/30 text-primary-container px-3 py-1 rounded-full text-xs font-label-sm border border-tertiary-fixed">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle" data-weight="fill">check_circle</span>
+                                High Confidence Score (0.92)
+                            </div>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. Governance & Compliance (Span 12) -->
+<section class="lg:col-span-12 bg-surface-container-lowest rounded-xl border border-outline/10 p-6">
+<div class="flex items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-secondary" data-icon="gavel">gavel</span>
+<h2 class="font-headline-md text-headline-md text-primary">Governance &amp; Defense Architecture</h2>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant bg-surface-container-low">
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant font-bold">Timestamp</th>
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant font-bold">Event Type</th>
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant font-bold">Action/Log</th>
+<th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant font-bold">Status</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md text-on-surface">
+<tr class="border-b border-outline-variant hover:bg-surface-bright transition-colors">
+<td class="py-3 px-4 text-[14px] text-secondary">2023-10-24 08:00:12</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 bg-surface-container py-1 px-2 rounded text-xs font-label-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="sync">sync</span> AHP Recalibration
+                                    </span>
+</td>
+<td class="py-3 px-4 text-[14px]">Daily matrix update based on weather forecast input (Monsoon mode off).</td>
+<td class="py-3 px-4">
+<span class="text-primary font-bold text-xs">VERIFIED</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface-bright transition-colors">
+<td class="py-3 px-4 text-[14px] text-secondary">2023-10-24 07:45:00</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 bg-surface-container py-1 px-2 rounded text-xs font-label-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="policy">policy</span> RTS Defense
+                                    </span>
+</td>
+<td class="py-3 px-4 text-[14px]">Blocked manual override attempt for Ticket #TCK-0982 (Insufficient justification provided by user: Admin_02).</td>
+<td class="py-3 px-4">
+<span class="text-error font-bold text-xs">ENFORCED</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright transition-colors">
+<td class="py-3 px-4 text-[14px] text-secondary">2023-10-24 06:30:00</td>
+<td class="py-3 px-4">
+<span class="inline-flex items-center gap-1 bg-surface-container py-1 px-2 rounded text-xs font-label-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="data_check">data_check</span> Knapsack Run
+                                    </span>
+</td>
+<td class="py-3 px-4 text-[14px]">Optimal allocation completed. 42 tickets scheduled within 98% of daily budget constraint.</td>
+<td class="py-3 px-4">
+<span class="text-primary font-bold text-xs">SUCCESS</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+</body></html>

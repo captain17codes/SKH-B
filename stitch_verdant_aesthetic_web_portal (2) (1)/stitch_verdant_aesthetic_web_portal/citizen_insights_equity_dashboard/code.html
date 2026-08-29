@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kopargaon Civic - Citizen Insights</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600&amp;family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#314b32",
+                        "outline-variant": "#c2c8c0",
+                        "tertiary-fixed": "#ccebc8",
+                        "surface-container-highest": "#e2e3df",
+                        "secondary-fixed-dim": "#c9c6be",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-container-high": "#e8e8e5",
+                        "error": "#ba1a1a",
+                        "tertiary": "#1b341d",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#474741",
+                        "on-primary-fixed-variant": "#2f4d39",
+                        "surface-bright": "#faf9f6",
+                        "primary": "#163422",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#424843",
+                        "on-background": "#1a1c1a",
+                        "outline": "#727972",
+                        "primary-container": "#2d4b37",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#022110",
+                        "on-tertiary-fixed-variant": "#334d34",
+                        "secondary": "#5f5f58",
+                        "secondary-container": "#e2e0d7",
+                        "surface-dim": "#dadad7",
+                        "on-secondary-fixed": "#1c1c17",
+                        "primary-fixed-dim": "#adcfb4",
+                        "background": "#faf9f6",
+                        "inverse-on-surface": "#f1f1ed",
+                        "surface-container-low": "#f4f4f0",
+                        "surface": "#faf9f6",
+                        "on-tertiary-container": "#9dba9a",
+                        "inverse-surface": "#2f312f",
+                        "primary-fixed": "#c8ebd0",
+                        "surface-variant": "#e2e3df",
+                        "on-surface": "#1a1c1a",
+                        "secondary-fixed": "#e5e2da",
+                        "surface-tint": "#466550",
+                        "surface-container": "#eeeeea",
+                        "on-tertiary-fixed": "#07200b",
+                        "inverse-primary": "#adcfb4",
+                        "tertiary-fixed-dim": "#b0ceae",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#99baa1",
+                        "on-secondary-container": "#64635c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "unit": "8px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Manrope"],
+                        "label-sm": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "body-lg": ["Manrope"],
+                        "headline-display": ["Manrope"],
+                        "headline-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-sm": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #faf9f6; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(22, 52, 34, 0.1);
+        }
+        .chart-bar {
+            transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md flex h-screen overflow-hidden">
+<!-- SideNavBar Shared Component -->
+<nav class="hidden md:flex bg-surface-container-low border-r border-outline-variant/10 h-screen w-64 fixed left-0 top-0 flex-col py-unit px-4 gap-2 z-40">
+<!-- Header -->
+<div class="flex items-center gap-3 px-2 py-4 mb-4">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary" data-icon="account_balance">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-md font-headline-md text-primary">Kopargaon Civic</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Administrative Suite</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="dashboard">dashboard</span>
+<span class="font-label-sm text-label-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="confirmation_number">confirmation_number</span>
+<span class="font-label-sm text-label-sm">Ticket Pool</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="group_add">group_add</span>
+<span class="font-label-sm text-label-sm">Staff Allocation</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-primary-container text-on-primary-container rounded-lg font-bold transition-all duration-300 group cursor-pointer" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="analytics">analytics</span>
+<span class="font-label-sm text-label-sm">Citizen Insights</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="terminal">terminal</span>
+<span class="font-label-sm text-label-sm">System Logs</span>
+</a>
+</div>
+<!-- CTA -->
+<div class="mt-auto mb-4">
+<button class="w-full bg-primary text-on-primary py-2 rounded-lg font-label-sm text-label-sm shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="add_alert">add_alert</span>
+                Report Emergency
+            </button>
+</div>
+<!-- Footer Links -->
+<div class="flex flex-col gap-1 border-t border-outline-variant/10 pt-2">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="help">help</span>
+<span class="font-label-sm text-label-sm">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="logout">logout</span>
+<span class="font-label-sm text-label-sm">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-0 md:ml-64 h-full overflow-y-auto bg-surface relative">
+<!-- Ambient Background Image to bleed through glass panels -->
+<div class="absolute inset-0 z-0 opacity-40 pointer-events-none" data-alt="A subtle, high-key abstract architectural or organic texture in light beige and soft forest green tones. The lighting is extremely soft, creating a serene, bright corporate modern environment suitable for a smart city dashboard backdrop. Large areas of whitespace and minimal details." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAzQrtFUl1EaH_fj5FPu7qBPeUm-pKm23cjQzTxle-p9MjblzMlmeo2cEB5XJutsjF1U5OCCw08QYyQuzqWAwYmrX3pl7wMYmtJVWpHyPQryte3FDA5ZqYEm6sb3pBH9BZwnZhzNoOpaPszQXOuAXAVifwIi4JxvKfYvmSMMu4YWAkV_E4sx9MQD4Y8pjPldgZE3ldTrs-rfuDOtFHBJY-wNHN1km4sCRyjItKqCbaAyK5zNUSZomw')"></div>
+<div class="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 md:py-16">
+<!-- Header Section -->
+<header class="mb-12">
+<div class="inline-flex items-center gap-2 px-3 py-1 bg-surface-container-high rounded-full border border-outline-variant/20 mb-4">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="insights">insights</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Analytical Overview</span>
+</div>
+<h1 class="font-headline-display text-headline-display text-on-surface mb-2">Socio-Spatial Equity &amp; Communications</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Real-time telemetry on resource distribution, service level agreements, and communication efficacy across municipal wards.</p>
+</header>
+<!-- KPI Cards Row -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-12">
+<!-- KPI 1 -->
+<div class="glass-panel rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-6xl" data-icon="mark_email_read">mark_email_read</span>
+</div>
+<h3 class="font-label-sm text-label-sm text-on-surface-variant mb-1">Utility Messages Sent</h3>
+<div class="font-headline-lg text-headline-lg text-primary flex items-baseline gap-2">
+                        1,204
+                        <span class="text-sm font-medium text-tertiary-container flex items-center bg-tertiary-fixed px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span> +12%
+                        </span>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="glass-panel rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-6xl" data-icon="speed">speed</span>
+</div>
+<h3 class="font-label-sm text-label-sm text-on-surface-variant mb-1">Delivery Rate</h3>
+<div class="font-headline-lg text-headline-lg text-primary flex items-baseline gap-2">
+                        99.8%
+                        <span class="text-sm font-medium text-on-surface-variant">System Optimal</span>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="glass-panel rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 transform translate-x-4 -translate-y-4 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-6xl" data-icon="payments">payments</span>
+</div>
+<h3 class="font-label-sm text-label-sm text-on-surface-variant mb-1">Est. API Cost</h3>
+<div class="font-headline-lg text-headline-lg text-primary flex items-baseline gap-2">
+                        ₹144.48
+                        <span class="text-sm font-medium text-error flex items-center bg-error-container px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span> +2%
+                        </span>
+</div>
+</div>
+</div>
+<!-- Bento Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Chart 1: Reporting Bias vs. Action (Large span) -->
+<div class="lg:col-span-8 glass-panel rounded-xl p-6 md:p-8 flex flex-col">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Reporting Bias vs. Action</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Volume of Complaints vs Actual Triage Priority</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-surface-variant border border-outline"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Complaints</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Priority</span>
+</div>
+</div>
+</div>
+<!-- Simulated Bar Chart -->
+<div class="flex-1 flex items-end gap-2 md:gap-6 h-64 border-b border-outline-variant/30 pb-2 relative">
+<!-- Y-axis guides -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-20 z-0">
+<div class="border-t border-outline-variant w-full"></div>
+<div class="border-t border-outline-variant w-full"></div>
+<div class="border-t border-outline-variant w-full"></div>
+<div class="border-t border-outline-variant w-full"></div>
+</div>
+<!-- Ward 1 -->
+<div class="flex-1 flex justify-center items-end gap-1 md:gap-2 h-full z-10 group">
+<div class="w-1/2 md:w-12 bg-surface-variant rounded-t-sm h-[80%] chart-bar group-hover:opacity-80 transition-opacity"></div>
+<div class="w-1/2 md:w-12 bg-primary rounded-t-sm h-[40%] chart-bar group-hover:opacity-80 transition-opacity"></div>
+</div>
+<!-- Ward 2 -->
+<div class="flex-1 flex justify-center items-end gap-1 md:gap-2 h-full z-10 group">
+<div class="w-1/2 md:w-12 bg-surface-variant rounded-t-sm h-[90%] chart-bar group-hover:opacity-80 transition-opacity"></div>
+<div class="w-1/2 md:w-12 bg-primary rounded-t-sm h-[50%] chart-bar group-hover:opacity-80 transition-opacity"></div>
+</div>
+<!-- Ward 3 -->
+<div class="flex-1 flex justify-center items-end gap-1 md:gap-2 h-full z-10 group">
+<div class="w-1/2 md:w-12 bg-surface-variant rounded-t-sm h-[40%] chart-bar group-hover:opacity-80 transition-opacity"></div>
+<div class="w-1/2 md:w-12 bg-primary rounded-t-sm h-[30%] chart-bar group-hover:opacity-80 transition-opacity"></div>
+</div>
+<!-- Ward 4 (Under-reported) -->
+<div class="flex-1 flex justify-center items-end gap-1 md:gap-2 h-full z-10 group">
+<div class="w-1/2 md:w-12 bg-surface-variant rounded-t-sm h-[20%] chart-bar group-hover:opacity-80 transition-opacity relative">
+<div class="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-surface shadow-sm border border-outline-variant/20 px-2 py-1 rounded text-xs font-bold text-on-surface opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Under-reported</div>
+</div>
+<div class="w-1/2 md:w-12 bg-tertiary-container rounded-t-sm h-[85%] chart-bar group-hover:opacity-80 transition-opacity relative">
+<div class="absolute -top-3 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-primary rounded-full animate-ping"></div>
+</div>
+</div>
+<!-- Ward 5 -->
+<div class="flex-1 flex justify-center items-end gap-1 md:gap-2 h-full z-10 group">
+<div class="w-1/2 md:w-12 bg-surface-variant rounded-t-sm h-[60%] chart-bar group-hover:opacity-80 transition-opacity"></div>
+<div class="w-1/2 md:w-12 bg-primary rounded-t-sm h-[50%] chart-bar group-hover:opacity-80 transition-opacity"></div>
+</div>
+</div>
+<!-- X-axis Labels -->
+<div class="flex justify-between items-center mt-2 px-2 md:px-8 text-center text-on-surface-variant font-label-sm text-label-sm">
+<div class="flex-1">Ward 1</div>
+<div class="flex-1">Ward 2</div>
+<div class="flex-1">Ward 3</div>
+<div class="flex-1 font-bold text-primary">Ward 4</div>
+<div class="flex-1">Ward 5</div>
+</div>
+<!-- Insight Callout -->
+<div class="mt-8 bg-tertiary-fixed/30 border border-tertiary-fixed rounded-lg p-4 flex items-start gap-4">
+<span class="material-symbols-outlined text-tertiary mt-0.5" data-icon="lightbulb">lightbulb</span>
+<p class="font-body-md text-body-md text-on-surface"><strong>Insight:</strong> Algorithm successfully redirected 22% of resources to under-reported Ward 4.</p>
+</div>
+</div>
+<!-- Chart 2: SLA Compliance (Smaller span) -->
+<div class="lg:col-span-4 glass-panel rounded-xl p-6 md:p-8 flex flex-col">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">SLA Compliance</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Resolution times across income brackets</p>
+<div class="flex-1 relative flex flex-col justify-center min-h-[250px]">
+<!-- Decorative Line Chart representation -->
+<svg class="w-full h-full absolute inset-0 preserve-3d overflow-visible" preserveaspectratio="none" viewbox="0 0 100 100">
+<defs>
+<lineargradient id="lineGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#163422" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#163422" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,80 Q25,75 50,40 T100,20 L100,100 L0,100 Z" fill="url(#lineGrad)"></path>
+<path d="M0,80 Q25,75 50,40 T100,20" fill="none" stroke="#163422" stroke-linecap="round" stroke-width="3"></path>
+<!-- Plot points -->
+<circle cx="25" cy="65" fill="#ffffff" r="4" stroke="#163422" stroke-width="2"></circle>
+<circle cx="50" cy="40" fill="#ffffff" r="4" stroke="#163422" stroke-width="2"></circle>
+<circle cx="75" cy="30" fill="#ffffff" r="4" stroke="#163422" stroke-width="2"></circle>
+</svg>
+<!-- Overlay Labels -->
+<div class="absolute inset-0 flex flex-col justify-between py-4 pointer-events-none opacity-40 text-xs text-on-surface-variant font-label-sm">
+<div class="flex items-center gap-2"><div class="w-full h-px bg-outline-variant"></div>24hr</div>
+<div class="flex items-center gap-2"><div class="w-full h-px bg-outline-variant"></div>48hr</div>
+<div class="flex items-center gap-2"><div class="w-full h-px bg-outline-variant"></div>72hr</div>
+</div>
+</div>
+<div class="flex justify-between items-center mt-4 border-t border-outline-variant/30 pt-4">
+<div class="text-center">
+<div class="font-label-sm text-label-sm text-on-surface-variant">Low</div>
+</div>
+<div class="text-center">
+<div class="font-label-sm text-label-sm text-on-surface-variant">Mid</div>
+</div>
+<div class="text-center">
+<div class="font-label-sm text-label-sm text-on-surface-variant">High</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Shared Component -->
+<footer class="mt-24 border-t border-outline-variant/20 py-unit w-full max-w-container-max mx-auto px-margin-desktop flex flex-col md:flex-row justify-between items-center text-secondary dark:text-secondary-fixed bg-surface dark:bg-surface-dim flat no shadows">
+<div class="font-bold text-on-surface text-label-sm mb-4 md:mb-0">
+                    © 2024 Kopargaon Municipal Council. All rights reserved. Powered by Sylvan Urbanity Framework.
+                </div>
+<div class="flex gap-6 font-label-sm text-label-sm">
+<a class="text-on-secondary-fixed-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-on-secondary-fixed-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-on-secondary-fixed-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+</footer>
+</div>
+</main>
+<script>
+        // Simple entrance animation for chart bars
+        document.addEventListener("DOMContentLoaded", () => {
+            const bars = document.querySelectorAll('.chart-bar');
+            bars.forEach(bar => {
+                const originalHeight = bar.style.height || bar.classList.value.match(/h-\[([^\]]+)\]/)?.[1];
+                if(originalHeight) {
+                    bar.style.height = '0%';
+                    setTimeout(() => {
+                        bar.style.height = originalHeight;
+                    }, 100);
+                }
+            });
+        });
+    </script>
+</body></html>

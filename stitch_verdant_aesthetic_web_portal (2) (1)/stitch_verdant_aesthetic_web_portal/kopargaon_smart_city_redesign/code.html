@@ -1,0 +1,302 @@
+<!DOCTYPE html><html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kopargaon Smart City</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;family=Hanken+Grotesk:wght@600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "surface": "#faf9f6",
+                "inverse-on-surface": "#f1f1ed",
+                "surface-container-high": "#e8e8e5",
+                "on-surface-variant": "#424843",
+                "tertiary-fixed": "#ccebc8",
+                "error-container": "#ffdad6",
+                "surface-variant": "#e2e3df",
+                "on-tertiary-fixed-variant": "#334d34",
+                "surface-bright": "#faf9f6",
+                "secondary-container": "#e2e0d7",
+                "on-primary-fixed-variant": "#2f4d39",
+                "surface-dim": "#dadad7",
+                "tertiary": "#1b341d",
+                "on-secondary": "#ffffff",
+                "on-primary": "#ffffff",
+                "on-error": "#ffffff",
+                "primary-fixed-dim": "#adcfb4",
+                "background": "#faf9f6",
+                "outline": "#727972",
+                "surface-container-highest": "#e2e3df",
+                "outline-variant": "#c2c8c0",
+                "secondary-fixed-dim": "#c9c6be",
+                "on-background": "#1a1c1a",
+                "primary-fixed": "#c8ebd0",
+                "surface-container": "#eeeeea",
+                "on-primary-fixed": "#022110",
+                "on-tertiary-container": "#9dba9a",
+                "tertiary-fixed-dim": "#b0ceae",
+                "on-secondary-container": "#64635c",
+                "on-tertiary": "#ffffff",
+                "surface-tint": "#466550",
+                "secondary": "#5f5f58",
+                "inverse-surface": "#2f312f",
+                "on-secondary-fixed": "#1c1c17",
+                "on-surface": "#1a1c1a",
+                "primary": "#163422",
+                "on-error-container": "#93000a",
+                "on-primary-container": "#99baa1",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary-fixed-variant": "#474741",
+                "primary-container": "#2d4b37",
+                "tertiary-container": "#314b32",
+                "error": "#ba1a1a",
+                "secondary-fixed": "#e5e2da",
+                "on-tertiary-fixed": "#07200b",
+                "inverse-primary": "#adcfb4",
+                "surface-container-low": "#f4f4f0"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "margin-mobile": "16px",
+                "unit": "8px",
+                "container-max": "1280px",
+                "gutter": "24px",
+                "margin-desktop": "64px"
+        },
+        "fontFamily": {
+                "body-lg": [
+                        "Manrope"
+                ],
+                "headline-lg": [
+                        "Manrope"
+                ],
+                "body-md": [
+                        "Manrope"
+                ],
+                "headline-display": [
+                        "Manrope"
+                ],
+                "label-sm": [
+                        "Hanken Grotesk"
+                ],
+                "headline-lg-mobile": [
+                        "Manrope"
+                ],
+                "headline-md": [
+                        "Manrope"
+                ]
+        },
+        "fontSize": {
+                "body-lg": [
+                        "18px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "1.6",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-display": [
+                        "48px",
+                        {
+                                "lineHeight": "1.1",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "label-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "1.2",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "1.2",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "1.3",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-filled {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md shadow-sm">
+<div class="flex items-center gap-2 text-primary dark:text-primary-fixed">
+<span class="material-symbols-outlined icon-filled text-3xl" data-icon="location_city">location_city</span>
+<span class="font-headline-md text-headline-md font-bold">Kopargaon Smart City</span>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-body-md text-body-md text-primary dark:text-primary-fixed font-bold border-b-2 border-primary hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200" href="#">About</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200" href="#">Contact</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-secondary-fixed-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200" href="#">Features</a>
+</div>
+<div class="hidden md:flex items-center gap-4">
+<button class="font-label-sm text-label-sm text-primary border border-primary px-6 py-2.5 rounded-full hover:bg-surface-container-low transition-colors duration-200">Sign In</button>
+<button class="font-label-sm text-label-sm bg-primary text-on-primary px-6 py-2.5 rounded-full hover:bg-primary-container transition-colors duration-200">Sign Up</button>
+</div>
+</nav>
+<!-- Hero Section with Background -->
+<main class="flex-grow pt-24 md:pt-32">
+<section class="relative min-h-[80vh] flex items-center mb-24">
+<!-- Background Image -->
+<div class="absolute inset-0 z-0">
+<img alt="Forest Road Background" class="w-full h-full object-cover opacity-30 mix-blend-multiply filter contrast-125 saturate-50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqBsDKxKvsLAMWb7K_gxawH65u-Ix0t3IZtPH6K3rkbWPZDFv0zBTLzJ5L03FKHBqGZrHSZ1JdSykSuywT9ffwqq6vRI4-xvwcnY1yTZ36HNa5G_iq5NbpPRhlpPauEUYztoM36oJfjMk3kXVJyGEfftM8ePWRUIiBUbbdAgF21BySOkYAGiGiIlN5Mi9MVGLOWRAuyoUIbCNLRqM_2uO58H_p3L-g-ku-v6ObgFsiiije6RmWIsKsGA5yWcd4-_22">
+<div class="absolute inset-0 bg-gradient-to-b from-surface/60 via-surface/80 to-background"></div>
+</div>
+<div class="relative z-10 w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div class="flex flex-col gap-6">
+<h1 class="font-headline-display text-headline-display text-primary max-w-lg leading-tight">
+                        Your Digital Gateway to a Smarter Kopargaon
+                    </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md">
+                        A unified platform to report civic issues, track municipal project progress, and access essential smart city services seamlessly.
+                    </p>
+<blockquote class="border-l-4 border-tertiary-fixed pl-4 my-4 font-body-md italic text-primary-container">
+                        "Where tradition meets technology in the heart of nature."
+                    </blockquote>
+<div class="flex flex-col sm:flex-row gap-4 mt-4">
+<button class="bg-primary text-on-primary font-label-sm text-label-sm px-8 py-4 rounded-full shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+                            Report an Issue
+                        </button>
+<button class="border border-primary text-primary font-label-sm text-label-sm px-8 py-4 rounded-full hover:bg-surface-container-low transition-colors duration-300">
+                            View City Projects
+                        </button>
+</div>
+</div>
+<!-- Floating Image Card -->
+<div class="relative rounded-2xl overflow-hidden shadow-[0_10px_20px_rgba(22,52,34,0.05)] border border-outline-variant/30 backdrop-blur-sm bg-white/40 p-2">
+<img class="w-full h-auto rounded-xl object-cover aspect-[4/3]" data-alt="An aerial view of an Indian city riverfront showing a modern bridge spanning a wide river, with historical temples and buildings on the riverbank. People are walking along the ghats. The scene is bright and sunny, highlighting the contrast between the natural landscape, ancient architecture, and modern infrastructure. The color palette is natural and vibrant, fitting a corporate modern smart city aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMolb2k_jX5E98CxU8N810tI4gqIsvDJFrAGIXdDYghRrQ6JYZ8xWcPRhnCIFxo6xjViqnUEjsayqOqFY1FMI5p9Oaed9xRmi3I6Iws43zyw3m1NWZbpyiPSqZ3ZYzuXhf71O3SVhp1nW0XaDXw9dDu1jewDBapf23W_736l9rZvfG8gmzZkqVE5GII9QP3NUsIwZT2-dQFi-WgqoB0U8iLwaXgoG1OB_zSc9wA5kYn5KnJLSsG3w">
+</div>
+</div>
+</section>
+<!-- Stats Section -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 mb-24 bg-surface-container-low/50 rounded-[2rem] border border-outline-variant/20">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12 divide-y md:divide-y-0 md:divide-x divide-outline-variant/30">
+<div class="flex flex-col items-center text-center p-6 gap-4">
+<div class="w-16 h-16 rounded-full bg-tertiary-fixed flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined icon-filled text-3xl" data-icon="check_circle">check_circle</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-primary">3,200+</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Resolved Complaints</p>
+</div>
+<div class="flex flex-col items-center text-center p-6 gap-4">
+<div class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined icon-filled text-3xl" data-icon="construction">construction</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-primary">48</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Active Projects</p>
+</div>
+<div class="flex flex-col items-center text-center p-6 gap-4">
+<div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined icon-filled text-3xl" data-icon="map">map</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-primary">6</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Wards Covered</p>
+</div>
+</div>
+</section>
+<!-- Create Account Bento Section -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-16 mb-24">
+<div class="text-center mb-16">
+<h2 class="font-headline-display text-headline-lg md:text-headline-display text-primary mb-4">Create an Account</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Select your role to join the smart city initiative.</p>
+</div>
+<div class="grid grid-cols-1 gap-8 md:grid-cols-2 max-w-4xl mx-auto">
+<!-- Resident Card -->
+<div class="bg-surface rounded-2xl p-8 border border-outline-variant/30 hover:shadow-[0_10px_20px_rgba(22,52,34,0.05)] transition-shadow duration-300 flex flex-col items-center text-center h-full">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-3xl" data-icon="person">person</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-4">Resident Sign Up</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">Report issues, pay utility bills, and access local municipal services.</p>
+<button class="w-full border border-primary text-primary font-label-sm text-label-sm px-6 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300">
+                        Register as Resident
+                    </button>
+</div>
+<!-- Business Card -->
+
+<!-- Administrator Card -->
+<div class="bg-surface rounded-2xl p-8 border border-outline-variant/30 hover:shadow-[0_10px_20px_rgba(22,52,34,0.05)] transition-shadow duration-300 flex flex-col items-center text-center h-full">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-3xl" data-icon="shield_person">shield_person</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary mb-4">Administrator Sign Up</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">For municipal officials to track projects and resolve citizen reports.</p>
+<button class="w-full border border-primary text-primary font-label-sm text-label-sm px-6 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300">
+                        Request Admin Access
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-16 px-margin-mobile md:px-margin-desktop grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-outline-variant bg-surface-container dark:bg-surface-container-highest">
+<div class="flex flex-col gap-4">
+<div class="font-headline-sm text-headline-md font-bold text-primary dark:text-primary-fixed flex items-center gap-2">
+<span class="material-symbols-outlined icon-filled" data-icon="location_city">location_city</span>
+                Kopargaon Smart City
+            </div>
+<p class="font-body-md text-body-md text-on-surface dark:text-on-surface max-w-sm mt-4">
+                © 2026 Kopargaon Smart City. Towards Sustainable Governance.
+            </p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+<div class="flex flex-col gap-3">
+<h4 class="font-label-sm text-label-sm text-primary font-bold uppercase tracking-wider mb-2">Quick Links</h4>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-secondary-fixed-variant hover:underline decoration-primary transition-all" href="#">About Smart City</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-secondary-fixed-variant hover:underline decoration-primary transition-all" href="#">Citizen Charter</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-secondary-fixed-variant hover:underline decoration-primary transition-all" href="#">Contact Us</a>
+</div>
+<div class="flex flex-col gap-3">
+<h4 class="font-label-sm text-label-sm text-primary font-bold uppercase tracking-wider mb-2">Support</h4>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-secondary-fixed-variant hover:underline decoration-primary transition-all" href="#">Support Resources</a>
+</div>
+</div>
+</footer>
+
+
+</body></html>

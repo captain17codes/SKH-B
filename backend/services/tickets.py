@@ -30,8 +30,8 @@ from typing import Any
 
 try:
     from config import settings
-    from database import (dumps, execute, loads, new_id, parse_iso, query_all,
-                          query_one, utcnow, utcnow_iso)
+    from database import (civic_now, dumps, execute, loads, new_id, parse_iso,
+                          query_all, query_one, utcnow, utcnow_iso)
     from domain.costing import estimate_cost
     from domain.criteria import CRITERIA, derive_criteria
     from domain.reference import get_reference
@@ -41,8 +41,8 @@ except ImportError:  # pragma: no cover
     import sys
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
     from config import settings
-    from database import (dumps, execute, loads, new_id, parse_iso, query_all,
-                          query_one, utcnow, utcnow_iso)
+    from database import (civic_now, dumps, execute, loads, new_id, parse_iso,
+                          query_all, query_one, utcnow, utcnow_iso)
     from domain.costing import estimate_cost
     from domain.criteria import CRITERIA, derive_criteria
     from domain.reference import get_reference
@@ -59,9 +59,12 @@ def generate_ref_no(conn, when: str | None = None) -> str:
     """Human-quotable reference: ``KMC-20260829-0007``.
 
     Citizens read this number out on the phone, so it has to be short and
-    date-ordered rather than a UUID.
+    date-ordered rather than a UUID. The date part is the council's calendar
+    date, not UTC's: a report filed at 1 a.m. in Kopargaon must not come back
+    stamped with yesterday, because the citizen will read it back to a clerk who
+    is looking at today's register.
     """
-    day = (parse_iso(when) or utcnow()).strftime("%Y%m%d")
+    day = civic_now(when).strftime("%Y%m%d")
     row = query_one(conn, "SELECT COUNT(*) AS n FROM tickets WHERE ref_no LIKE ?",
                     (f"KMC-{day}-%",))
     seq = int(row["n"] if row else 0) + 1
@@ -115,6 +118,12 @@ def save_media(conn, ticket_id: str, uploads: list[dict]) -> dict:
     the file because the hash failed would destroy the only evidence attached to
     a citizen's complaint; a NULL hash simply means this report cannot take part
     in image-based deduplication, and that is recorded.
+
+    ``file_path`` is stored *relative* to ``UPLOAD_DIR`` (``<ticket_id>/<name>``)
+    rather than as an absolute path. An absolute path bakes one machine's
+    directory layout into the data: copy the database and the uploads folder to
+    the demo laptop, or point ``UPLOAD_DIR`` somewhere else, and every image
+    silently stops resolving. A relative path travels with the pair.
     """
     saved, warnings, hashes = [], [], []
     limit_bytes = int(settings.MAX_UPLOAD_SIZE_MB) * 1024 * 1024
@@ -133,8 +142,13 @@ def save_media(conn, ticket_id: str, uploads: list[dict]) -> dict:
             warnings.append(f"{name}: unsupported image type {suffix}, rejected")
             continue
         target_dir.mkdir(parents=True, exist_ok=True)
-        path = target_dir / f"{new_id()[:8]}_{name}"
+        stored_name = f"{new_id()[:8]}_{name}"
+        path = target_dir / stored_name
         path.write_bytes(content)
+        # Forward slashes even on Windows: the value is read back by
+        # ``Path(...)``, which accepts them, and a database written on Windows
+        # then served on Linux must not carry backslashes.
+        relative = f"{ticket_id}/{stored_name}"
         info: dict[str, Any] = {"phash": None, "ahash": None, "hash_bits": None}
         try:
             info = hash_pair_from_bytes(content)
@@ -145,10 +159,10 @@ def save_media(conn, ticket_id: str, uploads: list[dict]) -> dict:
                 "INSERT INTO ticket_media(id, ticket_id, file_path, media_type,"
                 " phash, phash_bits, size_bytes, created_at)"
                 " VALUES(?,?,?,?,?,?,?,?)",
-                (new_id(), ticket_id, str(path), "image", info.get("phash"),
+                (new_id(), ticket_id, relative, "image", info.get("phash"),
                  info.get("hash_bits"), len(content), utcnow_iso()))
-        saved.append({"file_path": str(path), "phash": info.get("phash"),
-                      "size_bytes": len(content)})
+        saved.append({"file_path": relative, "absolute_path": str(path),
+                      "phash": info.get("phash"), "size_bytes": len(content)})
     return {"saved": saved, "phash_list": hashes, "warnings": warnings}
 
 
@@ -505,9 +519,13 @@ def get_ticket(conn, ticket_id: str) -> dict | None:
             "evidence": loads(score["evidence"]),
         }
     detail["criteria"] = criteria
+    # ``url`` is included so a detail page can render the photograph without a
+    # second round trip to /api/media. It is relative on purpose: the caller
+    # already knows the API base, and ``file_path`` is storage-internal.
     detail["media"] = [
         {"id": m["id"], "file_path": m["file_path"], "phash": m["phash"],
-         "size_bytes": m["size_bytes"]}
+         "size_bytes": m["size_bytes"],
+         "url": f"/api/media/{m['id']}/file"}
         for m in query_all(conn, "SELECT * FROM ticket_media WHERE ticket_id = ?",
                            (row["id"],))]
     detail["events"] = [dict(e) for e in query_all(
@@ -670,9 +688,17 @@ def queue_for_prioritisation(conn, ward_id: str | None = None) -> list[dict]:
     Excludes duplicates (folded into their parent, and their weight is already
     carried there) and anything already finished. This is the input the triage
     engine ranks.
+
+    ``scheduled`` is included on purpose. A ticket that was scheduled this
+    morning but has not been dispatched is still unstarted work competing for the
+    same crew, so a re-run after the capacity changed or a cost was entered must
+    be able to reconsider it. Excluding it would freeze the first plan of the day
+    into an irreversible commitment, which is the opposite of what re-running is
+    for. ``dispatched`` and later are excluded: once a crew is on its way the
+    money and the hours are spent.
     """
     clauses = ["is_duplicate = 0",
-               "status IN ('open', 'scored', 'deferred')"]
+               "status IN ('open', 'scored', 'scheduled', 'deferred')"]
     params: list[Any] = []
     if ward_id:
         clauses.append("ward_id = ?")
