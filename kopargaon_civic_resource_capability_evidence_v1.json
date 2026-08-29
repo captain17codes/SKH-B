@@ -1,0 +1,246 @@
+{
+  "metadata": {
+    "dataset_name": "Kopargaon Civic Resource Capability Evidence",
+    "version": "1.0",
+    "as_of": "2026-08-29",
+    "purpose": "Part B resource-constrained civic decision and response engine",
+    "important_rule": "A tender/BOQ proves that a resource type or role is used/required in municipal operations. It does NOT prove that the Municipal Council owns that equipment or that a specific quantity is currently available.",
+    "availability_model": "Current available quantity should be entered/verified by an authorized municipal operator at runtime."
+  },
+  "current_2026_operational_evidence": [
+    {
+      "evidence_id": "RES-WATER-FIRE-2026",
+      "department": "Water Supply / Fire",
+      "evidence_type": "current_tender",
+      "tender_id": "2026_DMA_1321153_1",
+      "tender_ref": "2026_DMA_WATER_3",
+      "capabilities": [
+        "water treatment plant operation",
+        "daily water distribution",
+        "water-supply maintenance and repair",
+        "fire department manpower"
+      ],
+      "resource_types_for_engine": [
+        "water_operations_team",
+        "water_distribution_team",
+        "water_maintenance_team",
+        "fire_response_manpower"
+      ],
+      "quantity_known": false,
+      "ownership_known": false,
+      "status": "award_pending_public_record",
+      "source_url": "https://tenderdekho.com/tender-detail/td-52lVoxUQth"
+    },
+    {
+      "evidence_id": "RES-DRAIN-DESILT-2026",
+      "department": "Sanitation / Drainage",
+      "evidence_type": "current_tender_financial_evaluation",
+      "tender_id": "2026_DMA_1297764_1",
+      "tender_ref": "2026_DMA_SI_1",
+      "capabilities": [
+        "main-drain desilting",
+        "JCB/Poclain excavation",
+        "loading silt and waste",
+        "dumper/trolley transport",
+        "disposal at municipal-designated location"
+      ],
+      "resource_types_for_engine": [
+        "jcb_or_poclain",
+        "dumper_or_trolley",
+        "drain_cleaning_crew"
+      ],
+      "quantity_known": false,
+      "ownership_known": false,
+      "estimated_tender_value_inr": 1500000,
+      "status": "financial_evaluation_public_record",
+      "source_url": "https://tenderkart.in/tender/6a103a93-b09c-4ac4-b2dd-5dca856b9405"
+    },
+    {
+      "evidence_id": "RES-SANITATION-FOGGING-2026",
+      "department": "Sanitation / Public Health",
+      "evidence_type": "current_tender",
+      "tender_id": "2026_DMA_1299058_1",
+      "tender_ref": "2026_DMA_SI_2",
+      "capabilities": [
+        "disinfectant supply",
+        "medicine spraying",
+        "fogging"
+      ],
+      "resource_types_for_engine": [
+        "fogging_team",
+        "sanitation_spray_team",
+        "public_health_sanitation_supply"
+      ],
+      "quantity_known": false,
+      "ownership_known": false,
+      "estimated_tender_value_inr": 5000000,
+      "status": "technical_evaluation_public_record",
+      "source_url": "https://tenderkart.in/tender/2a16e3c0-eed9-4216-9ade-1d469d9bea55"
+    },
+    {
+      "evidence_id": "RES-FOGGING-AGENCY-2026",
+      "department": "Sanitation / Public Health",
+      "evidence_type": "current_tender",
+      "tender_id": "2026_DMA_1327670_1",
+      "tender_ref": "2026_DMA_SI_7",
+      "capabilities": [
+        "city-wide mosquito-control fogging",
+        "extended municipal-limit fogging"
+      ],
+      "resource_types_for_engine": [
+        "fogging_agency"
+      ],
+      "quantity_known": false,
+      "ownership_known": false,
+      "status": "tender_closed_status_unconfirmed",
+      "source_url": "https://tenderimpulse.com/government-tenders/india/appointment-of-an-experienced-agency-for-carrying-out-mosquito-control-fogging-o-14397887"
+    },
+    {
+      "evidence_id": "RES-SWM-2026",
+      "department": "Solid Waste Management",
+      "evidence_type": "current_tender",
+      "capabilities": [
+        "daily waste collection",
+        "waste transportation",
+        "solid-waste processing",
+        "daily road sweeping"
+      ],
+      "resource_types_for_engine": [
+        "waste_collection_team",
+        "waste_transport_vehicle",
+        "road_sweeping_team",
+        "solid_waste_processing_team"
+      ],
+      "quantity_known": false,
+      "ownership_known": false,
+      "estimated_tender_value_inr": 51663600,
+      "status": "tender_closed_public_record",
+      "source_url": "https://www.tendersontime.com/india/kopargaon-tenders/"
+    }
+  ],
+  "historical_role_and_equipment_evidence": [
+    {
+      "evidence_id": "RES-WTP-ROLES-2022",
+      "department": "Water Supply",
+      "evidence_type": "historical_boq",
+      "year": 2022,
+      "roles_or_resources": [
+        "Supervisor",
+        "Plumber",
+        "Valveman",
+        "Pump Operator",
+        "Heavy Mazdoor",
+        "Lab Technician / Filter Operator",
+        "Computer / Data Entry Operator",
+        "Office Boy",
+        "Electrician / Wireman",
+        "Watchman",
+        "Skilled Labour",
+        "Unskilled Labour",
+        "JCB Driver",
+        "Heavy Vehicle Driver"
+      ],
+      "use": "Use as a capability/skill taxonomy only; not a current headcount.",
+      "source_url": "https://www.tenderdetail.com/Indian-Tenders/TenderNotice/33935650/87db3d1208d913bc16ba5264d2c7221f"
+    },
+    {
+      "evidence_id": "RES-DESILT-EQUIPMENT-2025",
+      "department": "Drainage / Sanitation",
+      "evidence_type": "historical_boq",
+      "year": 2025,
+      "roles_or_resources": [
+        "Poclain 350 LR",
+        "Poclain 210",
+        "JCB 3DX",
+        "Tractor Trolley - two-wheel",
+        "Tractor Trolley - four-wheel",
+        "Dumper - six-wheel",
+        "Dumper - ten-wheel"
+      ],
+      "use": "Evidence that these equipment classes were specified for Kopargaon drain-desilting work; not proof of municipal ownership or current availability.",
+      "source_url": "https://www.tenderdetail.com/Indian-Tenders/TenderNotice/49129925/7426c6dea40577cdbe0438c698de4298"
+    },
+    {
+      "evidence_id": "RES-WATER-LABOUR-2025",
+      "department": "Water Supply",
+      "evidence_type": "historical_tender",
+      "year": 2025,
+      "roles_or_resources": [
+        "Skilled Labour",
+        "Unskilled Labour"
+      ],
+      "use": "Confirms manpower contracting requirement for WTP operation in 2025-26; current counts unknown.",
+      "source_url": "https://www.tenderdetail.com/Indian-Tenders/TenderNotice/47440745/c52baf288332b0aa0579c37786a5bf1b"
+    }
+  ],
+  "operational_baselines": [
+    {
+      "baseline_id": "SWM-TPD-KOPARGAON",
+      "metric": "municipal_solid_waste_generation",
+      "value": 20.4,
+      "unit": "tonnes_per_day",
+      "components": {
+        "biodegradable_tpd": 11.0,
+        "dry_recyclable_tpd": 8.0,
+        "inerts_tpd": 1.4
+      },
+      "waste_collected_tpd": 20.4,
+      "waste_transported_tpd": 20.4,
+      "final_destination_text": "Processing Plant 200/1,2,3,4 Manai, Kopargaon Municipal Council",
+      "source_authority": "Government of Maharashtra affidavit / National Green Tribunal filing",
+      "source_url": "https://www.greentribunal.gov.in/sites/default/files/news_updates/AFFIDAVIT%20BY%20CS%2C%20GOVT.%20OF%20MAHARASHTRA%20IN%20OA%20NO.%20606%20of%202018%20%28COMPLIANCE%20OF%20MSW%20MGT%20RULES%2C%202016%20AND%20OTHER%20ENVIRONMENTAL%20ISSUES%29.pdf",
+      "confidence": "high",
+      "note": "Use as a reported baseline from the cited filing, not as live daily telemetry."
+    }
+  ],
+  "recommended_runtime_resources": [
+    {
+      "resource_type": "water_operations_team",
+      "display_name": "Water Operations Team",
+      "availability_source": "manual_verified_input",
+      "default_quantity": null
+    },
+    {
+      "resource_type": "fire_response_manpower",
+      "display_name": "Fire Response Team",
+      "availability_source": "manual_verified_input",
+      "default_quantity": null
+    },
+    {
+      "resource_type": "jcb_or_poclain",
+      "display_name": "JCB / Poclain",
+      "availability_source": "manual_verified_input",
+      "default_quantity": null
+    },
+    {
+      "resource_type": "dumper_or_trolley",
+      "display_name": "Dumper / Tractor Trolley",
+      "availability_source": "manual_verified_input",
+      "default_quantity": null
+    },
+    {
+      "resource_type": "drain_cleaning_crew",
+      "display_name": "Drain Cleaning Crew",
+      "availability_source": "manual_verified_input",
+      "default_quantity": null
+    },
+    {
+      "resource_type": "waste_transport_vehicle",
+      "display_name": "Waste Collection / Transport Vehicle",
+      "availability_source": "manual_verified_input",
+      "default_quantity": null
+    },
+    {
+      "resource_type": "road_sweeping_team",
+      "display_name": "Road Sweeping Team",
+      "availability_source": "manual_verified_input",
+      "default_quantity": null
+    },
+    {
+      "resource_type": "fogging_team",
+      "display_name": "Fogging / Public Health Team",
+      "availability_source": "manual_verified_input",
+      "default_quantity": null
+    }
+  ]
+}

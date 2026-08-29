@@ -1,0 +1,210 @@
+{
+  "metadata": {
+    "name": "Kopargaon Publicly Verifiable Municipal Project & Management Pipeline",
+    "as_of": "2026-08-29",
+    "record_count": 16,
+    "important_limit": "Tender/procurement stage does NOT mean physical work is ongoing. Only records explicitly awarded are marked awarded. Field/municipal verification is required for live execution status.",
+    "recommended_app_statuses": [
+      "proposed_planning",
+      "tender_submission",
+      "tender_closed",
+      "technical_evaluation",
+      "financial_evaluation",
+      "award_pending",
+      "awarded_contract",
+      "physical_progress_verified",
+      "completed"
+    ]
+  },
+  "records": [
+    {
+      "id": "KMC-UGD-2025-01",
+      "name": "Kopargaon Municipal Council Underground Drainage Scheme",
+      "category": "sewerage/drainage",
+      "stage": "awarded_contract",
+      "public_status": "Awarded; physical-work progress not confirmed from public source",
+      "tender_id": "2025_DMA_1135806_1",
+      "estimated_value_inr": 2274575919,
+      "awarded_value_inr": 2479287751.71,
+      "awardee": "Mangukiya Brothers Project Private Limited",
+      "contract_date": "2025-07-01",
+      "confidence": "high",
+      "source": "TenderX record referencing Maharashtra eProcurement",
+      "source_url": "https://tenderx.in/tenderInfo/2025_DMA_1135806_1",
+      "notes": "Strongest candidate for an actually ongoing major municipal capital project, but current physical progress must be field/municipal verified."
+    },
+    {
+      "id": "KMC-STP-2025-ACTIONPLAN",
+      "name": "Kopargaon STP - 10 MLD",
+      "category": "sewage_treatment",
+      "stage": "proposed_planning",
+      "public_status": "Proposed in MPCB Godavari Action Plan; target year 2027",
+      "capacity": "10 MLD",
+      "target_year": 2027,
+      "confidence": "high",
+      "source": "Maharashtra Pollution Control Board Godavari River Action Plan 2025",
+      "source_url": "https://mpcb.gov.in/sites/default/files/Establishment%20of%20MPCB/Seniority%20list/2014/Godavari%20River%206.0%20_%20Action%20Plan%202025.pdf",
+      "notes": "Do not label construction-started unless separately verified."
+    },
+    {
+      "id": "KMC-CIVIL-2026-01",
+      "name": "Annual construction of drains and minor repairs at various locations",
+      "category": "drainage/maintenance",
+      "stage": "technical_evaluation",
+      "public_status": "Tender closed; technical evaluation recorded 23 Jul 2026; award not shown",
+      "tender_id": "2026_DMA_1288612_1",
+      "tender_ref": "2026_DMA_CIVIL_1",
+      "confidence": "high",
+      "source_url": "https://tenderkart.in/tender/c7a5477e-86d5-496f-9755-449d03bd065e"
+    },
+    {
+      "id": "KMC-CIVIL-2026-02",
+      "name": "Annual supply and spreading of murrum, gravel and crushed stone",
+      "category": "road_maintenance/materials",
+      "stage": "technical_evaluation",
+      "public_status": "Tender closed; technical evaluation recorded 23 Jul 2026; award not shown",
+      "tender_id": "2026_DMA_1288629_1",
+      "tender_ref": "2026_DMA_CIVIL_2",
+      "confidence": "high",
+      "source_url": "https://tenderkart.in/tender/2ee014b7-0fe2-41e0-96e2-1c6a8037b73c"
+    },
+    {
+      "id": "KMC-CIVIL-2026-06",
+      "name": "Road widening/asphalting: Annabhau Sathe Chowk–Yeola Naka and Nagar-Manmad Highway–Shital Hotel–Lokhande House",
+      "category": "roads",
+      "stage": "bid_opened_status_unconfirmed",
+      "public_status": "Tender closed; bid opening Apr 2026; award/physical start not confirmed",
+      "tender_id": "2026_DMA_1288914_1",
+      "tender_ref": "2026_DMA_CIVIL_6",
+      "estimated_value_inr": 7290000,
+      "confidence": "high",
+      "source_url": "https://tenderkart.in/tender/338cb1e0-d6d7-42a7-b2a4-9390aebf34a5"
+    },
+    {
+      "id": "KMC-WATER-2026-03",
+      "name": "WTP operation, daily water distribution, maintenance/repair and Fire Department manpower",
+      "category": "water_supply/fire_manpower",
+      "stage": "award_pending",
+      "public_status": "Tender closed 30 Jul 2026; public aggregator shows award pending",
+      "tender_id": "2026_DMA_1321153_1",
+      "tender_ref": "2026_DMA_WATER_3",
+      "confidence": "high",
+      "source_url": "https://tenderdekho.com/tender-detail/td-52lVoxUQth",
+      "notes": "Operational-management package, directly useful for Part B resource/workforce modelling."
+    },
+    {
+      "id": "KMC-CIVIL-2026-W1",
+      "name": "Ward 1 concrete road and underground drainage from Laxman Sapkal House to Ajay Gupta House",
+      "category": "road/drainage",
+      "stage": "tender_closed",
+      "public_status": "Tender deadline 8 Aug 2026; award/physical start not confirmed",
+      "tender_id": "2026_DMA_1323762_1",
+      "estimated_value_inr": 3890000,
+      "confidence": "medium_high",
+      "source_url": "https://www.govttenders.co.in/searchresult/?sd=civil-kopargaon-tenders&sf=0&st=txt"
+    },
+    {
+      "id": "KMC-CIVIL-2026-W8A",
+      "name": "Ward 8 drainage and paver-block works",
+      "category": "drainage/paving",
+      "stage": "bid_opened_status_unconfirmed",
+      "public_status": "Tender closed 8 Aug 2026; bid opening 10 Aug; award/physical start not confirmed",
+      "tender_id": "2026_DMA_1323772_1",
+      "tender_ref": "2026_DMA_CIVIL_20",
+      "estimated_value_inr": 1494700,
+      "confidence": "high",
+      "source_url": "https://www.tendershark.com/details/maharashtra-tender/directorate-of-municipal-administration/ac701da0-7e20-44d6-80a1-6830534f4a37"
+    },
+    {
+      "id": "KMC-CIVIL-2026-W8B",
+      "name": "Ward 8 concrete road from Ashok Kothari to Gangwal House",
+      "category": "roads",
+      "stage": "tender_closed",
+      "public_status": "Tender deadline 8 Aug 2026; award/physical start not confirmed",
+      "estimated_value_inr": 1647000,
+      "confidence": "medium",
+      "source_url": "https://www.govttenders.co.in/searchresult/?sd=civil-kopargaon-tenders&sf=0&st=txt"
+    },
+    {
+      "id": "KMC-CIVIL-2026-W9",
+      "name": "Ward 9 paving-block and related civil works",
+      "category": "paving/civil",
+      "stage": "bid_opened_status_unconfirmed",
+      "public_status": "Tender closed 8 Aug 2026; bid opening 10 Aug; award/physical start not confirmed",
+      "tender_id": "2026_DMA_1323796_1",
+      "tender_ref": "2026_DMA_CIVIL_21",
+      "estimated_value_inr": 3997500,
+      "confidence": "high",
+      "source_url": "https://www.tendershark.com/details/maharashtra-tender/directorate-of-municipal-administration/e4185e00-de53-4174-b25c-44dd8f1fcb9a"
+    },
+    {
+      "id": "KMC-CIVIL-2026-W7",
+      "name": "Ward 7 underground sewer, gutter/drain repair and paving blocks",
+      "category": "sewerage/drainage/paving",
+      "stage": "bid_opened_status_unconfirmed",
+      "public_status": "Tender closed 21 Aug 2026; bid opening 24 Aug; award/physical start not confirmed",
+      "tender_id": "2026_DMA_1328014_1",
+      "tender_ref": "2026_DMA_CIVIL_25",
+      "estimated_value_inr": 2007547,
+      "confidence": "high",
+      "source_url": "https://tenderkart.in/tender/1d4ecfd2-93ef-40e2-90b2-b6de01076a6e"
+    },
+    {
+      "id": "KMC-SAN-2026-SILT",
+      "name": "Removal of accumulated silt and waste from main drainage channels",
+      "category": "sanitation/drain_cleaning",
+      "stage": "financial_evaluation",
+      "public_status": "Financial evaluation recorded 2 Jun 2026; L1 finance accepted; contract start not confirmed",
+      "tender_ref": "2026_DMA_SI_1",
+      "estimated_value_inr": 1500000,
+      "confidence": "high",
+      "source_url": "https://tenderkart.in/tender/6a103a93-b09c-4ac4-b2dd-5dca856b9405",
+      "notes": "Useful for sanitation machinery/workforce resource catalogue."
+    },
+    {
+      "id": "KMC-SAN-2026-CHEMFOG",
+      "name": "FY 2026-27 sanitation disinfectant supply and spraying/fogging",
+      "category": "sanitation/public_health",
+      "stage": "technical_evaluation",
+      "public_status": "Tender closed 7 May 2026; technical evaluation 29 Jun; award not shown",
+      "tender_id": "2026_DMA_1299058_1",
+      "tender_ref": "2026_DMA_SI_2",
+      "estimated_value_inr": 5000000,
+      "confidence": "high",
+      "source_url": "https://tenderkart.in/tender/2a16e3c0-eed9-4216-9ade-1d469d9bea55"
+    },
+    {
+      "id": "KMC-SAN-2026-FOGGING",
+      "name": "Municipal-wide mosquito-control fogging agency",
+      "category": "sanitation/public_health",
+      "stage": "tender_closed_status_unconfirmed",
+      "public_status": "Published 13 Aug 2026; deadline 20 Aug; award/start not confirmed",
+      "estimated_value_inr": 2500000,
+      "confidence": "medium_high",
+      "source_url": "https://tenderkart.in/authority/municipal-administration-ahmednagar/active",
+      "notes": "May overlap functionally with the disinfectant/fogging package; treat separately until tender references are reconciled."
+    },
+    {
+      "id": "KMC-SBM-2026-TOILET",
+      "name": "Reconstruction of public toilet under Swachh Maharashtra Abhiyan 2.0",
+      "category": "sanitation/public_toilet",
+      "stage": "tender_submission",
+      "public_status": "Tender submission deadline 29 Aug 2026; bid opening 31 Aug 2026",
+      "tender_ref": "2026_DMA_SI_8",
+      "estimated_value_inr": 13000000,
+      "confidence": "high",
+      "source_url": "https://www.tenderdetail.com/Indian-Tenders/TenderNotice/57035965/cdfcf68c6fbb9e580f25fae426fe2748"
+    },
+    {
+      "id": "KMC-SBM-2026-IEC",
+      "name": "SBM IEC facility-management services",
+      "category": "swachh_bharat/iec_management",
+      "stage": "tender_submission_or_opening",
+      "public_status": "GeM package published 18 Aug 2026; closing/opening 29 Aug 2026",
+      "estimated_value_inr": 5000000,
+      "confidence": "high",
+      "source_url": "https://tenderkart.in/tender/f63daad2-0700-461d-93c0-fa2e38e06ce8",
+      "notes": "Management/service package rather than physical infrastructure."
+    }
+  ]
+}

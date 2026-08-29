@@ -1,0 +1,522 @@
+{
+  "metadata": {
+    "dataset_name": "Kopargaon Civic Service, SLA and Escalation Matrix",
+    "version": "1.0",
+    "as_of": "2026-08-29",
+    "purpose": "Part B - Resource-Constrained Civic Decision and Response Engine",
+    "city": "Kopargaon",
+    "important_distinction": {
+      "statutory_rts": "Official Maharashtra Right to Public Services notified-service timelines and appeal hierarchy.",
+      "operational_response_target": "Configurable municipal incident-response target used for dispatch/triage. It is NOT a statutory RTS time limit unless explicitly linked to an official notification."
+    },
+    "legal_framework_notes": [
+      "The Maharashtra Right to Public Services Act, 2015 requires notified services to be delivered within the stipulated time notified by the Public Authority.",
+      "A notified service can have a Designated Officer, First Appellate Authority and Second Appellate Authority.",
+      "If the applicant remains dissatisfied after first and second appeals, a third appeal may be made to the Maharashtra State Commission for Right to Services.",
+      "The statutory time limit may be extended by Government order during elections or natural calamities such as flood or fire; the application must not silently assume an extension."
+    ]
+  },
+  "official_rts_services": [
+    {
+      "service_id": "RTS-BIRTH-CERT",
+      "category": "certificate",
+      "service_name": "Issue of birth certificate",
+      "time_limit_days": 3,
+      "designated_officer": "Deputy Registrar",
+      "first_appellate_authority": "Assistant Health Executive Officer",
+      "second_appellate_authority": "Health Executive Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-DEATH-CERT",
+      "category": "certificate",
+      "service_name": "Issue of death certificate",
+      "time_limit_days": 3,
+      "designated_officer": "Deputy Registrar",
+      "first_appellate_authority": "Assistant Health Executive Officer",
+      "second_appellate_authority": "Health Executive Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-MARRIAGE-CERT",
+      "category": "certificate",
+      "service_name": "Issuance of marriage registration certificate",
+      "time_limit_days": 3,
+      "designated_officer": "Authorized Officer / Superintendent under Marriage Registration framework",
+      "first_appellate_authority": "Deputy Registrar of Marriages",
+      "second_appellate_authority": "Deputy Commissioner",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-PROPERTY-TRANSFER",
+      "category": "property",
+      "service_name": "Property transfer registration certificate based on documents / inheritance",
+      "time_limit_days": 15,
+      "designated_officer": "Superintendent",
+      "first_appellate_authority": "Inspector of Taxes",
+      "second_appellate_authority": "Ward Area Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-ZONE-CERT",
+      "category": "planning",
+      "service_name": "Issuance of zone certificate",
+      "time_limit_days": 7,
+      "designated_officer": "Assistant Town Planner",
+      "first_appellate_authority": "City Planner",
+      "second_appellate_authority": "Assistant Director City Planning",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-PART-MAP",
+      "category": "planning",
+      "service_name": "Giving part map",
+      "time_limit_days": 3,
+      "designated_officer": "Assistant Town Planner",
+      "first_appellate_authority": "City Planner",
+      "second_appellate_authority": "Assistant Director City Planning",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-BUILDING-PERMIT",
+      "category": "planning",
+      "service_name": "Issuance of construction permit",
+      "time_limit_days": 60,
+      "designated_officer": "Assistant Town Planner",
+      "first_appellate_authority": "City Planner",
+      "second_appellate_authority": "Assistant Director City Planning",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-OCCUPANCY-CERT",
+      "category": "planning",
+      "service_name": "Issuance of Occupancy Certificate",
+      "time_limit_days": 30,
+      "designated_officer": "Assistant Town Planner",
+      "first_appellate_authority": "City Planner",
+      "second_appellate_authority": "Assistant Director City Planning",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-WATER-CONNECTION",
+      "category": "water",
+      "service_name": "Provide water connection",
+      "time_limit_days": 15,
+      "designated_officer": "Junior Engineer / Water Supply Engineer",
+      "first_appellate_authority": "Deputy Engineer / Additional Chief Officer / Deputy Chief Officer / Office Superintendent",
+      "second_appellate_authority": "Executive Engineer / Chief Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-DRAINAGE-CONNECTION",
+      "category": "drainage",
+      "service_name": "Providing drainage connections",
+      "time_limit_days": 15,
+      "designated_officer": "Junior Engineer",
+      "first_appellate_authority": "Deputy Engineer",
+      "second_appellate_authority": "Executive Engineer / Superintending Engineer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-FIRE-CERT",
+      "category": "fire",
+      "service_name": "Issuance of Fire Extinguisher Certificate (for Municipalities)",
+      "time_limit_days": 7,
+      "designated_officer": "Assistant Fire Officer",
+      "first_appellate_authority": "Chief Fire Officer / Deputy Fire Officer",
+      "second_appellate_authority": "Deputy Commissioner Fire",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-WATER-OWNERSHIP",
+      "category": "water",
+      "service_name": "Change in ownership",
+      "time_limit_days": 7,
+      "designated_officer": "Junior Engineer / Water Supply Engineer",
+      "first_appellate_authority": "Deputy Engineer / Additional Chief Officer / Deputy Chief Officer / Office Superintendent",
+      "second_appellate_authority": "Executive Engineer / Chief Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-WATER-SIZE",
+      "category": "water",
+      "service_name": "Changing the connection size",
+      "time_limit_days": 15,
+      "designated_officer": "Junior Engineer / Water Supply Engineer",
+      "first_appellate_authority": "Deputy Engineer / Additional Chief Officer / Deputy Chief Officer / Office Superintendent",
+      "second_appellate_authority": "Executive Engineer / Chief Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-WATER-DISCONNECT",
+      "category": "water",
+      "service_name": "Temporary / permanent disconnection",
+      "time_limit_days": 7,
+      "designated_officer": "Junior Engineer / Water Supply Engineer",
+      "first_appellate_authority": "Deputy Engineer / Additional Chief Officer / Deputy Chief Officer / Office Superintendent",
+      "second_appellate_authority": "Executive Engineer / Chief Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-WATER-RECONNECT",
+      "category": "water",
+      "service_name": "Reconnect water connection",
+      "time_limit_days": 15,
+      "designated_officer": "Junior Engineer / Water Supply Engineer",
+      "first_appellate_authority": "Deputy Engineer / Additional Chief Officer / Deputy Chief Officer / Office Superintendent",
+      "second_appellate_authority": "Executive Engineer / Chief Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-WATER-BILL",
+      "category": "water",
+      "service_name": "Preparation of water bill",
+      "time_limit_days": 3,
+      "designated_officer": "Junior Engineer / Water Supply Engineer",
+      "first_appellate_authority": "Deputy Engineer / Additional Chief Officer / Deputy Chief Officer / Office Superintendent",
+      "second_appellate_authority": "Executive Engineer / Chief Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-WATER-NODUES",
+      "category": "water",
+      "service_name": "Certificate of no arrears",
+      "time_limit_days": 3,
+      "designated_officer": "Junior Engineer / Water Supply Engineer",
+      "first_appellate_authority": "Deputy Engineer / Additional Chief Officer / Deputy Chief Officer / Office Superintendent",
+      "second_appellate_authority": "Executive Engineer / Chief Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-WATER-METER",
+      "category": "water_complaint",
+      "service_name": "Reporting faulty meters",
+      "time_limit_days": 7,
+      "designated_officer": "Junior Engineer / Water Supply Engineer",
+      "first_appellate_authority": "Deputy Engineer / Additional Chief Officer / Deputy Chief Officer / Office Superintendent",
+      "second_appellate_authority": "Executive Engineer / Chief Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-WATER-UNAUTH",
+      "category": "water_complaint",
+      "service_name": "Reporting unauthorized tap connections",
+      "time_limit_days": 7,
+      "designated_officer": "Junior Engineer / Water Supply Engineer",
+      "first_appellate_authority": "Deputy Engineer / Additional Chief Officer / Deputy Chief Officer / Office Superintendent",
+      "second_appellate_authority": "Executive Engineer / Chief Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-WATER-PRESSURE",
+      "category": "water_complaint",
+      "service_name": "Water pressure capacity complaint",
+      "time_limit_days": 3,
+      "designated_officer": "Junior Engineer / Water Supply Engineer",
+      "first_appellate_authority": "Deputy Engineer / Additional Chief Officer / Deputy Chief Officer / Office Superintendent",
+      "second_appellate_authority": "Executive Engineer / Chief Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    },
+    {
+      "service_id": "RTS-WATER-QUALITY",
+      "category": "water_complaint",
+      "service_name": "Water quality complaint",
+      "time_limit_days": 3,
+      "designated_officer": "Junior Engineer / Water Supply Engineer",
+      "first_appellate_authority": "Deputy Engineer / Additional Chief Officer / Deputy Chief Officer / Office Superintendent",
+      "second_appellate_authority": "Executive Engineer / Chief Officer",
+      "source_department": "Urban Development Department",
+      "source_url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "confidence": "high"
+    }
+  ],
+  "operational_incident_categories": [
+    {
+      "incident_type": "medical_emergency",
+      "department_or_handoff": "External emergency handoff",
+      "response_target": {
+        "value": 0,
+        "unit": "minutes",
+        "meaning": "immediate handoff"
+      },
+      "is_statutory_rts": false,
+      "default_action": "Offer immediate call handoff to 108/112 and create only a supporting municipal incident if relevant.",
+      "priority_floor": "critical"
+    },
+    {
+      "incident_type": "fire_or_immediate_life_safety",
+      "department_or_handoff": "Fire / emergency",
+      "response_target": {
+        "value": 0,
+        "unit": "minutes",
+        "meaning": "immediate handoff"
+      },
+      "is_statutory_rts": false,
+      "default_action": "Immediate emergency handoff; municipal command system may support access/resources but must not replace 112.",
+      "priority_floor": "critical"
+    },
+    {
+      "incident_type": "flood_road_blockage",
+      "department_or_handoff": "Civil / Public Works + Disaster Response",
+      "response_target": {
+        "value": 30,
+        "unit": "minutes"
+      },
+      "is_statutory_rts": false,
+      "target_status": "configurable_demo_policy",
+      "priority_floor": "critical_if_people_or_critical_facilities_isolated"
+    },
+    {
+      "incident_type": "water_quality_alert",
+      "department_or_handoff": "Water Supply",
+      "response_target": {
+        "value": 60,
+        "unit": "minutes"
+      },
+      "is_statutory_rts": false,
+      "target_status": "configurable_demo_policy",
+      "official_related_service": "RTS-WATER-QUALITY",
+      "official_related_rts_days": 3,
+      "note": "Operational dispatch target is separate from the official 3-day notified-service timeline."
+    },
+    {
+      "incident_type": "major_water_distribution_failure",
+      "department_or_handoff": "Water Supply",
+      "response_target": {
+        "value": 120,
+        "unit": "minutes"
+      },
+      "is_statutory_rts": false,
+      "target_status": "configurable_demo_policy"
+    },
+    {
+      "incident_type": "drain_blockage",
+      "department_or_handoff": "Drainage and Sanitation",
+      "response_target": {
+        "value": 240,
+        "unit": "minutes"
+      },
+      "is_statutory_rts": false,
+      "target_status": "configurable_demo_policy"
+    },
+    {
+      "incident_type": "waste_overflow_near_sensitive_site",
+      "department_or_handoff": "Solid Waste Management",
+      "response_target": {
+        "value": 180,
+        "unit": "minutes"
+      },
+      "is_statutory_rts": false,
+      "target_status": "configurable_demo_policy",
+      "sensitive_sites": [
+        "hospital",
+        "school",
+        "market",
+        "dense_population_zone"
+      ]
+    },
+    {
+      "incident_type": "missed_waste_collection",
+      "department_or_handoff": "Solid Waste Management",
+      "response_target": {
+        "value": 24,
+        "unit": "hours"
+      },
+      "is_statutory_rts": false,
+      "target_status": "configurable_demo_policy"
+    },
+    {
+      "incident_type": "road_damage",
+      "department_or_handoff": "Civil / Public Works",
+      "response_target": {
+        "value": 24,
+        "unit": "hours"
+      },
+      "is_statutory_rts": false,
+      "target_status": "configurable_demo_policy"
+    },
+    {
+      "incident_type": "mosquito_or_vector_control",
+      "department_or_handoff": "Public Health / Sanitation",
+      "response_target": {
+        "value": 24,
+        "unit": "hours"
+      },
+      "is_statutory_rts": false,
+      "target_status": "configurable_demo_policy"
+    },
+    {
+      "incident_type": "stp_treatment_quality_alert",
+      "department_or_handoff": "Wastewater / STP Operations",
+      "response_target": {
+        "value": 60,
+        "unit": "minutes"
+      },
+      "is_statutory_rts": false,
+      "target_status": "configurable_demo_policy"
+    }
+  ],
+  "escalation_engine": {
+    "operational_escalation": [
+      {
+        "level": 0,
+        "name": "Assigned Team",
+        "trigger": "incident assigned",
+        "actions": [
+          "notify team",
+          "start operational timer",
+          "record acknowledgement"
+        ]
+      },
+      {
+        "level": 1,
+        "name": "Department Supervisor",
+        "trigger": "50% of operational response target consumed without acknowledgement/progress",
+        "actions": [
+          "notify supervisor",
+          "flag at-risk"
+        ]
+      },
+      {
+        "level": 2,
+        "name": "Municipal Command / Chief Officer Review",
+        "trigger": "operational target exceeded or resource remains unavailable",
+        "actions": [
+          "escalate",
+          "require reason",
+          "re-optimize resources",
+          "notify citizen of delay if configured"
+        ]
+      },
+      {
+        "level": 3,
+        "name": "District / Emergency Handoff",
+        "trigger": "life-safety/disaster threshold or municipal capacity insufficient",
+        "actions": [
+          "offer/trigger authorized district or state emergency handoff",
+          "retain audit record"
+        ]
+      }
+    ],
+    "rts_appeal_logic": {
+      "applies_only_to": "official notified RTS services",
+      "workflow": [
+        "Designated Officer",
+        "First Appellate Authority",
+        "Second Appellate Authority",
+        "Third appeal to Maharashtra State Commission for Right to Services"
+      ],
+      "rule": "Do not automatically file or claim a statutory appeal. The system may show eligibility/status and provide the official escalation path."
+    }
+  },
+  "sla_status_logic": {
+    "operational": [
+      {
+        "status": "ON_TRACK",
+        "condition": "elapsed < 0.50 * target"
+      },
+      {
+        "status": "AT_RISK",
+        "condition": "elapsed >= 0.50 * target and elapsed < target"
+      },
+      {
+        "status": "OVERDUE",
+        "condition": "elapsed >= target"
+      }
+    ],
+    "statutory_rts": [
+      {
+        "status": "WITHIN_RTS_TIME",
+        "condition": "elapsed_days < notified_time_limit_days"
+      },
+      {
+        "status": "RTS_LIMIT_REACHED",
+        "condition": "elapsed_days >= notified_time_limit_days"
+      }
+    ]
+  },
+  "natural_calamity_rule": {
+    "official_basis": "RTS rules permit the concerned administrative department, with required concurrence, to extend stipulated time limits during elections or natural calamities such as flood or fire.",
+    "app_rule": "Never auto-extend an RTS deadline merely because a flood scenario is active. Store an extension only when an authorized Government/department order is entered with order reference and dates.",
+    "required_fields_for_extension": [
+      "government_order_reference",
+      "authorized_department",
+      "effective_from",
+      "effective_to",
+      "affected_services",
+      "reason"
+    ]
+  },
+  "notification_events": [
+    "TICKET_REGISTERED",
+    "TEAM_ASSIGNED",
+    "AT_RISK",
+    "DELAYED",
+    "RESOURCE_UNAVAILABLE",
+    "ESCALATED",
+    "FIELD_WORK_STARTED",
+    "INSPECTION_PENDING",
+    "RESOLVED",
+    "REWORK_REQUIRED"
+  ],
+  "source_register": [
+    {
+      "source": "Directorate of Municipal Administration - Right to Services",
+      "url": "https://mahadma.maharashtra.gov.in/en/rts/",
+      "authority": "Government of Maharashtra",
+      "use": "RTS legal framework and appeal structure"
+    },
+    {
+      "source": "Aaple Sarkar - Department Notified Services",
+      "url": "https://aaplesarkar.mahaonline.gov.in/en/CommonForm/CitizenServices",
+      "authority": "Government of Maharashtra",
+      "use": "Official Urban Development notified-service timelines and officers"
+    },
+    {
+      "source": "Maharashtra RTS Rules / annual report publication",
+      "url": "https://aaplesarkar.mahaonline.gov.in/pdf/Annual_Report_2019-20_English.pdf",
+      "authority": "Maharashtra State Commission for Right to Services",
+      "use": "Natural-calamity/election extension rule and display/acknowledgement principles"
+    }
+  ]
+}

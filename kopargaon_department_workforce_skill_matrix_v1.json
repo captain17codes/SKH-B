@@ -1,0 +1,423 @@
+{
+  "metadata": {
+    "dataset_name": "Kopargaon Department and Workforce Skill Matrix",
+    "version": "1.0",
+    "as_of": "2026-08-29",
+    "purpose": "Part B - Resource-Constrained Civic Decision and Response Engine",
+    "important_rule": "This dataset defines verified/traceable municipal capabilities and skill compatibility. It does NOT claim current live headcount, shift attendance, vehicle ownership, or equipment availability. Those must be entered by an authorized operator at runtime."
+  },
+  "departments": [
+    {
+      "department_id": "WATER_SUPPLY",
+      "name": "Water Supply",
+      "capabilities": [
+        "water treatment plant operation",
+        "daily water distribution",
+        "pipeline maintenance and repair",
+        "pump operation",
+        "valve operation",
+        "basic water-quality/treatment support"
+      ],
+      "roles": [
+        "Supervisor",
+        "Plumber",
+        "Valveman",
+        "Pump Operator",
+        "Lab Technician / Filter Operator",
+        "Electrician / Wireman",
+        "Heavy Mazdoor",
+        "Skilled Labour",
+        "Unskilled Labour",
+        "Heavy Vehicle Driver",
+        "JCB Driver"
+      ],
+      "evidence": [
+        {
+          "type": "historical_boq",
+          "year": 2022,
+          "source_url": "https://www.tenderdetail.com/Indian-Tenders/TenderNotice/33935650/87db3d1208d913bc16ba5264d2c7221f",
+          "confidence": "high"
+        },
+        {
+          "type": "water_manpower_tender",
+          "year": 2025,
+          "source_url": "https://www.tenderdetail.com/Indian-Tenders/TenderNotice/47440745/c52baf288332b0aa0579c37786a5bf1b",
+          "confidence": "high"
+        },
+        {
+          "type": "current_water_fire_operations_tender",
+          "year": 2026,
+          "tender_id": "2026_DMA_1321153_1",
+          "tender_ref": "2026_DMA_WATER_3",
+          "source_url": "https://tenderdekho.com/tender-detail/td-52lVoxUQth",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "department_id": "DRAINAGE_SANITATION",
+      "name": "Drainage and Sanitation",
+      "capabilities": [
+        "main drain desilting",
+        "drain blockage clearing",
+        "silt and waste loading",
+        "transport to designated disposal location",
+        "field sanitation support"
+      ],
+      "roles": [
+        "Drain Cleaning Crew",
+        "Machine Operator",
+        "JCB / Poclain Operator",
+        "Dumper Driver",
+        "Tractor Trolley Driver",
+        "Skilled Labour",
+        "Unskilled Labour",
+        "Supervisor"
+      ],
+      "equipment_classes": [
+        "JCB 3DX",
+        "Poclain 210",
+        "Poclain 350 LR",
+        "Tractor Trolley - two wheel",
+        "Tractor Trolley - four wheel",
+        "Dumper - six wheel",
+        "Dumper - ten wheel"
+      ],
+      "evidence": [
+        {
+          "type": "current_desilting_tender",
+          "year": 2026,
+          "tender_id": "2026_DMA_1297764_1",
+          "tender_ref": "2026_DMA_SI_1",
+          "source_url": "https://tenderkart.in/tender/6a103a93-b09c-4ac4-b2dd-5dca856b9405",
+          "confidence": "high"
+        },
+        {
+          "type": "historical_equipment_boq",
+          "year": 2025,
+          "source_url": "https://www.tenderdetail.com/Indian-Tenders/TenderNotice/49129925/7426c6dea40577cdbe0438c698de4298",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "department_id": "SOLID_WASTE",
+      "name": "Solid Waste Management",
+      "capabilities": [
+        "daily waste collection",
+        "waste transportation",
+        "road sweeping",
+        "solid-waste processing"
+      ],
+      "roles": [
+        "Waste Collection Crew",
+        "Road Sweeping Team",
+        "Waste Vehicle Driver",
+        "Solid Waste Processing Team",
+        "Supervisor"
+      ],
+      "evidence": [
+        {
+          "type": "solid_waste_management_service_tender",
+          "year": 2026,
+          "source_url": "https://www.tendersontime.com/india/kopargaon-tenders/",
+          "confidence": "medium_high"
+        }
+      ]
+    },
+    {
+      "department_id": "PUBLIC_HEALTH_SANITATION",
+      "name": "Public Health / Sanitation",
+      "capabilities": [
+        "fogging",
+        "mosquito-control operations",
+        "disinfectant spraying",
+        "public-health sanitation response"
+      ],
+      "roles": [
+        "Fogging Team",
+        "Spray Team",
+        "Sanitation Worker",
+        "Supervisor"
+      ],
+      "evidence": [
+        {
+          "type": "disinfectant_fogging_tender",
+          "year": 2026,
+          "tender_id": "2026_DMA_1299058_1",
+          "tender_ref": "2026_DMA_SI_2",
+          "source_url": "https://tenderkart.in/tender/2a16e3c0-eed9-4216-9ade-1d469d9bea55",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "department_id": "FIRE_RESPONSE",
+      "name": "Fire / Emergency Municipal Response",
+      "capabilities": [
+        "fire-department manpower support",
+        "municipal emergency-response support"
+      ],
+      "roles": [
+        "Fire Response Manpower",
+        "Driver",
+        "Support Crew"
+      ],
+      "evidence": [
+        {
+          "type": "current_water_fire_operations_tender",
+          "year": 2026,
+          "tender_id": "2026_DMA_1321153_1",
+          "tender_ref": "2026_DMA_WATER_3",
+          "source_url": "https://tenderdekho.com/tender-detail/td-52lVoxUQth",
+          "confidence": "high"
+        }
+      ],
+      "external_handoff_rule": "Immediate life-safety emergencies should hand off to official emergency channels such as 112/108; the municipal system should not pretend to replace them."
+    },
+    {
+      "department_id": "CIVIL_PUBLIC_WORKS",
+      "name": "Civil / Public Works",
+      "capabilities": [
+        "road repair",
+        "minor civil repair",
+        "drain construction/repair",
+        "paving work",
+        "material spreading"
+      ],
+      "roles": [
+        "Civil Supervisor / Engineer",
+        "Road Repair Crew",
+        "Skilled Labour",
+        "Unskilled Labour",
+        "Machine Operator",
+        "Driver"
+      ],
+      "evidence": [
+        {
+          "type": "2026_civil_tender_pipeline",
+          "year": 2026,
+          "confidence": "high",
+          "note": "Derived from multiple KMC civil/road/drainage tenders already collected in the municipal project pipeline dataset."
+        }
+      ]
+    },
+    {
+      "department_id": "WASTEWATER_STP",
+      "name": "Wastewater / STP Operations",
+      "capabilities": [
+        "screening and inlet management",
+        "pump/blower operation",
+        "biological treatment support",
+        "tertiary treatment support",
+        "sludge handling",
+        "treatment-quality monitoring"
+      ],
+      "roles": [
+        "Plant Supervisor",
+        "Pump / Blower Operator",
+        "Electrician / Wireman",
+        "Lab / Filter Operator",
+        "Maintenance Team",
+        "Sludge Handling Team"
+      ],
+      "evidence": [
+        {
+          "type": "kopargaon_stp_public_evidence",
+          "year": 2026,
+          "source_authority": "Maharashtra Pollution Control Board",
+          "source_url": "https://www.mpcb.gov.in/sites/default/files/STP_All_List_Merged_31012026_mpr_PRS_%26_NON_PRS_av-1.pdf",
+          "confidence": "high"
+        },
+        {
+          "type": "generic_technical_reference",
+          "source": "Trity Environ Solutions",
+          "source_url": "https://trityenviro.com/wastewater-treatment-plant/",
+          "confidence": "technical_reference_only",
+          "note": "Used only for generic process/equipment capability categories; not as proof of Kopargaon contractor/equipment."
+        }
+      ]
+    }
+  ],
+  "incident_compatibility_matrix": [
+    {
+      "incident_type": "water_leakage",
+      "department_id": "WATER_SUPPLY",
+      "required_roles": [
+        "Plumber",
+        "Valveman"
+      ],
+      "optional_roles": [
+        "Supervisor"
+      ],
+      "priority_notes": "Increase priority if near hospital, school, dense population, or major road."
+    },
+    {
+      "incident_type": "water_distribution_failure",
+      "department_id": "WATER_SUPPLY",
+      "required_roles": [
+        "Pump Operator",
+        "Valveman"
+      ],
+      "optional_roles": [
+        "Electrician / Wireman",
+        "Supervisor"
+      ]
+    },
+    {
+      "incident_type": "pump_or_electrical_failure",
+      "department_id": "WATER_SUPPLY",
+      "required_roles": [
+        "Pump Operator",
+        "Electrician / Wireman"
+      ],
+      "optional_roles": [
+        "Supervisor"
+      ]
+    },
+    {
+      "incident_type": "water_quality_alert",
+      "department_id": "WATER_SUPPLY",
+      "required_roles": [
+        "Lab Technician / Filter Operator",
+        "Supervisor"
+      ],
+      "optional_roles": [
+        "Pump Operator"
+      ]
+    },
+    {
+      "incident_type": "drain_blockage",
+      "department_id": "DRAINAGE_SANITATION",
+      "required_roles": [
+        "Drain Cleaning Crew"
+      ],
+      "optional_equipment": [
+        "JCB 3DX",
+        "Poclain 210",
+        "Dumper - six wheel"
+      ]
+    },
+    {
+      "incident_type": "heavy_silt_or_flood_debris",
+      "department_id": "DRAINAGE_SANITATION",
+      "required_roles": [
+        "Drain Cleaning Crew",
+        "Machine Operator",
+        "Dumper Driver"
+      ],
+      "optional_equipment": [
+        "Poclain 350 LR",
+        "JCB 3DX",
+        "Dumper - ten wheel"
+      ]
+    },
+    {
+      "incident_type": "missed_waste_collection",
+      "department_id": "SOLID_WASTE",
+      "required_roles": [
+        "Waste Collection Crew",
+        "Waste Vehicle Driver"
+      ]
+    },
+    {
+      "incident_type": "waste_overflow_near_sensitive_site",
+      "department_id": "SOLID_WASTE",
+      "required_roles": [
+        "Waste Collection Crew",
+        "Waste Vehicle Driver",
+        "Supervisor"
+      ],
+      "priority_notes": "Sensitive-site context can include hospital, school, market, or dense population."
+    },
+    {
+      "incident_type": "mosquito_or_vector_control",
+      "department_id": "PUBLIC_HEALTH_SANITATION",
+      "required_roles": [
+        "Fogging Team"
+      ],
+      "optional_roles": [
+        "Supervisor"
+      ]
+    },
+    {
+      "incident_type": "road_damage",
+      "department_id": "CIVIL_PUBLIC_WORKS",
+      "required_roles": [
+        "Road Repair Crew"
+      ],
+      "optional_roles": [
+        "Civil Supervisor / Engineer",
+        "Machine Operator"
+      ]
+    },
+    {
+      "incident_type": "fire_or_immediate_life_safety",
+      "department_id": "FIRE_RESPONSE",
+      "required_roles": [
+        "Fire Response Manpower"
+      ],
+      "external_handoff": [
+        "112"
+      ],
+      "notes": "For medical emergency, prefer 108. Do not replace official emergency response."
+    },
+    {
+      "incident_type": "stp_inlet_blockage",
+      "department_id": "WASTEWATER_STP",
+      "required_roles": [
+        "Maintenance Team",
+        "Plant Supervisor"
+      ]
+    },
+    {
+      "incident_type": "stp_aeration_failure",
+      "department_id": "WASTEWATER_STP",
+      "required_roles": [
+        "Pump / Blower Operator",
+        "Electrician / Wireman"
+      ],
+      "optional_roles": [
+        "Plant Supervisor"
+      ]
+    },
+    {
+      "incident_type": "stp_treatment_quality_alert",
+      "department_id": "WASTEWATER_STP",
+      "required_roles": [
+        "Lab / Filter Operator",
+        "Plant Supervisor"
+      ]
+    },
+    {
+      "incident_type": "stp_sludge_handling_issue",
+      "department_id": "WASTEWATER_STP",
+      "required_roles": [
+        "Sludge Handling Team"
+      ],
+      "optional_roles": [
+        "Driver",
+        "Maintenance Team"
+      ]
+    }
+  ],
+  "runtime_fields_required": {
+    "for_each_team_or_resource": [
+      "available_now",
+      "quantity_or_headcount",
+      "base_location",
+      "shift_start",
+      "shift_end",
+      "current_workload",
+      "status",
+      "operator_verified_at"
+    ],
+    "do_not_prepopulate_without_authoritative_data": [
+      "live headcount",
+      "vehicles available today",
+      "equipment ownership",
+      "current shift attendance",
+      "exact dispatch cost"
+    ]
+  }
+}

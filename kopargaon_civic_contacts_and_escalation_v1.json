@@ -1,0 +1,242 @@
+{
+  "metadata": {
+    "dataset_name": "Kopargaon Civic Contacts and Escalation Registry",
+    "version": "1.0",
+    "compiled_on": "2026-08-29",
+    "purpose": "Part B - Resource-Constrained Civic Decision and Response",
+    "scope": "Public civic and emergency channels only; personal officer mobile numbers excluded.",
+    "verification_policy": [
+      "Prefer Government/NIC sources.",
+      "Municipal-portal-only contacts are marked for manual verification.",
+      "Do not assume 24x7 availability unless explicitly stated by the source."
+    ]
+  },
+  "contacts": [
+    {
+      "contact_id": "KMC_MAIN_TOLLFREE",
+      "organization": "Kopargaon Municipal Council",
+      "department": "General / Chief Officer Office",
+      "service_category": "municipal_general",
+      "contact_type": "helpline",
+      "phone": "18002333100",
+      "jurisdiction": "Kopargaon Municipal Council",
+      "availability": "not stated",
+      "emergency_level": "municipal",
+      "escalation_level": 1,
+      "source_authority": "Ahilyanagar District Administration / NIC",
+      "source_url": "https://ahilyanagar.maharashtra.gov.in/en/municipal-administration/",
+      "confidence": "high"
+    },
+    {
+      "contact_id": "KMC_OFFICE_LANDLINE",
+      "organization": "Kopargaon Municipal Council",
+      "department": "Chief Officer Office",
+      "service_category": "municipal_general",
+      "contact_type": "landline",
+      "phone": "02423-223124",
+      "email": "cokopargaon@gmail.com",
+      "pincode": "423601",
+      "jurisdiction": "Kopargaon Municipal Council",
+      "availability": "not stated",
+      "emergency_level": "municipal",
+      "escalation_level": 1,
+      "source_authority": "Ahilyanagar District Administration / NIC",
+      "source_url": "https://ahilyanagar.maharashtra.gov.in/en/public-utility/kopargaon/",
+      "confidence": "high",
+      "notes": "District utility page lists 2423-223124. A separate district table renders 0242-3223124; manually confirm before production use."
+    },
+    {
+      "contact_id": "KMC_DIGITAL_GRIEVANCE",
+      "organization": "Kopargaon Municipal Council Digital Services",
+      "department": "Complaint Redressal",
+      "service_category": "municipal_grievance",
+      "contact_type": "helpline",
+      "phone": "8181909090",
+      "jurisdiction": "Kopargaon",
+      "availability": "not stated",
+      "emergency_level": "municipal",
+      "escalation_level": 1,
+      "source_authority": "smartkopargaon.com municipal digital-services portal",
+      "source_url": "https://smartkopargaon.com/",
+      "confidence": "medium",
+      "notes": "Portal labels this as the KMC complaint-redressal helpline. Manually verify with KMC before production use."
+    },
+    {
+      "contact_id": "AHILYANAGAR_DISTRICT_CONTROL_1077",
+      "organization": "Ahilyanagar District Administration",
+      "department": "District Control Room",
+      "service_category": "district_disaster_control",
+      "contact_type": "toll_free",
+      "phone": "1077",
+      "alternate_phone": "0241-2323844",
+      "email": "scy.ahmednagar@gmail.com",
+      "jurisdiction": "Ahilyanagar District",
+      "availability": "not stated",
+      "emergency_level": "district",
+      "escalation_level": 2,
+      "source_authority": "Ahilyanagar District Administration / NIC",
+      "source_url": "https://ahilyanagar.maharashtra.gov.in/en/department/helpline/",
+      "confidence": "high"
+    },
+    {
+      "contact_id": "MAHA_STATE_DISASTER_1070",
+      "organization": "Maharashtra State Disaster Management Authority",
+      "department": "Disaster Response and Relief",
+      "service_category": "state_disaster_control",
+      "contact_type": "helpline",
+      "phone": "1070",
+      "jurisdiction": "Maharashtra",
+      "availability": "emergency channel",
+      "emergency_level": "state",
+      "escalation_level": 3,
+      "source_authority": "Maharashtra State Disaster Management Authority",
+      "source_url": "https://sdma.maharashtra.gov.in/",
+      "confidence": "high"
+    },
+    {
+      "contact_id": "EMERGENCY_112",
+      "organization": "Emergency Response Support System",
+      "department": "Integrated Emergency",
+      "service_category": "police_fire_medical_emergency",
+      "contact_type": "emergency_number",
+      "phone": "112",
+      "jurisdiction": "Maharashtra / India",
+      "availability": "emergency",
+      "emergency_level": "immediate",
+      "escalation_level": 0,
+      "source_authority": "Maharashtra State Disaster Management Authority / Maharashtra Police",
+      "source_url": "https://sdma.maharashtra.gov.in/en/faqs/",
+      "confidence": "high"
+    },
+    {
+      "contact_id": "MEDICAL_108",
+      "organization": "Maharashtra Emergency Medical Services",
+      "department": "Emergency Ambulance",
+      "service_category": "medical_emergency",
+      "contact_type": "toll_free",
+      "phone": "108",
+      "jurisdiction": "Maharashtra",
+      "availability": "24x7",
+      "emergency_level": "immediate",
+      "escalation_level": 0,
+      "source_authority": "National Health Mission Maharashtra",
+      "source_url": "https://nhm.maharashtra.gov.in/en/scheme/maharashtra-emergency-medical-services-mems/",
+      "confidence": "high"
+    },
+    {
+      "contact_id": "HEALTH_ADVICE_104",
+      "organization": "National Health Mission Maharashtra",
+      "department": "Health Support",
+      "service_category": "health_advice",
+      "contact_type": "helpline",
+      "phone": "104",
+      "jurisdiction": "Maharashtra",
+      "availability": "not stated",
+      "emergency_level": "support",
+      "escalation_level": 0,
+      "source_authority": "National Health Mission Maharashtra",
+      "source_url": "https://nhm.maharashtra.gov.in/en/",
+      "confidence": "high"
+    },
+    {
+      "contact_id": "MATERNAL_CHILD_TRANSPORT_102",
+      "organization": "National Health Mission Maharashtra",
+      "department": "Janani Shishu Suraksha Karyakram",
+      "service_category": "maternal_child_referral_transport",
+      "contact_type": "helpline",
+      "phone": "102",
+      "jurisdiction": "Maharashtra except Mumbai per NHM listing",
+      "availability": "not stated",
+      "emergency_level": "health_support",
+      "escalation_level": 0,
+      "source_authority": "National Health Mission Maharashtra",
+      "source_url": "https://nhm.maharashtra.gov.in/en/",
+      "confidence": "high"
+    },
+    {
+      "contact_id": "CITIZEN_CALL_CENTRE_155300",
+      "organization": "Ahilyanagar District Administration",
+      "department": "Citizen Call Centre",
+      "service_category": "citizen_government_support",
+      "contact_type": "call_centre",
+      "phone": "155300",
+      "jurisdiction": "Ahilyanagar listing",
+      "availability": "not stated",
+      "emergency_level": "non_emergency",
+      "escalation_level": 0,
+      "source_authority": "Ahilyanagar District Administration / NIC",
+      "source_url": "https://ahilyanagar.maharashtra.gov.in/en/",
+      "confidence": "high"
+    },
+    {
+      "contact_id": "WOMEN_HELPLINE_1091",
+      "organization": "Ahilyanagar District Administration",
+      "department": "Women Helpline",
+      "service_category": "women_support",
+      "contact_type": "helpline",
+      "phone": "1091",
+      "jurisdiction": "Ahilyanagar listing",
+      "availability": "not stated",
+      "emergency_level": "support",
+      "escalation_level": 0,
+      "source_authority": "Ahilyanagar District Administration / NIC",
+      "source_url": "https://ahilyanagar.maharashtra.gov.in/en/department/helpline/",
+      "confidence": "high"
+    },
+    {
+      "contact_id": "CHILD_HELPLINE_1098",
+      "organization": "Ahilyanagar District Administration",
+      "department": "Child Helpline",
+      "service_category": "child_support",
+      "contact_type": "helpline",
+      "phone": "1098",
+      "jurisdiction": "Ahilyanagar listing",
+      "availability": "not stated",
+      "emergency_level": "support",
+      "escalation_level": 0,
+      "source_authority": "Ahilyanagar District Administration / NIC",
+      "source_url": "https://ahilyanagar.maharashtra.gov.in/en/department/helpline/",
+      "confidence": "high"
+    }
+  ],
+  "routing_rules": [
+    {
+      "incident_type": "medical_emergency",
+      "primary_contact_id": "MEDICAL_108",
+      "fallback_contact_id": "EMERGENCY_112"
+    },
+    {
+      "incident_type": "police_fire_immediate_threat",
+      "primary_contact_id": "EMERGENCY_112"
+    },
+    {
+      "incident_type": "flood_or_disaster_local",
+      "primary_contact_id": "AHILYANAGAR_DISTRICT_CONTROL_1077",
+      "fallback_contact_id": "MAHA_STATE_DISASTER_1070"
+    },
+    {
+      "incident_type": "municipal_civic_service",
+      "primary_contact_id": "KMC_MAIN_TOLLFREE",
+      "fallback_contact_id": "KMC_OFFICE_LANDLINE"
+    },
+    {
+      "incident_type": "municipal_digital_grievance",
+      "primary_contact_id": "KMC_DIGITAL_GRIEVANCE",
+      "notes": "Use after manual verification."
+    },
+    {
+      "incident_type": "government_service_support",
+      "primary_contact_id": "CITIZEN_CALL_CENTRE_155300"
+    }
+  ],
+  "validation_notes": [
+    {
+      "issue": "KMC landline formatting discrepancy",
+      "details": "District public-utility page lists 2423-223124 while a separate district Municipal Administration table renders 0242-3223124. Normalized here as 02423-223124; manually confirm before production."
+    },
+    {
+      "issue": "KMC grievance helpline source strength",
+      "details": "8181909090 appears on smartkopargaon.com. Marked medium confidence until confirmed directly by KMC."
+    }
+  ]
+}

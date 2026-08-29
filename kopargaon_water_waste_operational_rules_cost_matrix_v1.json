@@ -1,0 +1,483 @@
+{
+  "metadata": {
+    "dataset_name": "Kopargaon Water + Waste Operational Rules and Cost Matrix",
+    "version": "1.0",
+    "as_of": "2026-08-29",
+    "purpose": "Part B - Resource-Constrained Civic Decision and Response Engine",
+    "currency": "INR",
+    "core_rules": [
+      "Use public procurement data only as reference evidence, not as proof of live resource availability.",
+      "Use accepted financial-bid unit rates only where the public record exposes a clear unit and amount.",
+      "Do not derive per-day or per-ton costs from a total tender value unless the contract duration/quantity is verified.",
+      "Live quantities, shifts, fuel, material consumption and contractor availability must be entered or verified by an authorized operator.",
+      "Operational response targets are configurable planning policies unless explicitly linked to an official statutory service."
+    ]
+  },
+  "water_operations": {
+    "public_evidence": [
+      {
+        "evidence_id": "WATER-OPS-2026",
+        "tender_id": "2026_DMA_1321153_1",
+        "tender_ref": "2026_DMA_WATER_3",
+        "title": "WTP operation, daily water distribution, maintenance/repair and Fire Department manpower",
+        "status": "award_pending_public_record",
+        "tender_value_displayed_inr": 1,
+        "tender_value_interpretation": "Placeholder / percentage-contract tender value; DO NOT use as operational cost.",
+        "emd_inr": 15000,
+        "source_url": "https://tenderdekho.com/tender-detail/td-52lVoxUQth",
+        "confidence": "high"
+      },
+      {
+        "evidence_id": "WATER-MANPOWER-2025",
+        "tender_ref": "2025_DMA_WS_03",
+        "title": "Water Supply Department manpower requirement for 2025-26",
+        "capabilities": [
+          "Skilled Labour",
+          "Unskilled Labour"
+        ],
+        "source_url": "https://www.tenderdetail.com/Indian-Tenders/TenderNotice/47440745/c52baf288332b0aa0579c37786a5bf1b",
+        "confidence": "high"
+      }
+    ],
+    "incident_rules": [
+      {
+        "incident_type": "water_leakage",
+        "department": "WATER_SUPPLY",
+        "minimum_capabilities": [
+          "Plumber",
+          "Valveman"
+        ],
+        "optional_capabilities": [
+          "Supervisor",
+          "Skilled Labour"
+        ],
+        "gis_checks": [
+          "nearest mapped road",
+          "nearby hospital/school/market",
+          "population-demand context",
+          "flood exposure if active"
+        ],
+        "priority_boost_conditions": [
+          "critical facility affected",
+          "large population/service area affected",
+          "major road/access corridor affected"
+        ],
+        "cost_method": "runtime_input",
+        "required_cost_inputs": [
+          "labour_cost",
+          "repair_material_cost",
+          "vehicle_or_machine_cost_if_used"
+        ]
+      },
+      {
+        "incident_type": "pump_or_electrical_failure",
+        "department": "WATER_SUPPLY",
+        "minimum_capabilities": [
+          "Pump Operator",
+          "Electrician / Wireman"
+        ],
+        "optional_capabilities": [
+          "Supervisor"
+        ],
+        "gis_checks": [
+          "affected service area",
+          "critical facilities",
+          "population-demand context"
+        ],
+        "cost_method": "runtime_input",
+        "required_cost_inputs": [
+          "labour_cost",
+          "spares_or_repair_cost"
+        ]
+      },
+      {
+        "incident_type": "water_quality_alert",
+        "department": "WATER_SUPPLY",
+        "minimum_capabilities": [
+          "Lab Technician / Filter Operator",
+          "Supervisor"
+        ],
+        "optional_capabilities": [
+          "Pump Operator"
+        ],
+        "priority_floor": "HIGH",
+        "priority_boost_conditions": [
+          "hospital or school potentially affected",
+          "large population service area",
+          "flood-related contamination context"
+        ],
+        "cost_method": "runtime_input",
+        "required_cost_inputs": [
+          "sampling_or_testing_cost",
+          "labour_cost",
+          "treatment_adjustment_cost_if_any"
+        ],
+        "note": "Do not state contamination is confirmed unless an actual test result exists."
+      },
+      {
+        "incident_type": "major_water_distribution_failure",
+        "department": "WATER_SUPPLY",
+        "minimum_capabilities": [
+          "Pump Operator",
+          "Valveman",
+          "Water Distribution Team"
+        ],
+        "optional_capabilities": [
+          "Plumber",
+          "Electrician / Wireman",
+          "Supervisor"
+        ],
+        "priority_inputs": [
+          "affected_population",
+          "critical_facilities",
+          "duration_without_supply",
+          "alternate_supply_available"
+        ],
+        "cost_method": "runtime_input",
+        "required_cost_inputs": [
+          "crew_cost",
+          "repair_cost",
+          "temporary_supply_cost_if_used"
+        ]
+      }
+    ],
+    "cost_reference_policy": {
+      "verified_unit_rates_available": false,
+      "reason": "Current 2026 WTP/water-distribution tender is a percentage/service-charge tender and publicly exposed tender value is ₹1 placeholder. No defensible unit deployment rates were found in the accessible public record.",
+      "runtime_fields": [
+        "available_budget",
+        "crew_hourly_or_shift_cost",
+        "material_cost",
+        "vehicle_cost",
+        "fuel_cost",
+        "temporary_water_supply_cost"
+      ]
+    }
+  },
+  "waste_and_drain_operations": {
+    "solid_waste_baseline": {
+      "reported_waste_generation_tpd": 20.4,
+      "reported_biodegradable_tpd": 11.0,
+      "reported_dry_recyclable_tpd": 8.0,
+      "reported_inerts_tpd": 1.4,
+      "reported_collected_tpd": 20.4,
+      "reported_transported_tpd": 20.4,
+      "reported_final_destination": "Processing Plant 200/1,2,3,4 Manai, Kopargaon Municipal Council",
+      "source_authority": "Government of Maharashtra filing before National Green Tribunal",
+      "source_url": "https://www.greentribunal.gov.in/sites/default/files/news_updates/AFFIDAVIT%20BY%20CS%2C%20GOVT.%20OF%20MAHARASHTRA%20IN%20OA%20NO.%20606%20of%202018%20%28COMPLIANCE%20OF%20MSW%20MGT%20RULES%2C%202016%20AND%20OTHER%20ENVIRONMENTAL%20ISSUES%29.pdf",
+      "confidence": "high",
+      "note": "Reported baseline, not live telemetry."
+    },
+    "current_swm_service_package": {
+      "tender_id": "2026_DMA_1323067_1",
+      "title": "Daily waste collection, transportation and processing of solid waste and daily road sweeping for Kopargaon Municipal Council area",
+      "estimated_tender_value_inr": 51663600,
+      "publicly_reported_value_rounded": "about ₹5.16-5.17 crore",
+      "status": "tender_closed_public_record",
+      "source_url": "https://www.maharashtra-tenders.co.in/latest/road-services-tenders/",
+      "confidence": "high",
+      "cost_use_rule": "Use only as package-level procurement context. Do NOT convert to ₹/day or ₹/ton because the accessible public record does not verify the contract duration/BOQ quantity."
+    },
+    "drain_desilting_reference_rates": {
+      "tender_id": "2026_DMA_1297764_1",
+      "tender_ref": "2026_DMA_SI_1",
+      "tender_value_inr": 1500000,
+      "financial_evaluation_date": "2026-06-02",
+      "accepted_financial_bidder": "Aditya Teke",
+      "accepted_financial_bid_total_shown_inr": 15700,
+      "interpretation": "TenderKart exposes line-item accepted financial bid rates by hour. Use as 2026 procurement reference rates, not guaranteed municipal fleet operating costs.",
+      "unit_rates": [
+        {
+          "resource_code": "POCLAIN_350_LR",
+          "display_name": "Poclain 350 LR",
+          "unit": "per_hour",
+          "reference_rate_inr": 3500,
+          "rate_source": "accepted L1 financial bid",
+          "confidence": "high"
+        },
+        {
+          "resource_code": "POCLAIN_210",
+          "display_name": "Poclain 210",
+          "unit": "per_hour",
+          "reference_rate_inr": 2500,
+          "rate_source": "accepted L1 financial bid",
+          "confidence": "high"
+        },
+        {
+          "resource_code": "JCB_3DX",
+          "display_name": "JCB 3DX",
+          "unit": "per_hour",
+          "reference_rate_inr": 1400,
+          "rate_source": "accepted L1 financial bid",
+          "confidence": "high"
+        },
+        {
+          "resource_code": "TRACTOR_TROLLEY_2W",
+          "display_name": "Tractor Trolley - two wheel",
+          "unit": "per_hour",
+          "reference_rate_inr": 500,
+          "rate_source": "accepted L1 financial bid",
+          "confidence": "high"
+        },
+        {
+          "resource_code": "TRACTOR_TROLLEY_4W",
+          "display_name": "Tractor Trolley - four wheel",
+          "unit": "per_hour",
+          "reference_rate_inr": 800,
+          "rate_source": "accepted L1 financial bid",
+          "confidence": "high"
+        },
+        {
+          "resource_code": "DUMPER_6W",
+          "display_name": "Dumper - six wheel",
+          "unit": "per_hour",
+          "reference_rate_inr": 2000,
+          "rate_source": "accepted L1 financial bid",
+          "confidence": "high"
+        },
+        {
+          "resource_code": "DUMPER_10W",
+          "display_name": "Dumper - ten wheel",
+          "unit": "per_hour",
+          "reference_rate_inr": 3000,
+          "rate_source": "accepted L1 financial bid",
+          "confidence": "high"
+        },
+        {
+          "resource_code": "TRACTOR_KENI",
+          "display_name": "Tractor Keni (tender wording/transliteration)",
+          "unit": "per_hour",
+          "reference_rate_inr": 2000,
+          "rate_source": "accepted L1 financial bid",
+          "confidence": "medium",
+          "note": "Keep original/tender wording until equipment description is manually reconciled."
+        }
+      ],
+      "source_url": "https://tenderkart.in/tender/6a103a93-b09c-4ac4-b2dd-5dca856b9405",
+      "confidence": "high"
+    },
+    "incident_rules": [
+      {
+        "incident_type": "missed_waste_collection",
+        "department": "SOLID_WASTE",
+        "minimum_capabilities": [
+          "Waste Collection Crew",
+          "Waste Vehicle Driver"
+        ],
+        "priority_inputs": [
+          "days_or_hours_missed",
+          "affected_population",
+          "waste_quantity_estimate",
+          "nearby_sensitive_site"
+        ],
+        "gis_checks": [
+          "road accessibility",
+          "hospital/school/market proximity",
+          "population context"
+        ],
+        "cost_method": "runtime_input",
+        "required_cost_inputs": [
+          "vehicle_shift_cost",
+          "crew_shift_cost",
+          "fuel_or_trip_cost"
+        ],
+        "note": "No verified Kopargaon per-trip waste vehicle rate found in accessible public records."
+      },
+      {
+        "incident_type": "waste_overflow_near_sensitive_site",
+        "department": "SOLID_WASTE",
+        "minimum_capabilities": [
+          "Waste Collection Crew",
+          "Waste Vehicle Driver",
+          "Supervisor"
+        ],
+        "priority_floor": "HIGH",
+        "sensitive_sites": [
+          "hospital",
+          "school",
+          "market",
+          "dense_population_zone"
+        ],
+        "gis_checks": [
+          "sensitive-site distance",
+          "road access",
+          "flood exposure"
+        ],
+        "cost_method": "runtime_input"
+      },
+      {
+        "incident_type": "drain_blockage",
+        "department": "DRAINAGE_SANITATION",
+        "minimum_capabilities": [
+          "Drain Cleaning Crew"
+        ],
+        "machine_rule": {
+          "manual_or_light_blockage": "crew_only_if_operator_confirms",
+          "heavy_silt_or_debris": "JCB_3DX or POCLAIN_210/350 + transport vehicle as required"
+        },
+        "gis_checks": [
+          "flood scenario",
+          "road accessibility",
+          "critical facility proximity",
+          "population context"
+        ],
+        "cost_method": "reference_machine_rate_plus_runtime_labour_materials"
+      },
+      {
+        "incident_type": "heavy_silt_or_flood_debris",
+        "department": "DRAINAGE_SANITATION",
+        "minimum_capabilities": [
+          "Drain Cleaning Crew",
+          "Machine Operator",
+          "Dumper Driver"
+        ],
+        "candidate_equipment": [
+          "POCLAIN_350_LR",
+          "POCLAIN_210",
+          "JCB_3DX",
+          "DUMPER_6W",
+          "DUMPER_10W"
+        ],
+        "cost_method": "reference_machine_rate_plus_runtime_labour_materials",
+        "priority_boost_conditions": [
+          "road/bridge access blocked",
+          "hospital access affected",
+          "flood drainage path obstructed",
+          "large population exposed"
+        ]
+      },
+      {
+        "incident_type": "flood_related_waste_accumulation",
+        "department": "SOLID_WASTE",
+        "minimum_capabilities": [
+          "Waste Collection Crew",
+          "Waste Vehicle Driver"
+        ],
+        "optional_capabilities": [
+          "Drain Cleaning Crew",
+          "JCB / Poclain Operator",
+          "Dumper Driver"
+        ],
+        "gis_checks": [
+          "selected flood scenario",
+          "blocked/flood-exposed roads",
+          "population proxy",
+          "hospital/market proximity"
+        ],
+        "cost_method": "hybrid_reference_and_runtime"
+      }
+    ]
+  },
+  "cost_engine": {
+    "principle": "A response plan is feasible only if compatible resources are available AND the estimated response cost fits the scenario budget.",
+    "cost_fields": {
+      "reference_machine_cost": "sum(machine_hours * verified_reference_rate)",
+      "runtime_vehicle_cost": "operator-entered when no verified unit rate exists",
+      "runtime_labour_cost": "operator-entered",
+      "runtime_material_cost": "operator-entered",
+      "other_cost": "operator-entered with reason"
+    },
+    "formula": "estimated_response_cost = reference_machine_cost + runtime_vehicle_cost + runtime_labour_cost + runtime_material_cost + other_cost",
+    "rules": [
+      "Never use tender EMD or tender fee as response cost.",
+      "Never use ₹1 placeholder tender value as a service cost.",
+      "Never silently infer a per-day cost from an annual/package tender.",
+      "Store cost source and confidence with every line item.",
+      "If a required cost is unknown, mark COST_INCOMPLETE instead of filling zero.",
+      "Zero means true zero only when explicitly entered/verified; unknown must be null."
+    ],
+    "budget_outcomes": [
+      "FEASIBLE_WITHIN_BUDGET",
+      "FEASIBLE_BUT_COST_INCOMPLETE",
+      "RESOURCE_AVAILABLE_BUT_OVER_BUDGET",
+      "UNSERVED_RESOURCE_UNAVAILABLE",
+      "UNSERVED_NO_ACCESSIBLE_ROUTE"
+    ]
+  },
+  "planning_cost_template": {
+    "scenario_budget_inr": null,
+    "line_items": [
+      {
+        "resource_or_item": "JCB 3DX",
+        "quantity": 1,
+        "hours": null,
+        "reference_rate_inr_per_hour": 1400,
+        "source": "2026_DMA_1297764_1 accepted L1 bid",
+        "estimated_cost_inr": null
+      },
+      {
+        "resource_or_item": "Dumper 6W",
+        "quantity": 1,
+        "hours": null,
+        "reference_rate_inr_per_hour": 2000,
+        "source": "2026_DMA_1297764_1 accepted L1 bid",
+        "estimated_cost_inr": null
+      },
+      {
+        "resource_or_item": "Crew labour",
+        "quantity": null,
+        "hours": null,
+        "reference_rate_inr_per_hour": null,
+        "source": "runtime_operator_input_required",
+        "estimated_cost_inr": null
+      },
+      {
+        "resource_or_item": "Repair / consumable materials",
+        "quantity": null,
+        "reference_rate_inr": null,
+        "source": "runtime_operator_input_or_BOQ_required",
+        "estimated_cost_inr": null
+      }
+    ]
+  },
+  "decision_engine_integration": {
+    "water_example": {
+      "incident": "water_leakage_near_hospital",
+      "workflow": [
+        "GIS checks hospital proximity and affected population context",
+        "compatibility engine requests Plumber + Valveman",
+        "operator confirms live team availability",
+        "cost engine loads runtime labour/material cost",
+        "allocation engine checks road accessibility + budget",
+        "result is Served / Delayed / Unserved with Why? evidence"
+      ]
+    },
+    "waste_example": {
+      "incident": "heavy_flood_debris_blocking_drain",
+      "workflow": [
+        "GIS confirms flood/debris response context",
+        "engine selects compatible crew + machine candidates",
+        "reference machine rates are loaded from 2026 accepted L1 tender rates",
+        "operator enters expected machine hours and live availability",
+        "cost is calculated transparently",
+        "alternative JCB/Poclain configurations can be compared against available budget"
+      ]
+    }
+  },
+  "source_register": [
+    {
+      "source_id": "SRC-WATER-2026",
+      "title": "KMC WTP operation, daily water distribution, repair and Fire Department manpower tender",
+      "url": "https://tenderdekho.com/tender-detail/td-52lVoxUQth",
+      "source_type": "public tender mirror referencing DMA/MahaTenders"
+    },
+    {
+      "source_id": "SRC-DESILT-2026",
+      "title": "KMC drain desilting tender and financial evaluation",
+      "url": "https://tenderkart.in/tender/6a103a93-b09c-4ac4-b2dd-5dca856b9405",
+      "source_type": "public tender/result mirror referencing MahaTenders"
+    },
+    {
+      "source_id": "SRC-SWM-2026",
+      "title": "KMC daily waste collection, transportation, processing and road sweeping tender",
+      "url": "https://www.maharashtra-tenders.co.in/latest/road-services-tenders/",
+      "source_type": "public tender aggregator"
+    },
+    {
+      "source_id": "SRC-MSW-GOVT",
+      "title": "Government of Maharashtra MSW generation/collection/transport annexure",
+      "url": "https://www.greentribunal.gov.in/sites/default/files/news_updates/AFFIDAVIT%20BY%20CS%2C%20GOVT.%20OF%20MAHARASHTRA%20IN%20OA%20NO.%20606%20of%202018%20%28COMPLIANCE%20OF%20MSW%20MGT%20RULES%2C%202016%20AND%20OTHER%20ENVIRONMENTAL%20ISSUES%29.pdf",
+      "source_type": "Government filing / NGT"
+    }
+  ]
+}
