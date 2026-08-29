@@ -2,8 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  body {
-    @apply font-sans antialiased bg-surface text-on-surface;
-  }
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.icon-filled {
+  font-variation-settings: 'FILL' 1;
+}
+
+.glass-panel {
+  backdrop-filter: blur(12px);
+  background-color: rgba(250, 249, 246, 0.8);
+}
+.table-row-hover:hover {
+  background-color: #f4f4f0;
+}
+@keyframes fillBar {
+  from { width: 0; }
+  to { width: var(--target-width); }
+}
+.animate-bar {
+  animation: fillBar 1s ease-out forwards;
+}
+.form-input-custom:focus {
+  outline: none;
+  border-color: #163422;
+  box-shadow: 0 0 0 2px rgba(173, 207, 180, 0.5);
+}
+.success-overlay { display: none; }
+.success-overlay.active { display: flex; animation: fadeIn 0.3s ease-out forwards; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.animate-slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #eeeeea; }
+::-webkit-scrollbar-thumb { background: #c9c6be; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #727972; }
+
+body {
+  font-family: 'Manrope', sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
