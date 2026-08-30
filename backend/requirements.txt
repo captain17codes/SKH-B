@@ -33,10 +33,3 @@ PyJWT==2.10.1
 # --- test-time only, harmless in a demo install ---
 pytest==8.3.5
 httpx==0.28.1
-
-# Render's free tier builds in a 512 MB container and render.yaml already sets
-# ENABLE_SHAP=false / KNAPSACK_SOLVER=dp, so the heavy optional wheels are not
-# installed here on purpose. numpy, shap, imagehash and supabase were tried and
-# removed again: see the "Deliberately ABSENT" note above -- nothing imports
-# them, and supabase drags its own httpx/pydantic constraints into a file whose
-# whole point is exact pins. uvicorn is the server; gunicorn is not used.

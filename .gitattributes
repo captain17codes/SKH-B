@@ -1,6 +1,0 @@
-# The container entrypoint is executed by /bin/sh inside a Linux image. A CRLF
-# checkout on Windows turns the shebang into `#!/bin/sh\r`, which fails at boot
-# with a misleading "no such file or directory". Pin it to LF.
-*.sh text eol=lf
-Dockerfile text eol=lf
-.dockerignore text eol=lf

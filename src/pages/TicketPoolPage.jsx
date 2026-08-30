@@ -42,6 +42,11 @@ export default function TicketPoolPage() {
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [selectedStatus, setSelectedStatus] = useState('All Statuses');
 
+  const [assessingCluster, setAssessingCluster] = useState(null);
+  const [assessingDetails, setAssessingDetails] = useState(null);
+  const [assessingLoading, setAssessingLoading] = useState(false);
+  const [unmergeLoading, setUnmergeLoading] = useState(false);
+
   useEffect(() => {
     let mounted = true;
     async function loadData() {
@@ -85,6 +90,41 @@ export default function TicketPoolPage() {
   const distinctCategories = [...new Set(tickets.map(t => t.category).filter(Boolean))].sort();
   const distinctStatuses = [...new Set(tickets.map(t => t.status).filter(Boolean))].sort();
 
+  const handleAssess = async (cluster) => {
+    setAssessingCluster(cluster);
+    setAssessingLoading(true);
+    setAssessingDetails(null);
+    try {
+      const details = await mediaAPI.cluster(cluster.ticket_id);
+      setAssessingDetails(details);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to load cluster details.');
+    } finally {
+      setAssessingLoading(false);
+    }
+  };
+
+  const handleUnmerge = async (id) => {
+    if (!window.confirm("Are you sure you want to unmerge this ticket? It will be treated as an independent report.")) return;
+    setUnmergeLoading(true);
+    try {
+      await ticketsAPI.unmerge(id);
+      setAssessingCluster(null);
+      // reload basic data
+      const data = await triageAPI.getPriorities({ limit: 200 });
+      setTickets(data.tickets || []);
+      setTotal(data.total || 0);
+      setUnscored(data.unscored || 0);
+      const cl = await mediaAPI.clusters(20);
+      setClusters(cl.clusters || []);
+    } catch (err) {
+      alert("Failed to unmerge: " + err.message);
+    } finally {
+      setUnmergeLoading(false);
+    }
+  };
+
   const filteredTickets = tickets.filter(t => {
     if (selectedWard !== 'All Wards' && t.ward_id !== selectedWard) return false;
     if (selectedCategory !== 'All Categories' && t.category !== selectedCategory) return false;
@@ -120,7 +160,7 @@ export default function TicketPoolPage() {
 <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">group_add</span>
 <span className="font-label-sm text-label-sm">Staff Allocation</span>
 </Link>
-<Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" to="/insights">
+<Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" to="/citizen-insights">
 <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">analytics</span>
 <span className="font-label-sm text-label-sm">Citizen Insights</span>
 </Link>
@@ -275,7 +315,7 @@ export default function TicketPoolPage() {
                 )}
               </div>
               <div className="flex justify-end mt-auto pt-4 border-t border-outline-variant/10">
-                <button type="button" className="bg-primary text-on-primary font-label-sm text-label-sm rounded-lg px-6 py-2.5 hover:bg-primary-container transition-colors shadow-sm flex items-center gap-2">
+                <button type="button" onClick={() => handleAssess(c)} className="bg-primary text-on-primary font-label-sm text-label-sm rounded-lg px-6 py-2.5 hover:bg-primary-container transition-colors shadow-sm flex items-center gap-2">
                   Assess Cluster <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                 </button>
               </div>
@@ -394,6 +434,82 @@ export default function TicketPoolPage() {
 )}
 </section>
 </div>
+
+{assessingCluster && (
+  <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex justify-center items-center p-4">
+    <div className="bg-surface-container-lowest border border-outline-variant/20 shadow-lg rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto flex flex-col">
+      <div className="p-6 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-low sticky top-0 z-10">
+        <div>
+          <h2 className="text-headline-md font-headline-md text-on-surface">Assess Cluster</h2>
+          <p className="text-label-sm text-on-surface-variant">Review duplicate merges and unmerge if incorrect.</p>
+        </div>
+        <button onClick={() => setAssessingCluster(null)} className="p-2 hover:bg-surface-variant rounded-full text-on-surface">
+          <span className="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div className="p-6">
+        {assessingLoading ? (
+          <div className="text-center py-12 text-on-surface-variant">Loading cluster details...</div>
+        ) : assessingDetails ? (
+          <div className="space-y-6">
+            <div className="bg-primary-container/10 border border-primary-container/30 rounded-lg p-4">
+              <h3 className="font-semibold text-primary mb-2 flex items-center gap-2"><span className="material-symbols-outlined">flag</span> Parent Ticket</h3>
+              {(() => {
+                const parent = assessingDetails.members.find(m => m.role === 'parent');
+                return parent && (
+                  <div className="flex gap-4">
+                    {parent.media?.[0] && (
+                      <TicketPhoto media={parent.media[0]} category={parent.category} className="w-24 h-24 rounded-lg object-cover shrink-0" />
+                    )}
+                    <div>
+                      <p className="font-bold">{parent.ref_no}</p>
+                      <p className="text-sm text-on-surface-variant mb-1">{parent.description}</p>
+                      <p className="text-xs text-outline">{parent.ward_id} &middot; {parent.lat}, {parent.lon}</p>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+            
+            <h3 className="font-semibold text-on-surface mt-6 mb-4">Duplicate Reports ({assessingDetails.duplicate_count})</h3>
+            <div className="space-y-4">
+              {assessingDetails.members.filter(m => m.role === 'duplicate').map(dup => (
+                <div key={dup.ticket_id} className="bg-surface border border-outline-variant/30 rounded-lg p-4 flex gap-4">
+                  {dup.media?.[0] && (
+                    <TicketPhoto media={dup.media[0]} category={dup.category} className="w-24 h-24 rounded-lg object-cover shrink-0" />
+                  )}
+                  <div className="flex-1">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-bold">{dup.ref_no}</p>
+                        <p className="text-sm text-on-surface-variant mb-2">{dup.description}</p>
+                        {dup.match && (
+                          <div className="bg-surface-variant/30 rounded p-2 text-xs space-y-1">
+                            <p><span className="font-semibold">Basis:</span> {toTitleCase(dup.match.basis)} ({dup.match.confidence} confidence)</p>
+                            <p><span className="font-semibold">Reason:</span> {dup.match.reason}</p>
+                          </div>
+                        )}
+                      </div>
+                      <button 
+                        onClick={() => handleUnmerge(dup.ticket_id)}
+                        disabled={unmergeLoading}
+                        className="bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-sm border border-outline-variant/50 px-4 py-2 rounded-lg transition-colors whitespace-nowrap ml-4">
+                        {unmergeLoading ? 'Unmerging...' : 'Unmerge'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-12 text-error">Failed to load details.</div>
+        )}
+      </div>
+    </div>
+  </div>
+)}
+
 </main>
 
     </>
