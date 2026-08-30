@@ -255,9 +255,9 @@ export default function CompliancePage() {
                   <div className="bg-surface-container p-4 rounded-lg border border-outline-variant/10">
                     <div className="font-label-sm text-label-sm text-on-surface-variant mb-2">Event Context</div>
                     <div className="grid grid-cols-2 gap-4 font-mono text-xs">
-                      <div>
+                      <div className="col-span-2">
                         <div className="text-outline">Entity</div>
-                        <div className="text-on-surface font-medium">{selected.entity_type ? `${selected.entity_type}:` : ''}{selected.entity_id ?? '—'}</div>
+                        <div className="text-on-surface font-medium break-all">{selected.entity_type ? `${selected.entity_type}: ` : ''}{selected.entity_id ?? '—'}</div>
                       </div>
                       <div>
                         <div className="text-outline">Action</div>
@@ -267,9 +267,9 @@ export default function CompliancePage() {
                         <div className="text-outline">Sequence</div>
                         <div className="text-on-surface font-medium">{selected.seq ?? '—'}</div>
                       </div>
-                      <div>
+                      <div className="col-span-2 md:col-span-1">
                         <div className="text-outline">Actor</div>
-                        <div className="text-on-surface font-medium">{selected.actor ?? 'system'}</div>
+                        <div className="text-on-surface font-medium break-all">{selected.actor ?? 'system'}</div>
                       </div>
                       <div className="col-span-2">
                         <div className="text-outline">Timestamp</div>
@@ -289,8 +289,16 @@ export default function CompliancePage() {
                     </div>
                   )}
                   <div className="pt-2 border-t border-outline-variant/10">
-                    <p className="text-[11px] text-outline font-mono break-all">prev_hash: {selected.prev_hash?.slice(0, 24)}…</p>
-                    <p className="text-[11px] text-outline font-mono break-all">entry_hash: {selected.entry_hash?.slice(0, 24)}…</p>
+                    <div className="flex flex-col gap-2">
+                      <div>
+                        <span className="text-[11px] text-outline font-mono block">prev_hash:</span>
+                        <span className="text-[11px] text-on-surface-variant font-mono break-all">{selected.prev_hash || '—'}</span>
+                      </div>
+                      <div>
+                        <span className="text-[11px] text-outline font-mono block">entry_hash:</span>
+                        <span className="text-[11px] text-on-surface-variant font-mono break-all">{selected.entry_hash || '—'}</span>
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
