@@ -24,9 +24,9 @@ export default function HomePage() {
           <span className="font-headline-md text-headline-md font-bold">Kopargaon Smart City</span>
         </div>
         <div className="hidden md:flex items-center gap-8">
-          <Link className="font-body-md text-body-md text-primary font-bold border-b-2 border-primary hover:text-primary transition-colors duration-200" to="/">About</Link>
+          <Link className="font-body-md text-body-md text-primary font-bold border-b-2 border-primary hover:text-primary transition-colors duration-200" to="/architecture">About</Link>
+          <Link className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" to="/architecture">Features</Link>
           <Link className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" to="/">Contact</Link>
-          <Link className="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" to="/">Features</Link>
         </div>
         <div className="hidden md:flex items-center gap-4">
           <button onClick={() => openModal('signin')} className="font-label-sm text-label-sm text-primary border border-primary px-6 py-2.5 rounded-full hover:bg-surface-container-low transition-colors duration-200 cursor-pointer">Sign In</button>
