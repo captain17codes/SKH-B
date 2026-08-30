@@ -85,9 +85,9 @@ export default function HomePage() {
               </div>
               <h3 className="font-headline-md text-headline-md text-primary mb-4">Resident Sign Up</h3>
               <p className="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">Report issues, pay utility bills, and access local municipal services.</p>
-              <Link to="/submit" className="block w-full border border-primary text-primary font-label-sm text-label-sm px-6 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300 text-center">
+              <button onClick={() => openModal('signup', 'resident')} className="block w-full border border-primary text-primary font-label-sm text-label-sm px-6 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300 text-center cursor-pointer">
                 Register as Resident
-              </Link>
+              </button>
             </div>
             <div className="bg-surface rounded-2xl p-8 border border-outline-variant/30 hover:shadow-[0_10px_20px_rgba(22,52,34,0.05)] transition-shadow duration-300 flex flex-col items-center text-center h-full">
               <div className="w-16 h-16 rounded-full bg-surface-container-highest flex items-center justify-center text-primary mb-6">
@@ -95,9 +95,9 @@ export default function HomePage() {
               </div>
               <h3 className="font-headline-md text-headline-md text-primary mb-4">Administrator Sign Up</h3>
               <p className="font-body-md text-body-md text-on-surface-variant mb-8 flex-grow">For municipal officials to track projects and resolve citizen reports.</p>
-              <Link to="/admin" className="block w-full border border-primary text-primary font-label-sm text-label-sm px-6 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300 text-center">
+              <button onClick={() => openModal('signup', 'admin')} className="block w-full border border-primary text-primary font-label-sm text-label-sm px-6 py-3 rounded-full hover:bg-primary hover:text-on-primary transition-colors duration-300 text-center cursor-pointer">
                 Request Admin Access
-              </Link>
+              </button>
             </div>
           </div>
         </section>
