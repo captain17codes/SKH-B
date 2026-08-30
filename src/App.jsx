@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import HomePage from './pages/HomePage';
 import CitizenPortalPage from './pages/CitizenPortalPage';
@@ -12,10 +12,13 @@ import CitizenInsightsEquityPage from './pages/CitizenInsightsEquityPage';
 import StaffAllocationPage from './pages/StaffAllocationPage';
 import CompliancePage from './pages/CompliancePage';
 import ArchitecturePage from './pages/ArchitecturePage';
+import NotFoundPage from './pages/NotFoundPage';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   return (
-    <Router>
+    <ErrorBoundary>
+      <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/submit" element={<CitizenPortalPage />} />
@@ -28,8 +31,12 @@ function App() {
         <Route path="/staff-allocation" element={<StaffAllocationPage />} />
         <Route path="/compliance" element={<CompliancePage />} />
         <Route path="/architecture" element={<ArchitecturePage />} />
+        {/* Fix broken route accesses */}
+        <Route path="/login" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
+    </ErrorBoundary>
   );
 }
 

@@ -11,6 +11,7 @@ export default function HomePage() {
 
   const handleAuthSubmit = (e) => {
     e.preventDefault();
+    closeModal(); // Fix: Close modal before navigating to clear state
     if (modalState.role === 'admin') navigate('/admin');
     else navigate('/submit');
   };
