@@ -183,5 +183,5 @@ def public_config():
 if __name__ == "__main__":  # pragma: no cover
     import uvicorn
 
-    uvicorn.run("main:app", host=os.getenv("HOST", "127.0.0.1"),
+    uvicorn.run("main:app", host=os.getenv("HOST", "0.0.0.0"),
                 port=int(os.getenv("PORT", "8000")), reload=settings.DEBUG)

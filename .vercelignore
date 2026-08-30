@@ -1,0 +1,35 @@
+# The Vercel project builds the Vite frontend only. Everything below is either
+# backend code, a local virtualenv, or generated output, and shipping it just
+# makes the upload slow and the build noisy.
+backend
+track1_engine
+database
+**/venv
+**/.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+
+dist
+node_modules
+
+*.db
+*.db-journal
+
+# Reference datasets and docs are read by the API, not the browser bundle.
+kopargaon_*.json
+citizen_*.json
+run.json
+ticket.json
+shap.json
+*.md
+DEMO_OUTPUT.txt
+test_submit.mjs
+stitch_verdant_aesthetic_web_portal*
+
+# Backend deployment artefacts.
+Dockerfile
+.dockerignore
+docker-entrypoint.sh
+fly.toml
+render.yaml
