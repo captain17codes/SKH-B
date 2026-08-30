@@ -209,25 +209,6 @@ export default function SystemExplanationsPage() {
                       </div>
                     </div>
 
-                    {/* SHAP Surrogate */}
-                    <div>
-                      <h3 className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-4">SHAP Surrogate Model</h3>
-                      {shapRun?.available === false ? (
-                        <div className="bg-surface-container border border-outline-variant rounded-lg p-4 text-sm text-on-surface flex items-start gap-3">
-                          <span className="material-symbols-outlined text-outline">info</span>
-                          <div>
-                            <p className="font-bold text-on-surface mb-1">SHAP Surrogate Not Available</p>
-                            <p>{shapRun.reason}</p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="bg-surface-container border border-outline-variant rounded-lg p-4 text-sm text-on-surface">
-                          <div className="flex items-center gap-2 mb-2"><span className="material-symbols-outlined text-primary text-[18px]">analytics</span> <span className="font-bold">SHAP Active</span></div>
-                          <p>R-squared: {shapRun?.surrogate_r_squared}</p>
-                        </div>
-                      )}
-                    </div>
-
                   </div>
                   
                   {/* NLP Justification */}
