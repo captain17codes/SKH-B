@@ -23,6 +23,7 @@ export default function TicketForm({ onSuccess }) {
   const [success, setSuccess] = useState(null);
   const [location, setLocation] = useState({ lat: null, lon: null, getting: false });
   const fileInputRef = useRef(null);
+  const cameraInputRef = useRef(null);
 
   const [categories, setCategories] = useState([]);
   const [wards, setWards] = useState([]);
@@ -314,10 +315,12 @@ export default function TicketForm({ onSuccess }) {
             Photo <span className="text-error">*</span>
           </label>
           <div
-            onClick={() => fileInputRef.current?.click()}
-            className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
-              photoPreview ? 'border-primary bg-primary/5' : 'border-outline-variant hover:border-primary/60'
+            className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors ${
+              photoPreview ? 'border-primary bg-primary/5 cursor-pointer' : 'border-outline-variant hover:border-primary/60'
             }`}
+            onClick={() => {
+              if (photoPreview) fileInputRef.current?.click();
+            }}
           >
             {photoPreview ? (
               <div className="relative inline-block">
@@ -325,13 +328,31 @@ export default function TicketForm({ onSuccess }) {
                 <span className="absolute top-2 right-2 bg-primary text-on-primary text-xs px-2 py-1 rounded-full">Ready</span>
               </div>
             ) : (
-              <>
-                <span className="material-symbols-outlined text-4xl text-outline">add_a_photo</span>
-                <p className="mt-2 text-sm text-on-surface-variant">Click to upload photo</p>
-                <p className="text-xs text-outline">JPG, PNG up to 10MB</p>
-              </>
+              <div className="flex flex-col gap-4 items-center justify-center">
+                <span className="material-symbols-outlined text-4xl text-outline mb-2">add_a_photo</span>
+                <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center">
+                  <button 
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); cameraInputRef.current?.click(); }}
+                    className="flex-1 flex flex-col items-center justify-center p-4 rounded-xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/50 hover:border-primary/50 transition-all group"
+                  >
+                    <span className="material-symbols-outlined text-3xl text-primary mb-2 group-hover:scale-110 transition-transform">photo_camera</span>
+                    <span className="font-label-sm text-sm text-on-surface">Take Photo</span>
+                  </button>
+                  <button 
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                    className="flex-1 flex flex-col items-center justify-center p-4 rounded-xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/50 hover:border-primary/50 transition-all group"
+                  >
+                    <span className="material-symbols-outlined text-3xl text-primary mb-2 group-hover:scale-110 transition-transform">folder_open</span>
+                    <span className="font-label-sm text-sm text-on-surface">Upload File</span>
+                  </button>
+                </div>
+                <p className="text-xs text-outline mt-2">JPG, PNG up to 10MB</p>
+              </div>
             )}
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+            <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" onChange={handlePhotoChange} className="hidden" />
           </div>
           
           {/* Metadata Scan Results */}
