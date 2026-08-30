@@ -330,25 +330,17 @@ export default function TicketForm({ onSuccess }) {
             ) : (
               <div className="flex flex-col gap-4 items-center justify-center">
                 <span className="material-symbols-outlined text-4xl text-outline mb-2">add_a_photo</span>
-                <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center">
+                <div className="w-full max-w-sm justify-center">
                   <button 
                     type="button"
                     onClick={(e) => { e.stopPropagation(); cameraInputRef.current?.click(); }}
-                    className="flex-1 flex flex-col items-center justify-center p-4 rounded-xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/50 hover:border-primary/50 transition-all group"
+                    className="w-full flex flex-col items-center justify-center p-5 rounded-xl bg-primary/10 hover:bg-primary/20 border border-primary/30 transition-all group"
                   >
-                    <span className="material-symbols-outlined text-3xl text-primary mb-2 group-hover:scale-110 transition-transform">photo_camera</span>
-                    <span className="font-label-sm text-sm text-on-surface">Take Photo</span>
-                  </button>
-                  <button 
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-                    className="flex-1 flex flex-col items-center justify-center p-4 rounded-xl bg-surface-container-low hover:bg-surface-container border border-outline-variant/50 hover:border-primary/50 transition-all group"
-                  >
-                    <span className="material-symbols-outlined text-3xl text-primary mb-2 group-hover:scale-110 transition-transform">folder_open</span>
-                    <span className="font-label-sm text-sm text-on-surface">Upload File</span>
+                    <span className="material-symbols-outlined text-4xl text-primary mb-2 group-hover:scale-110 transition-transform">photo_camera</span>
+                    <span className="font-label-sm text-base text-primary font-bold">Take Live Photo</span>
+                    <span className="text-xs text-primary/70 mt-1">Required for Geotagging & Rumor Control</span>
                   </button>
                 </div>
-                <p className="text-xs text-outline mt-2">JPG, PNG up to 10MB</p>
               </div>
             )}
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
