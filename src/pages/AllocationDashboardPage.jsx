@@ -226,9 +226,9 @@ export default function AllocationDashboardPage() {
               <div className="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/20 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-4 opacity-10"><span className="material-symbols-outlined text-6xl text-primary">star_rate</span></div>
                 <p className="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Total Priority Score</p>
-                <p className="text-headline-display font-headline-display text-primary">{manifest.objective_value?.toFixed(2)}</p>
+                <p className="text-headline-display font-headline-display text-primary">{(manifest.objective_value ?? manifest.plan?.objective_value)?.toFixed(2) || '—'}</p>
                 <p className="text-sm text-on-surface-variant mt-2">
-                  sum of the closeness scores of the {manifest.summary?.scheduled} tickets dispatched
+                  sum of the closeness scores of the {manifest.summary?.scheduled ?? manifest.scheduled_count} tickets dispatched
                 </p>
               </div>
               <div className="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/20 shadow-sm relative overflow-hidden">
@@ -236,7 +236,7 @@ export default function AllocationDashboardPage() {
                 <p className="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Budget Utilization</p>
                 {(() => {
                   const cap = manifest.budget_cap;
-                  const used = manifest.budget_used;
+                  const used = manifest.budget_used ?? manifest.plan?.budget_used;
                   const pct = cap ? Math.round((used / cap) * 100) : NaN;
                   return (
                     <>
@@ -261,7 +261,7 @@ export default function AllocationDashboardPage() {
                 <p className="text-label-sm font-label-sm text-on-surface-variant mb-1 uppercase tracking-wider">Workforce Hours</p>
                 {(() => {
                   const wCap = manifest.workforce_cap_hours;
-                  const wUsed = manifest.workforce_used;
+                  const wUsed = manifest.workforce_used ?? manifest.plan?.workforce_used;
                   const wPct = wCap ? Math.round((wUsed / wCap) * 100) : NaN;
                   const isNearMax = wPct >= 90;
                   const barColor = isNearMax ? 'bg-[#d32f2f]' : 'bg-primary';
@@ -341,7 +341,7 @@ export default function AllocationDashboardPage() {
                   </div>
                   <div className="p-4 border-t border-outline-variant/20 bg-surface text-center">
                     <button onClick={() => setShowAllAllocated(!showAllAllocated)} className="text-sm font-semibold text-primary hover:underline">
-                      {showAllAllocated ? 'Show fewer' : `Show all ${manifest.summary?.scheduled} allocated tickets`}
+                      {showAllAllocated ? 'Show fewer' : `Show all ${manifest.summary?.scheduled ?? manifest.scheduled_count} allocated tickets`}
                     </button>
                   </div>
                 </div>
@@ -367,11 +367,11 @@ export default function AllocationDashboardPage() {
                   </div>
                   <div className="space-y-1 mb-4">
                     {(manifest.normalisation_notes || []).map((n, i) => <p key={`n-${i}`} className="text-xs text-on-surface-variant">• {n}</p>)}
-                    {(manifest.allocator_notes || []).map((n, i) => <p key={`a-${i}`} className="text-xs text-on-surface-variant">• {n}</p>)}
+                    {(manifest.allocator_notes || manifest.plan?.allocator_notes || []).map((n, i) => <p key={`a-${i}`} className="text-xs text-on-surface-variant">• {n}</p>)}
                   </div>
-                  {manifest.cost_incomplete_count > 0 && (
+                  {(manifest.cost_incomplete_count ?? manifest.unscorable?.length ?? 0) > 0 && (
                     <p className="text-sm text-on-surface">
-                      {manifest.cost_incomplete_count} tickets could not be considered at all because their cost has not been estimated yet. <Link to="/ticket-pool" className="text-primary hover:underline">View in Ticket Pool</Link>
+                      {manifest.cost_incomplete_count ?? manifest.unscorable?.length} tickets could not be considered at all because their cost has not been estimated yet. <Link to="/ticket-pool" className="text-primary hover:underline">View in Ticket Pool</Link>
                     </p>
                   )}
                 </div>
@@ -469,12 +469,13 @@ export default function AllocationDashboardPage() {
         </button>
         <div className="flex flex-col gap-2 flex-grow">
           <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/ticket-pool"><span className="material-symbols-outlined">assignment</span><span className="text-label-sm font-label-sm">Ticket Pool</span></Link>
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/explanations"><span className="material-symbols-outlined">leaderboard</span><span className="text-label-sm font-label-sm">Prioritization</span></Link>
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/staff-allocation"><span className="material-symbols-outlined">group</span><span className="text-label-sm font-label-sm">Staff Allocation</span></Link>
           <Link className="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-container text-on-primary-container font-bold shadow-sm" to="/allocation"><span className="material-symbols-outlined icon-filled">event_note</span><span className="text-label-sm font-label-sm">Daily Allocation</span></Link>
           <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/explanations"><span className="material-symbols-outlined">psychology</span><span className="text-label-sm font-label-sm">System Explanations</span></Link>
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/citizen-insights"><span className="material-symbols-outlined">analytics</span><span className="text-label-sm font-label-sm">Citizen Insights</span></Link>
         </div>
         <div className="flex flex-col gap-2 mt-auto border-t border-outline-variant/20 pt-4">
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/compliance"><span className="material-symbols-outlined">analytics</span><span className="text-label-sm font-label-sm">System Status</span></Link>
+          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/compliance"><span className="material-symbols-outlined">terminal</span><span className="text-label-sm font-label-sm">System Logs</span></Link>
           <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/"><span className="material-symbols-outlined">logout</span><span className="text-label-sm font-label-sm">Logout</span></Link>
         </div>
       </nav>
