@@ -244,13 +244,13 @@ export default function CompliancePage() {
                   )}
                   <div className="pt-2 border-t border-outline-variant/10">
                     <div className="flex flex-col gap-2">
-                      <div>
+                      <div className="w-full">
                         <span className="text-[11px] text-outline font-mono block">prev_hash:</span>
-                        <span className="text-[11px] text-on-surface-variant font-mono break-all">{selected.prev_hash || '—'}</span>
+                        <div className="text-[11px] text-on-surface-variant font-mono break-all whitespace-pre-wrap">{selected.prev_hash || '—'}</div>
                       </div>
-                      <div>
+                      <div className="w-full">
                         <span className="text-[11px] text-outline font-mono block">entry_hash:</span>
-                        <span className="text-[11px] text-on-surface-variant font-mono break-all">{selected.entry_hash || '—'}</span>
+                        <div className="text-[11px] text-on-surface-variant font-mono break-all whitespace-pre-wrap">{selected.entry_hash || '—'}</div>
                       </div>
                     </div>
                   </div>
