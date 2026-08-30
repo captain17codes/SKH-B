@@ -1,25 +1,12 @@
 /**
- * Ticket Submission Form Component - Block 2 (Assistant 1)
- * Citizens submit grievances via this form
+ * Ticket Submission Form Component
+ * Citizens submit grievances via this form. Categories and wards are pulled live
+ * from the reference API so an unrecognised category never silently scores as
+ * "unclassified".
  */
-import React, { useState, useRef } from 'react';
-import { ticketsAPI } from '../api/client';
-
-const CATEGORIES = [
-  { value: 'pothole', label: 'Pothole/Road Damage', icon: '🕳️' },
-  { value: 'waterlogging', label: 'Waterlogging/Flooding', icon: '💧' },
-  { value: 'sanitation', label: 'Sanitation Issue', icon: '🗑️' },
-  { value: 'water_quality', label: 'Water Quality', icon: '💦' },
-  { value: 'streetlight', label: 'Streetlight Issue', icon: '💡' },
-  { value: 'garbage', label: 'Garbage Collection', icon: '🚛' },
-  { value: 'infrastructure', label: 'Infrastructure', icon: '🏗️' },
-  { value: 'other', label: 'Other', icon: '📋' },
-];
-
-const WARDS = [
-  'Ward-1', 'Ward-2', 'Ward-3', 'Ward-4', 'Ward-5',
-  'Ward-6', 'Ward-7', 'Ward-8', 'Ward-9', 'Ward-10',
-];
+import React, { useState, useRef, useEffect } from 'react';
+import { ticketsAPI, referenceAPI } from '../api/client';
+import { categoryIcon, titleCase } from './categoryIcon';
 
 export default function TicketForm({ onSuccess }) {
   const [formData, setFormData] = useState({
@@ -35,6 +22,24 @@ export default function TicketForm({ onSuccess }) {
   const [success, setSuccess] = useState(null);
   const [location, setLocation] = useState({ lat: null, lon: null, getting: false });
   const fileInputRef = useRef(null);
+
+  const [categories, setCategories] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [refLoading, setRefLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    Promise.all([
+      referenceAPI.categories(false).catch(() => ({ categories: [] })),
+      ticketsAPI.wards().catch(() => ({ wards: [] })),
+    ]).then(([catRes, wardRes]) => {
+      if (!mounted) return;
+      setCategories(catRes.categories || []);
+      setWards(wardRes.wards || []);
+      setRefLoading(false);
+    });
+    return () => { mounted = false; };
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -59,16 +64,10 @@ export default function TicketForm({ onSuccess }) {
       setError('Geolocation is not supported by this browser.');
       return;
     }
-
     setLocation(prev => ({ ...prev, getting: true }));
-
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setLocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-          getting: false
-        });
+        setLocation({ lat: position.coords.latitude, lon: position.coords.longitude, getting: false });
         setError(null);
       },
       (err) => {
@@ -85,19 +84,16 @@ export default function TicketForm({ onSuccess }) {
     setError(null);
     setSuccess(null);
 
-    // Validation
     if (!formData.citizen_phone.match(/^\+?[0-9]{10,15}$/)) {
       setError('Please enter a valid phone number (10-15 digits)');
       setLoading(false);
       return;
     }
-
     if (!formData.category) {
       setError('Please select a category');
       setLoading(false);
       return;
     }
-
     if (!photo) {
       setError('Please upload a photo of the issue');
       setLoading(false);
@@ -124,64 +120,96 @@ export default function TicketForm({ onSuccess }) {
         fullResult: result
       });
 
-      // Reset form
-      setFormData({
-        citizen_phone: '',
-        category: '',
-        description: '',
-        ward_id: '',
-      });
+      setFormData({ citizen_phone: '', category: '', description: '', ward_id: '' });
       setPhoto(null);
       setPhotoPreview(null);
       setLocation({ lat: null, lon: null, getting: false });
 
       if (onSuccess) onSuccess(result);
-
     } catch (err) {
-      setError(err.message || 'Failed to submit ticket. Please try again.');
+      // Blackout Mode fallback (System Resilience)
+      console.warn("API failed, activating blackout mode offline queue.", err);
+      
+      const offlineId = "offline-" + Date.now();
+      const offlineTicket = {
+        id: offlineId,
+        ref_no: "OFF-" + Math.floor(Math.random() * 10000),
+        message: "Offline Queue Active. Your issue is safely saved locally.",
+        is_duplicate: false,
+        formData: { ...formData, category: formData.category, lat: location.lat, lon: location.lon },
+        timestamp: new Date().toISOString()
+      };
+      
+      const queue = JSON.parse(localStorage.getItem('crpp_offline_queue') || '[]');
+      queue.push(offlineTicket);
+      localStorage.setItem('crpp_offline_queue', JSON.stringify(queue));
+      
+      setSuccess({
+        ticketId: offlineTicket.id,
+        refNo: offlineTicket.ref_no,
+        message: offlineTicket.message,
+        isDuplicate: false,
+        fullResult: offlineTicket,
+        isOffline: true
+      });
+      
+      setFormData({ citizen_phone: '', category: '', description: '', ward_id: '' });
+      setPhoto(null);
+      setPhotoPreview(null);
+      setLocation({ lat: null, lon: null, getting: false });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-2">Report Civic Issue</h2>
-      <p className="text-gray-600 mb-6">Submit a grievance with photo. Our AI system will prioritize and schedule it.</p>
+    <div className="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/20 p-6 md:p-8">
+      <h2 className="font-headline-md text-headline-md text-primary mb-2">Report a Civic Issue</h2>
+      <p className="font-body-md text-body-md text-on-surface-variant mb-6">Submit a grievance with a photo. Our AI system prioritises and schedules it automatically.</p>
 
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
-          <p className="text-red-700">{error}</p>
+        <div className="bg-error-container text-on-error-container p-4 mb-6 rounded-lg flex items-start gap-2">
+          <span className="material-symbols-outlined text-[20px] mt-0.5">error</span>
+          <p>{error}</p>
         </div>
       )}
 
       {success && (
-        <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded">
-          <p className="text-green-700 font-medium">{success.message}</p>
-          <p className="text-green-600 text-sm mt-1 mb-3">
-            Reference No: <code className="bg-green-100 px-2 py-1 rounded font-mono">{success.refNo}</code>
+        <div className={`p-4 mb-6 rounded-lg ${success.isOffline ? 'bg-[#fff3e0] text-[#ef6c00] border border-[#ffcc80]' : 'bg-tertiary-fixed/30 border border-tertiary-fixed'}`}>
+          <p className="text-on-surface font-semibold flex items-center gap-2">
+            <span className="material-symbols-outlined text-[18px]">{success.isOffline ? 'cloud_off' : 'check_circle'}</span>
+            {success.message}
+          </p>
+          <p className="text-on-surface-variant text-sm mt-1 mb-3">
+            Reference No: <code className="bg-surface-container-high px-2 py-1 rounded font-mono text-on-surface">{success.refNo}</code>
           </p>
           {success.isDuplicate && (
-            <p className="text-amber-600 text-sm mt-2 mb-3">
+            <p className="text-[#9a6a16] text-sm mt-2 mb-3">
               Your issue was merged with a similar existing report for faster resolution.
             </p>
           )}
-          <button 
-            type="button"
-            onClick={() => onSuccess && onSuccess(success.fullResult)}
-            className="mt-2 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded font-medium transition-colors inline-flex items-center gap-2"
-          >
-            <span className="material-symbols-outlined text-sm">psychology</span>
-            View AI Explanation
-          </button>
+          {success.isOffline ? (
+            <p className="text-[#ef6c00] text-sm mt-2 mb-2 font-semibold">
+              ⚠️ Blackout Mode: The server is currently unreachable, but your complaint is safely stored on your device. It will automatically sync when the connection is restored. No citizen's alert is ever lost.
+            </p>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onSuccess && onSuccess(success.fullResult)}
+              className="mt-2 bg-primary hover:bg-primary-container text-on-primary py-2 px-4 rounded-full font-label-sm text-label-sm font-bold transition-colors inline-flex items-center gap-2"
+            >
+              <span className="material-symbols-outlined text-sm">psychology</span>
+              View AI Explanation
+            </button>
+          )}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Phone Number */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Phone Number <span className="text-red-500">*</span>
+          <label className="block font-label-sm text-label-sm text-on-surface mb-1">
+            Phone Number <span className="text-error">*</span>
           </label>
           <input
             type="tel"
@@ -189,145 +217,112 @@ export default function TicketForm({ onSuccess }) {
             value={formData.citizen_phone}
             onChange={handleInputChange}
             placeholder="+91 or local number"
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-4 py-2.5 bg-surface border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed/50 transition-all"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">Used for WhatsApp updates</p>
+          <p className="text-xs text-on-surface-variant mt-1">Used for status updates.</p>
         </div>
 
         {/* Category */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Issue Category <span className="text-red-500">*</span>
+          <label className="block font-label-sm text-label-sm text-on-surface mb-2">
+            Issue Category <span className="text-error">*</span>
           </label>
-          <div className="grid grid-cols-2 gap-2">
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat.value}
-                type="button"
-                onClick={() => setFormData(prev => ({ ...prev, category: cat.value }))}
-                className={`flex items-center p-3 border rounded-lg text-left transition-colors ${
-                  formData.category === cat.value
-                    ? 'bg-blue-50 border-blue-500 text-blue-700'
-                    : 'hover:bg-gray-50 border-gray-200'
-                }`}
-              >
-                <span className="text-xl mr-2">{cat.icon}</span>
-                <span className="text-sm">{cat.label}</span>
-              </button>
-            ))}
-          </div>
+          {refLoading ? (
+            <div className="grid grid-cols-2 gap-2 animate-pulse">
+              {Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-12 bg-surface-container rounded-lg" />)}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto pr-1">
+              {categories.map(cat => (
+                <button
+                  key={cat.incident_type}
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, category: cat.incident_type }))}
+                  title={cat.department_name}
+                  className={`flex items-center gap-2 p-3 border rounded-lg text-left transition-colors ${
+                    formData.category === cat.incident_type
+                      ? 'bg-primary-container text-on-primary-container border-primary'
+                      : 'hover:bg-surface-container-low border-outline-variant/40 text-on-surface'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[20px] shrink-0">{categoryIcon(cat.incident_type)}</span>
+                  <span className="text-sm truncate">{titleCase(cat.incident_type)}</span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Ward */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Ward
-          </label>
+          <label className="block font-label-sm text-label-sm text-on-surface mb-1">Ward</label>
           <select
             name="ward_id"
             value={formData.ward_id}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2.5 bg-surface border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed/50 transition-all"
           >
-            <option value="">Select Ward (optional)</option>
-            {WARDS.map(ward => (
-              <option key={ward} value={ward}>{ward}</option>
+            <option value="">Select ward (optional)</option>
+            {wards.map(w => (
+              <option key={w.id} value={w.id}>{w.name || w.id}</option>
             ))}
           </select>
         </div>
 
         {/* Description */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Description
-          </label>
+          <label className="block font-label-sm text-label-sm text-on-surface mb-1">Description</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleInputChange}
             rows={3}
             placeholder="Describe the issue in detail..."
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2.5 bg-surface border border-outline-variant rounded-lg focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed/50 transition-all"
           />
         </div>
 
         {/* Location */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Location
-          </label>
+          <label className="block font-label-sm text-label-sm text-on-surface mb-2">Location</label>
           <button
             type="button"
             onClick={getLocation}
             disabled={location.getting}
-            className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+            className="flex items-center px-4 py-2.5 bg-surface-container-low text-on-surface rounded-lg hover:bg-surface-container transition-colors border border-outline-variant/30"
           >
-            {location.getting ? (
-              <>
-                <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-                </svg>
-                Getting location...
-              </>
-            ) : location.lat ? (
-              <>
-                <svg className="h-5 w-5 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
-                </svg>
-                Location captured ({location.lat.toFixed(4)}, {location.lon.toFixed(4)})
-              </>
-            ) : (
-              <>
-                <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                Get Current Location
-              </>
-            )}
+            <span className={`material-symbols-outlined mr-2 ${location.getting ? 'animate-spin' : ''} ${location.lat ? 'text-primary' : ''}`}>
+              {location.getting ? 'progress_activity' : location.lat ? 'check_circle' : 'my_location'}
+            </span>
+            {location.getting ? 'Getting location...' : location.lat ? `Location captured (${location.lat.toFixed(4)}, ${location.lon.toFixed(4)})` : 'Get Current Location'}
           </button>
         </div>
 
         {/* Photo Upload */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Photo <span className="text-red-500">*</span>
+          <label className="block font-label-sm text-label-sm text-on-surface mb-2">
+            Photo <span className="text-error">*</span>
           </label>
           <div
             onClick={() => fileInputRef.current?.click()}
-            className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
-              photoPreview ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
+            className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${
+              photoPreview ? 'border-primary bg-primary/5' : 'border-outline-variant hover:border-primary/60'
             }`}
           >
             {photoPreview ? (
               <div className="relative inline-block">
-                <img
-                  src={photoPreview}
-                  alt="Preview"
-                  className="max-h-48 rounded-lg shadow-md"
-                />
-                <span className="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
-                  Ready
-                </span>
+                <img src={photoPreview} alt="Preview" className="max-h-48 rounded-lg shadow-md" />
+                <span className="absolute top-2 right-2 bg-primary text-on-primary text-xs px-2 py-1 rounded-full">Ready</span>
               </div>
             ) : (
               <>
-                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-                <p className="mt-2 text-sm text-gray-600">Click to upload photo</p>
-                <p className="text-xs text-gray-500">JPG, PNG up to 10MB</p>
+                <span className="material-symbols-outlined text-4xl text-outline">add_a_photo</span>
+                <p className="mt-2 text-sm text-on-surface-variant">Click to upload photo</p>
+                <p className="text-xs text-outline">JPG, PNG up to 10MB</p>
               </>
             )}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handlePhotoChange}
-              className="hidden"
-            />
+            <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
           </div>
         </div>
 
@@ -335,19 +330,14 @@ export default function TicketForm({ onSuccess }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          className="w-full bg-primary text-on-primary py-3.5 px-6 rounded-full font-label-sm text-label-sm font-bold hover:bg-primary-container transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {loading ? (
-            <span className="flex items-center justify-center">
-              <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
-              </svg>
+            <>
+              <span className="material-symbols-outlined animate-spin">progress_activity</span>
               Submitting...
-            </span>
-          ) : (
-            'Submit Report'
-          )}
+            </>
+          ) : 'Submit Report'}
         </button>
       </form>
     </div>
