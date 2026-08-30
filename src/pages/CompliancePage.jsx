@@ -157,44 +157,49 @@ export default function CompliancePage() {
             </div>
 
             {/* Log Table Container */}
-            <div className="flex-1 bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-sm overflow-hidden flex flex-col">
-              <div className="grid grid-cols-[140px_100px_160px_minmax(200px,1fr)_110px] gap-4 p-4 border-b border-outline-variant/20 bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant sticky top-0 uppercase tracking-wider">
-                <div>Timestamp</div>
-                <div>Seq</div>
-                <div>Action</div>
-                <div>Entity</div>
-                <div>Hash</div>
-              </div>
-              <div className="overflow-y-auto flex-1 font-mono text-xs text-on-surface">
-                {error ? (
-                  <div className="p-6 text-error">{error}</div>
-                ) : loading ? (
-                  <div className="p-6 space-y-3 animate-pulse">
-                    {Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-8 bg-surface-container rounded" />)}
+            <div className="flex-1 bg-surface-container-lowest rounded-xl border border-outline-variant/20 shadow-sm flex flex-col min-h-0 overflow-hidden">
+              <div className="overflow-x-auto h-full flex flex-col">
+                <div className="min-w-[800px] flex flex-col h-full">
+                  <div className="grid grid-cols-[140px_80px_160px_minmax(200px,1fr)_110px] gap-4 p-4 border-b border-outline-variant/20 bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant sticky top-0 uppercase tracking-wider z-10">
+                    <div>Timestamp</div>
+                    <div>Seq</div>
+                    <div>Action</div>
+                    <div>Entity</div>
+                    <div>Hash</div>
                   </div>
-                ) : filteredEntries.length === 0 ? (
-                  <div className="p-6 text-on-surface-variant font-body-md">No audit entries match the current filters.</div>
-                ) : filteredEntries.map((e, idx) => (
-                  <div
-                    key={e.seq ?? e.id ?? idx}
-                    onClick={() => setSelected(e)}
-                    className={`grid grid-cols-[140px_100px_160px_minmax(200px,1fr)_110px] gap-4 p-4 border-b border-outline-variant/10 hover:bg-surface-variant/30 cursor-pointer transition-colors ${selected === e ? 'bg-primary-fixed/10' : ''}`}
-                  >
-                    <div className="text-outline">{fmtTime(entryTime(e))}</div>
-                    <div className="text-tertiary">#{e.seq ?? e.id ?? '—'}</div>
-                    <div className="font-sans font-medium">{titleCase(e.action || 'event')}</div>
-                    <div className="truncate text-on-surface-variant font-sans">
-                      {e.entity_type ? `${titleCase(e.entity_type)} ${e.entity_id ?? ''}` : (e.entity_id || '—')}
-                    </div>
-                    <div className="truncate">{entryHash(e).slice(0, 10) || '—'}</div>
+                  
+                  <div className="flex-1 overflow-y-auto min-h-[400px]">
+                    {error ? (
+                      <div className="p-6 text-error">{error}</div>
+                    ) : loading ? (
+                      <div className="p-6 space-y-3 animate-pulse">
+                        {Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-8 bg-surface-container rounded" />)}
+                      </div>
+                    ) : filteredEntries.length === 0 ? (
+                      <div className="p-6 text-on-surface-variant font-body-md">No audit entries match the current filters.</div>
+                    ) : filteredEntries.map((e, idx) => (
+                      <div
+                        key={e.seq ?? e.id ?? idx}
+                        onClick={() => setSelected(e)}
+                        className={`grid grid-cols-[140px_80px_160px_minmax(200px,1fr)_110px] gap-4 p-4 border-b border-outline-variant/10 hover:bg-surface-variant/30 cursor-pointer transition-colors ${selected === e ? 'bg-primary-fixed/10' : ''}`}
+                      >
+                        <div className="text-outline">{fmtTime(entryTime(e))}</div>
+                        <div className="text-tertiary">#{e.seq ?? e.id ?? '—'}</div>
+                        <div className="font-sans font-medium">{titleCase(e.action || 'event')}</div>
+                        <div className="truncate text-on-surface-variant font-sans">
+                          {e.entity_type ? `${titleCase(e.entity_type)} ${e.entity_id ?? ''}` : (e.entity_id || '—')}
+                        </div>
+                        <div className="truncate">{entryHash(e).slice(0, 10) || '—'}</div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </div>
 
           {/* Right Side: Detail Drawer */}
-          <div className="w-full xl:w-[400px] border-t xl:border-t-0 xl:border-l border-outline-variant/20 bg-surface-container-lowest flex flex-col shadow-[-10px_0_20px_rgba(22,52,34,0.02)]">
+          <div className="w-full xl:w-[400px] shrink-0 border-t xl:border-t-0 xl:border-l border-outline-variant/20 bg-surface-container-lowest flex flex-col shadow-[-10px_0_20px_rgba(22,52,34,0.02)]">
             <div className="p-6 border-b border-outline-variant/20 flex justify-between items-center bg-surface-bright">
               <div>
                 <h3 className="font-headline-md text-headline-md text-primary">Log Details</h3>
