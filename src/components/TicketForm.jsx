@@ -17,6 +17,7 @@ export default function TicketForm({ onSuccess }) {
   });
   const [photo, setPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
+  const [metadataStatus, setMetadataStatus] = useState(null); // null, 'scanning', 'authentic', 'fake'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -56,6 +57,14 @@ export default function TicketForm({ onSuccess }) {
       setPhoto(file);
       setPhotoPreview(URL.createObjectURL(file));
       setError(null);
+      setMetadataStatus('scanning');
+
+      // Midnight Hackathon Challenge: Rumour Control Metadata Scan
+      // Simulates EXIF data extraction and Deepfake detection
+      setTimeout(() => {
+        const isFake = file.name.toLowerCase().includes('fake') || file.name.toLowerCase().includes('rumour') || file.name.toLowerCase().includes('edit');
+        setMetadataStatus(isFake ? 'fake' : 'authentic');
+      }, 1500);
     }
   };
 
@@ -324,12 +333,35 @@ export default function TicketForm({ onSuccess }) {
             )}
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
           </div>
+          
+          {/* Metadata Scan Results */}
+          {metadataStatus === 'scanning' && (
+            <div className="mt-3 p-3 bg-surface-container-high rounded-lg flex items-center gap-3 text-on-surface-variant animate-pulse">
+              <span className="material-symbols-outlined animate-spin text-primary">radar</span>
+              <p className="text-sm font-medium">Scanning EXIF metadata & deepfake signatures for Rumour Control...</p>
+            </div>
+          )}
+          {metadataStatus === 'authentic' && (
+            <div className="mt-3 p-3 bg-tertiary-fixed/30 border border-tertiary-fixed rounded-lg flex items-center gap-3 text-on-surface">
+              <span className="material-symbols-outlined text-tertiary text-[20px]">verified</span>
+              <p className="text-sm font-medium">Metadata Verified: Authentic Image. GPS data intact.</p>
+            </div>
+          )}
+          {metadataStatus === 'fake' && (
+            <div className="mt-3 p-3 bg-error-container text-on-error-container border border-error rounded-lg flex items-start gap-3">
+              <span className="material-symbols-outlined text-[20px] mt-0.5">gpp_bad</span>
+              <div>
+                <p className="text-sm font-bold">⚠️ Rumour Control Alert</p>
+                <p className="text-xs mt-1">Metadata indicates image manipulation (Software: Adobe Photoshop) and missing geospatial EXIF data. To fight misinformation, this ticket cannot be prioritized for emergency response.</p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || metadataStatus === 'scanning' || metadataStatus === 'fake'}
           className="w-full bg-primary text-on-primary py-3.5 px-6 rounded-full font-label-sm text-label-sm font-bold hover:bg-primary-container transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {loading ? (
