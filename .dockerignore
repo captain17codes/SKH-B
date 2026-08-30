@@ -1,0 +1,49 @@
+# Keep the build context small and, more importantly, keep local state out of
+# the image: a committed-by-accident kopargaon_crpp.db would shadow the volume's
+# database on first boot and a stale uploads/ would confuse the media router.
+.git
+.gitignore
+node_modules
+dist
+dist-ssr
+src
+public
+index.html
+package.json
+package-lock.json
+vite.config.js
+tailwind.config.js
+postcss.config.js
+.oxlintrc.json
+
+**/venv
+**/.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+
+# Local database and uploaded media -- the volume owns these.
+**/*.db
+**/*.db-journal
+**/*.db-wal
+**/*.db-shm
+backend/uploads
+backend/demo_uploads
+backend/local.db
+
+# Secrets never belong in an image layer; use `fly secrets set` instead.
+.env
+backend/.env
+
+# Documentation and one-off artefacts.
+*.md
+!README.md
+DEMO_OUTPUT.txt
+backend/api_shapes.txt
+backend/openapi_dump.json
+backend/shap_probe.json
+run.json
+ticket.json
+shap.json
+test_submit.mjs
+stitch_verdant_aesthetic_web_portal*

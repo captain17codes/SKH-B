@@ -203,3 +203,4 @@ venv/
 /backend/api_shapes.txt
 /backend/openapi_dump.json
 /backend/shap_probe.json
+.vercel

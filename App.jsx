@@ -11,8 +11,6 @@ import CitizenInsightsPage from './pages/CitizenInsightsPage';
 import CitizenInsightsEquityPage from './pages/CitizenInsightsEquityPage';
 import StaffAllocationPage from './pages/StaffAllocationPage';
 import CompliancePage from './pages/CompliancePage';
-import ArchitecturePage from './pages/ArchitecturePage';
-
 function App() {
   return (
     <Router>
@@ -27,7 +25,6 @@ function App() {
         <Route path="/citizen-insights" element={<CitizenInsightsEquityPage />} />
         <Route path="/staff-allocation" element={<StaffAllocationPage />} />
         <Route path="/compliance" element={<CompliancePage />} />
-        <Route path="/architecture" element={<ArchitecturePage />} />
       </Routes>
     </Router>
   );

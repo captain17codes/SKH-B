@@ -14,7 +14,7 @@
  *    every response as JSON.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 export { API_BASE_URL };
 
@@ -50,7 +50,15 @@ export class ApiError extends Error {
  * Generic fetch wrapper with error handling
  */
 async function fetchAPI(endpoint, options = {}) {
-  const url = `${API_BASE_URL}${endpoint}`;
+  // If API_BASE_URL ends with /api, and endpoint starts with /api, strip to avoid /api/api
+  let finalUrl = `${API_BASE_URL}${endpoint}`;
+  if (API_BASE_URL.endsWith('/api') && endpoint.startsWith('/api/')) {
+    finalUrl = `${API_BASE_URL}${endpoint.substring(4)}`;
+  } else if (API_BASE_URL.endsWith('/api') && !endpoint.startsWith('/api/')) {
+    finalUrl = `${API_BASE_URL.replace(/\/api$/, '')}${endpoint}`;
+  }
+
+  const url = finalUrl;
 
   const config = {
     headers: {
@@ -426,7 +434,13 @@ export const mediaAPI = {
  * `unavailable_reason` instead of a broken-image icon.
  */
 export function mediaURL(mediaId) {
-  return mediaId ? `${API_BASE_URL}/api/media/${mediaId}/file` : null;
+  if (!mediaId) return null;
+  const endpoint = `/api/media/${mediaId}/file`;
+  
+  if (API_BASE_URL.endsWith('/api')) {
+    return `${API_BASE_URL}${endpoint.substring(4)}`;
+  }
+  return `${API_BASE_URL}${endpoint}`;
 }
 
 /**
