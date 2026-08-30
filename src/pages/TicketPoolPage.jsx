@@ -1,3 +1,4 @@
+import AdminSidebar from '../components/AdminSidebar';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { triageAPI, mediaAPI } from '../api/client';
