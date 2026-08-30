@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import AdminSidebar from '../components/AdminSidebar';
 import { Link } from 'react-router-dom';
 import DiagnosticChecks from '../components/DiagnosticChecks';
 import { auditAPI } from '../api/client';
@@ -88,54 +89,7 @@ export default function CompliancePage() {
 
   return (
     <>
-      {/* SideNavBar */}
-      <nav className="bg-surface-container-low text-primary font-label-sm text-label-sm h-screen w-64 fixed left-0 top-0 border-r border-outline-variant/10 flex flex-col py-unit px-4 gap-2 z-40 hidden md:flex">
-        <div className="flex items-center gap-3 px-2 py-4 mb-4">
-          <div className="w-10 h-10 rounded-lg overflow-hidden bg-primary-container flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined text-on-primary-container">location_city</span>
-          </div>
-          <div>
-            <h1 className="text-headline-md font-headline-md text-primary truncate">Kopargaon Civic</h1>
-            <p className="text-on-surface-variant font-label-sm text-label-sm opacity-80">Administrative Suite</p>
-          </div>
-        </div>
-        <button className="w-full bg-error text-on-error py-2 px-4 rounded-lg font-bold mb-6 hover:bg-error/90 transition-colors flex items-center justify-center gap-2 group">
-          <span className="material-symbols-outlined text-on-error group-hover:scale-110 transition-transform">emergency</span>
-          Report Emergency
-        </button>
-        <div className="flex-1 overflow-y-auto space-y-1">
-          <Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-all duration-300 group" to="/admin">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">dashboard</span>
-            <span>Dashboard</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-all duration-300 group" to="/ticket-pool">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">confirmation_number</span>
-            <span>Ticket Pool</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-all duration-300 group" to="/staff-allocation">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">group_add</span>
-            <span>Staff Allocation</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-all duration-300 group" to="/citizen-insights">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">analytics</span>
-            <span>Citizen Insights</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-3 py-2 bg-primary-container text-on-primary-container rounded-lg font-bold transition-all duration-300 group" to="/compliance">
-            <span className="material-symbols-outlined icon-filled">terminal</span>
-            <span>System Logs</span>
-          </Link>
-        </div>
-        <div className="mt-auto pt-4 border-t border-outline-variant/20 space-y-1">
-          <Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-all duration-300 group" to="/explanations">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">help</span>
-            <span>Support</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg transition-all duration-300 group" to="/">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">logout</span>
-            <span>Logout</span>
-          </Link>
-        </div>
-      </nav>
+      <AdminSidebar />
 
       {/* Main Content Area */}
       <main className="md:ml-64 flex-1 flex flex-col min-h-screen bg-surface-bright relative">

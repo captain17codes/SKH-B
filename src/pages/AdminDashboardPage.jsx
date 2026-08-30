@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import AdminSidebar from '../components/AdminSidebar';
 import { Link } from 'react-router-dom';
 import SystemSummaryBlock from '../components/SystemSummaryBlock';
 import { triageAPI, explainAPI, tolerate404 } from '../api/client';
@@ -106,46 +107,7 @@ export default function AdminDashboardPage() {
         <span className="material-symbols-outlined text-primary cursor-pointer">menu</span>
       </header>
 
-      {/* SideNavBar */}
-      <nav className="hidden md:flex flex-col h-screen fixed left-0 top-0 py-8 px-4 w-64 bg-surface-container-low border-r border-outline-variant/10 z-40">
-        <div className="mb-8 px-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary shrink-0">
-            <span className="material-symbols-outlined icon-filled">location_city</span>
-          </div>
-          <div>
-            <div className="text-headline-md font-headline-md font-bold text-primary text-lg">City Council</div>
-            <div className="text-label-sm font-label-sm text-secondary">Governance Portal</div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-2 flex-grow">
-          <Link className="flex items-center gap-3 bg-primary-container text-on-primary-container rounded-lg px-4 py-3 font-label-sm text-label-sm font-bold transition-all" to="/admin">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>dashboard</span> Dashboard
-          </Link>
-          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/ticket-pool">
-            <span className="material-symbols-outlined">confirmation_number</span> Ticket Pool
-          </Link>
-          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/staff-allocation">
-            <span className="material-symbols-outlined">group</span> Staff Allocation
-          </Link>
-          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/citizen-insights">
-            <span className="material-symbols-outlined">analytics</span> Citizen Insights
-          </Link>
-          <Link className="flex items-center gap-3 text-secondary px-4 py-3 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/compliance">
-            <span className="material-symbols-outlined">terminal</span> System Logs
-          </Link>
-        </div>
-        <Link to="/submit" className="mt-4 w-full bg-primary text-on-primary rounded-full py-3 px-4 font-label-sm text-label-sm font-bold hover:bg-tertiary-container transition-colors flex items-center justify-center gap-2 shadow-sm">
-          <span className="material-symbols-outlined text-sm">add</span> New Entry
-        </Link>
-        <div className="mt-8 flex flex-col gap-2 pt-4 border-t border-outline-variant/20">
-          <Link className="flex items-center gap-3 text-secondary px-4 py-2 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/explanations">
-            <span className="material-symbols-outlined">help</span> Help
-          </Link>
-          <Link className="flex items-center gap-3 text-secondary px-4 py-2 hover:bg-secondary-container transition-colors rounded-lg font-label-sm text-label-sm" to="/">
-            <span className="material-symbols-outlined">logout</span> Logout
-          </Link>
-        </div>
-      </nav>
+      <AdminSidebar />
 
       {/* Main Content */}
       <main className="flex-grow flex flex-col md:ml-64 pt-20 md:pt-8 px-4 md:px-margin-desktop overflow-y-auto h-full bg-background relative">

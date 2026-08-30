@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AdminSidebar from '../components/AdminSidebar';
 import { Link } from 'react-router-dom';
 import { triageAPI, tolerate404 } from '../api/client';
 import { categoryIcon } from '../components/categoryIcon';
@@ -455,30 +456,7 @@ export default function AllocationDashboardPage() {
 
   return (
     <div className="bg-background text-on-background font-body-md min-h-screen flex">
-      {/* SideNavBar */}
-      <nav className="hidden lg:flex flex-col w-64 h-screen fixed left-0 top-0 py-8 px-4 bg-surface-container-low shadow-md z-40 border-r border-outline-variant/20">
-        <div className="flex items-center gap-3 mb-8 px-2">
-          <span className="material-symbols-outlined text-primary text-3xl icon-filled">account_balance</span>
-          <div>
-            <h2 className="text-headline-md font-headline-md font-bold text-primary">Admin Panel</h2>
-            <p className="text-label-sm font-label-sm text-on-surface-variant">Kopargaon Digital</p>
-          </div>
-        </div>
-        <button className="bg-primary text-on-primary w-full py-3 rounded-lg font-bold mb-8 hover:opacity-90 transition-opacity flex items-center justify-center gap-2 shadow-sm">
-          <span className="material-symbols-outlined text-[20px]">add</span> New Request
-        </button>
-        <div className="flex flex-col gap-2 flex-grow">
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/ticket-pool"><span className="material-symbols-outlined">assignment</span><span className="text-label-sm font-label-sm">Ticket Pool</span></Link>
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/staff-allocation"><span className="material-symbols-outlined">group</span><span className="text-label-sm font-label-sm">Staff Allocation</span></Link>
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-container text-on-primary-container font-bold shadow-sm" to="/allocation"><span className="material-symbols-outlined icon-filled">event_note</span><span className="text-label-sm font-label-sm">Daily Allocation</span></Link>
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/explanations"><span className="material-symbols-outlined">psychology</span><span className="text-label-sm font-label-sm">System Explanations</span></Link>
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/citizen-insights"><span className="material-symbols-outlined">analytics</span><span className="text-label-sm font-label-sm">Citizen Insights</span></Link>
-        </div>
-        <div className="flex flex-col gap-2 mt-auto border-t border-outline-variant/20 pt-4">
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/compliance"><span className="material-symbols-outlined">terminal</span><span className="text-label-sm font-label-sm">System Logs</span></Link>
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors" to="/"><span className="material-symbols-outlined">logout</span><span className="text-label-sm font-label-sm">Logout</span></Link>
-        </div>
-      </nav>
+      <AdminSidebar />
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-64 flex flex-col min-h-screen relative">

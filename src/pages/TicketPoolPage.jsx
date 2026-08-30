@@ -135,52 +135,7 @@ export default function TicketPoolPage() {
   return (
     <>
 
-{/* Shared Component: SideNavBar */}
-<aside className="bg-surface-container-low dark:bg-surface-container-lowest h-screen w-64 fixed left-0 top-0 border-r border-outline-variant/10 flex flex-col h-full py-unit px-4 gap-2 z-40 md:flex hidden">
-{/* Header */}
-<div className="mb-8 mt-4 px-2">
-<h2 className="text-headline-md font-headline-md text-primary dark:text-primary-fixed">Kopargaon Civic</h2>
-<p className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mt-1">Administrative Suite</p>
-</div>
-{/* CTA */}
-<button className="bg-primary text-on-primary font-label-sm text-label-sm rounded-full py-3 px-4 mb-6 hover:bg-primary-container transition-colors shadow-sm w-full text-center">
-            Report Emergency
-        </button>
-{/* Navigation Tabs */}
-<nav className="flex-1 space-y-1">
-<Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" to="/admin">
-<span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">dashboard</span>
-<span className="font-label-sm text-label-sm">Dashboard</span>
-</Link>
-<Link className="flex items-center gap-3 px-3 py-2 bg-primary-container text-on-primary-container rounded-lg font-bold group cursor-pointer" to="/ticket-pool">
-<span className="material-symbols-outlined group-hover:translate-x-1 transition-transform" style={{fontVariationSettings: "'FILL' 1"}}>confirmation_number</span>
-<span className="font-label-sm text-label-sm">Ticket Pool</span>
-</Link>
-<Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" to="/staff-allocation">
-<span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">group_add</span>
-<span className="font-label-sm text-label-sm">Staff Allocation</span>
-</Link>
-<Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" to="/citizen-insights">
-<span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">analytics</span>
-<span className="font-label-sm text-label-sm">Citizen Insights</span>
-</Link>
-<Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" to="/compliance">
-<span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">terminal</span>
-<span className="font-label-sm text-label-sm">System Logs</span>
-</Link>
-</nav>
-{/* Footer Tabs */}
-<div className="mt-auto border-t border-outline-variant/10 pt-4 space-y-1">
-<Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" to="/explanations">
-<span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">help</span>
-<span className="font-label-sm text-label-sm">Support</span>
-</Link>
-<Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded-lg hover:bg-surface-variant/50 transition-all duration-300 group cursor-pointer" to="/">
-<span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">logout</span>
-<span className="font-label-sm text-label-sm">Logout</span>
-</Link>
-</div>
-</aside>
+<AdminSidebar />
 {/* Main Content Area */}
 <main className="flex-1 flex flex-col md:ml-64 relative overflow-y-auto w-full">
 {/* Shared Component: TopNavBar */}

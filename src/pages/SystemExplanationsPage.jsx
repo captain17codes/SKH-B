@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AdminSidebar from '../components/AdminSidebar';
 import { Link } from 'react-router-dom';
 import { triageAPI, explainAPI } from '../api/client';
 
@@ -75,49 +76,10 @@ export default function SystemExplanationsPage() {
   return (
     <div className="bg-background text-on-surface font-body-md antialiased overflow-x-hidden selection:bg-primary-fixed selection:text-on-primary-fixed">
       {/* Top Nav (Desktop) */}
-      <nav className="hidden md:flex w-full fixed top-0 z-40 bg-surface-container-lowest/80 backdrop-blur-xl border-b border-outline-variant justify-between items-center px-margin-desktop py-4 ml-64" style={{width: 'calc(100% - 256px)'}}>
-        <div className="flex items-center"><span className="font-headline-md text-headline-md font-extrabold text-primary">Kopargaon Civic Resource</span></div>
-        <div className="flex items-center gap-gutter">
-          <div className="relative hidden lg:block">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-            <input className="pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-full text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-fixed transition-all w-64" placeholder="Search resources..." type="text" />
-          </div>
-          <button className="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container"><span className="material-symbols-outlined">notifications</span></button>
-          <button className="p-2 text-on-surface-variant hover:text-primary transition-colors rounded-full hover:bg-surface-container"><span className="material-symbols-outlined">settings</span></button>
-          <div className="h-10 w-10 rounded-full overflow-hidden border border-outline-variant">
-            <img alt="Admin" className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGsJ7eOT3dUIwzCSnL7UF-XCQigxvmw4pq2rXkZZ_nfNl9rn426tbNLrZKFgQ5LedN1qlwkBdQI8w4YkdCCfpw9JKSZB3jodNXLKhTzcR3L2Jytjy1qevo9A_7S1h1kIEW9tBbRb1pqTahTvuhyW7j8dhoWb0kKifqNdeDgrCH2J5N8HOZRAHeSnjt0mloCilYN0fFPeIDWFfcUdZrJ2Ydv3KOWTCKa7a5LihwsukQyFZXLEuccOw" />
-          </div>
-        </div>
-      </nav>
+      <AdminSidebar />
 
       {/* Side Navigation */}
-      <aside className="hidden md:flex h-screen w-64 fixed left-0 top-0 bg-primary z-50 flex-col py-unit px-gutter">
-        <div className="flex items-center gap-4 py-6 px-2">
-          <div className="h-12 w-12 rounded-full overflow-hidden bg-surface-container-lowest p-1 flex items-center justify-center">
-            <span className="material-symbols-outlined text-primary text-[32px]">assured_workload</span>
-          </div>
-          <div>
-            <h1 className="font-headline-md text-headline-md font-bold text-on-primary text-[20px] leading-tight">KMC Portal</h1>
-            <p className="font-body-md text-body-md text-primary-fixed-dim text-[14px]">Civic Resource Suite</p>
-          </div>
-        </div>
-        <button className="mt-4 mb-8 bg-surface-container-lowest text-primary font-label-sm text-label-sm py-3 px-6 rounded-full flex items-center justify-center gap-2 hover:bg-secondary-fixed transition-colors shadow-sm w-full font-bold">
-          <span className="material-symbols-outlined">add</span> New Ticket
-        </button>
-        <nav className="flex flex-col gap-2 flex-grow">
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" to="/ticket-pool"><span className="material-symbols-outlined">assignment</span><span className="font-label-sm text-label-sm font-semibold">Ticket Pool</span></Link>
-
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" to="/allocation"><span className="material-symbols-outlined">schedule</span><span className="font-label-sm text-label-sm font-semibold">Daily Allocation</span></Link>
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" to="/staff-allocation"><span className="material-symbols-outlined">group_add</span><span className="font-label-sm text-label-sm font-semibold">Staff Allocation</span></Link>
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-on-primary bg-primary-container/20 font-bold border-l-4 border-tertiary-fixed opacity-90 transition-all" to="/explanations">
-            <span className="material-symbols-outlined text-tertiary-fixed" style={{fontVariationSettings: "'FILL' 1"}}>info</span>
-            <span className="font-label-sm text-label-sm">System Explanations</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" to="/citizen-insights"><span className="material-symbols-outlined">analytics</span><span className="font-label-sm text-label-sm font-semibold">Citizen Insights</span></Link>
-          <Link className="flex items-center gap-3 px-4 py-3 rounded-lg text-primary-fixed-dim hover:text-on-primary hover:bg-primary-container/10 transition-colors duration-200" to="/compliance"><span className="material-symbols-outlined">terminal</span><span className="font-label-sm text-label-sm font-semibold">System Logs</span></Link>
-        </nav>
-        <div className="mt-auto py-4 px-2"><div className="text-primary-fixed-dim text-xs opacity-60 font-label-sm text-label-sm">Powered by KMC Platform</div></div>
-      </aside>
+      <AdminSidebar />
 
       {/* Main Content */}
       <main className="md:ml-64 pt-20 md:pt-28 pb-24 md:pb-12 px-margin-mobile md:px-margin-desktop max-w-[1536px] mx-auto min-h-screen">

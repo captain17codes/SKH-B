@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import AdminSidebar from '../components/AdminSidebar';
 import { Link } from 'react-router-dom';
 import { ticketsAPI, mediaAPI, auditAPI } from '../api/client';
 
@@ -97,56 +98,7 @@ export default function CitizenInsightsEquityPage() {
 
   return (
     <div className="bg-background text-on-surface font-body-md flex min-h-screen">
-      {/* SideNavBar */}
-      <nav className="hidden md:flex bg-surface-container-low border-r border-outline-variant/10 h-screen w-64 fixed left-0 top-0 flex-col py-unit px-4 gap-2 z-40">
-        <div className="flex items-center gap-3 px-2 py-4 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center shrink-0 text-on-primary">
-            <span className="material-symbols-outlined">account_balance</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-headline-md font-headline-md text-primary">Kopargaon Civic</span>
-            <span className="text-label-sm font-label-sm text-on-surface-variant">Administrative Suite</span>
-          </div>
-        </div>
-        <div className="flex flex-col gap-1 flex-1">
-          <Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 rounded-lg transition-all duration-300 group" to="/admin">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">dashboard</span>
-            <span className="font-label-sm text-label-sm">Dashboard</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 rounded-lg transition-all duration-300 group" to="/ticket-pool">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">confirmation_number</span>
-            <span className="font-label-sm text-label-sm">Ticket Pool</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 rounded-lg transition-all duration-300 group" to="/staff-allocation">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">group_add</span>
-            <span className="font-label-sm text-label-sm">Staff Allocation</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-3 py-2 bg-primary-container text-on-primary-container rounded-lg font-bold transition-all duration-300 group" to="/citizen-insights">
-            <span className="material-symbols-outlined">analytics</span>
-            <span className="font-label-sm text-label-sm">Citizen Insights</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 rounded-lg transition-all duration-300 group" to="/compliance">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">terminal</span>
-            <span className="font-label-sm text-label-sm">System Logs</span>
-          </Link>
-        </div>
-        <div className="mt-auto mb-4">
-          <Link to="/submit" className="w-full bg-primary text-on-primary py-2 rounded-lg font-label-sm text-label-sm shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors flex items-center justify-center gap-2">
-            <span className="material-symbols-outlined">add_alert</span>
-            Report Emergency
-          </Link>
-        </div>
-        <div className="flex flex-col gap-1 border-t border-outline-variant/10 pt-2">
-          <Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 rounded-lg transition-all duration-300 group" to="/explanations">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">help</span>
-            <span className="font-label-sm text-label-sm">Support</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 rounded-lg transition-all duration-300 group" to="/">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">logout</span>
-            <span className="font-label-sm text-label-sm">Logout</span>
-          </Link>
-        </div>
-      </nav>
+      <AdminSidebar />
 
       {/* Main Content Area */}
       <main className="flex-1 ml-0 md:ml-64 min-h-screen bg-surface relative">

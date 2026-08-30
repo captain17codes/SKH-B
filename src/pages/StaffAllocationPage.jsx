@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import AdminSidebar from '../components/AdminSidebar';
 import { Link } from 'react-router-dom';
 import { staffAPI } from '../api/client';
 import { categoryIcon, titleCase } from '../components/categoryIcon';
@@ -133,52 +134,7 @@ export default function StaffAllocationPage() {
 
   return (
     <>
-      {/* SideNavBar */}
-      <nav className="bg-surface-container-low h-screen w-64 fixed left-0 top-0 border-r border-outline-variant/10 flex flex-col py-unit px-4 gap-2 z-40 hidden md:flex">
-        <div className="mb-8 mt-4 px-2">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden text-on-primary-container">
-              <span className="material-symbols-outlined">location_city</span>
-            </div>
-            <div>
-              <h1 className="font-headline-md text-headline-md text-primary">Kopargaon Civic</h1>
-              <p className="font-label-sm text-label-sm text-on-surface-variant">Administrative Suite</p>
-            </div>
-          </div>
-        </div>
-        <div className="flex-1 flex flex-col gap-1">
-          <Link className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 transition-all duration-300 rounded-lg group" to="/admin">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">dashboard</span>
-            <span className="font-label-sm text-label-sm">Dashboard</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 transition-all duration-300 rounded-lg group" to="/ticket-pool">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">confirmation_number</span>
-            <span className="font-label-sm text-label-sm">Ticket Pool</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-bold group" to="/staff-allocation">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>group_add</span>
-            <span className="font-label-sm text-label-sm">Staff Allocation</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 transition-all duration-300 rounded-lg group" to="/citizen-insights">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">analytics</span>
-            <span className="font-label-sm text-label-sm">Citizen Insights</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 transition-all duration-300 rounded-lg group" to="/compliance">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">terminal</span>
-            <span className="font-label-sm text-label-sm">System Logs</span>
-          </Link>
-        </div>
-        <div className="mt-auto border-t border-outline-variant/10 pt-4 flex flex-col gap-1">
-          <Link className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 transition-all duration-300 rounded-lg group" to="/explanations">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">help</span>
-            <span className="font-label-sm text-label-sm">Support</span>
-          </Link>
-          <Link className="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 transition-all duration-300 rounded-lg group" to="/">
-            <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">logout</span>
-            <span className="font-label-sm text-label-sm">Logout</span>
-          </Link>
-        </div>
-      </nav>
+      <AdminSidebar />
 
       {/* Main Content Area */}
       <div className="flex-1 ml-0 md:ml-64 flex flex-col min-h-screen">
