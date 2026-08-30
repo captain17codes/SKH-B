@@ -196,3 +196,10 @@ venv/
 
 # One-off manual probe scripts (not tests -- see backend/tools/*_smoke.py)
 /test_submit.mjs
+
+# Regenerable probe output. api_shapes.txt is the ground truth BACKEND_API.md was
+# written against -- regenerate it with backend/tools/api_shape_dump.py rather than
+# committing a snapshot that will silently go stale.
+/backend/api_shapes.txt
+/backend/openapi_dump.json
+/backend/shap_probe.json

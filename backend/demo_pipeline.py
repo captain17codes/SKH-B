@@ -12,7 +12,8 @@ Covers: category canonicalisation, ward resolution with missing ward data, the t
 SLA clocks, perceptual-hash deduplication with a proximity veto, recurrence after
 a failed repair, cost estimation with unknown lines left NULL, the four fuzzy
 criteria, and fuzzy-AHP weights with a consistency gate that refuses contradictory
-judgements. Prioritisation and allocation are not included yet.
+judgements. Prioritisation and allocation are deliberately out of scope here -- they
+are built, but they belong to the running server; see ``DEMO_SCRIPT.md``.
 """
 from __future__ import annotations
 
@@ -241,8 +242,15 @@ def main() -> None:
     head("DONE")
     print(f"database : {DEMO_DB}")
     print(f"uploads  : {DEMO_UPLOADS}")
-    print("not yet built: prioritisation (TOPSIS), allocation (knapsack),"
-          " explainability endpoint, auth + audit chain.")
+    # Scope of THIS script, not of the platform: prioritisation, allocation, the
+    # explain endpoints and the audit chain are all built and live on the running
+    # server. They are absent here because this walkthrough deliberately stops at
+    # the ingest boundary, and printing "not yet built" would misstate that.
+    print("not shown here (they need the running server, not this scratch DB):"
+          " prioritisation (fuzzy TOPSIS), allocation (knapsack),"
+          " the /api/explain endpoints, and the audit hash chain.")
+    print("for those: python -m uvicorn main:app --port 8000, then"
+          " GET /api/triage/today -- see DEMO_SCRIPT.md")
 
 
 if __name__ == "__main__":

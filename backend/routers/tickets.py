@@ -154,7 +154,9 @@ def list_tickets(
     status: Optional[str] = None,
     ward_id: Optional[str] = None,
     category: Optional[str] = None,
-    sla: Optional[str] = Query(None, description="ON_TRACK | DUE_SOON | BREACHED"),
+    sla: Optional[str] = Query(None, description="operational_status to filter on: "
+                                                 "ON_TRACK | AT_RISK | OVERDUE | "
+                                                 "IMMEDIATE_HANDOFF | TARGET_UNDEFINED"),
     include_duplicates: bool = False,
     limit: int = Query(50, ge=1, le=500),
     offset: int = Query(0, ge=0),

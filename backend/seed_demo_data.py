@@ -19,10 +19,11 @@ judge clicking through the UI meets, without anyone staging it:
   plus proximity, both raising the parent's community multiplier,
 * a near-miss that was **refused** a merge and says why.
 
-The capacity figure is not hard-coded to a lucky number: ``--auto-capacity``
-dry-runs several budgets and picks the first that produces both deferral reasons
-*and* a rank inversion, so the demo stays interesting even after the case list is
-edited. Dry runs write nothing.
+The capacity figure is not hard-coded to a lucky number: by default the script
+dry-runs the budgets in ``CAPACITY_LADDER`` and picks the first that produces both
+deferral reasons *and* a rank inversion, so the demo stays interesting even after
+the case list is edited. Pass ``--budget`` / ``--hours`` to skip that search. Dry
+runs write nothing.
 
 Nothing here fabricates data the council does not have. Ward population and
 equity index stay NULL unless ``--ward-estimates`` is passed, and even then they
@@ -44,6 +45,14 @@ HERE = Path(__file__).resolve().parent
 for _p in (str(HERE), str(HERE.parent)):
     if _p not in sys.path:
         sys.path.insert(0, _p)
+
+# The progress output contains Marathi text and the rupee sign. On a cp1252 console
+# that raises UnicodeEncodeError partway through and leaves a half-seeded-looking
+# transcript, which reads as a database fault rather than a console encoding one.
+# Fixed here so the script never needs PYTHONIOENCODING set by the caller.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
 
 # Kopargaon town centre. Offsets below are metres-scale, so the dedup radius
 # (default 60 m) and the text radius behave the way they would in the field.
